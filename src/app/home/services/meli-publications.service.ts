@@ -60,6 +60,9 @@ export class MeliPublicationsService {
     }));
   }
 
+  /* Obtiene las subcategorias de una categoria
+  *  pasada por parametro.
+  */
   getMeliSubCategories(idCategory: string): Observable<MeliCategory>{
     const params = `${this.URI}/categories/${idCategory}`;
     return this.http.get<MeliCategory>(params).pipe(map((resp: any) => {
@@ -77,11 +80,18 @@ export class MeliPublicationsService {
     }));
   }
 
+  /* Obtiene las categorias almacenadas en Base Datos como
+  *  Me2 que fueron addicionadas por el Admin
+  */
   getAllowedListCategoriesME2(): Observable<MeliCategoryME2[]> {
     const params = `${this.URI_MELI_BUSINESS}/categories-me2`;
     return this.http.get<MeliCategoryME2[]>(params);
   }
 
+  /* Almacena las categorias que por defecto no estan
+  *  marcadas como ME2 en Meli pero se conoce que son
+  *  Me2.
+  */
   saveAllowedListCategoriesME2(categoriesList: MeliCategoryME2[]): Observable<MeliCategoryME2[]> {
     const params = `${this.URI_MELI_BUSINESS}/save-categories-me2`;
     let catList: MeliCategoryME2[] = [];
@@ -95,6 +105,9 @@ export class MeliPublicationsService {
       }));
   }
 
+  /* Elimina de la lista las categorias que fueron
+  *  adicionadas a la lista de ME2 por el Admin.
+  */
   deleteCategoryFromAllowedList(category: MeliCategoryME2): Observable<boolean> {
     const params = `${this.URI_MELI_BUSINESS}/delete-category-me2`;
     return this.http.post<boolean>(params, category);
@@ -123,6 +136,9 @@ export class MeliPublicationsService {
    return this.http.get<any>(params);
    }
 
+   /*
+   * Obtiene los detalles de una categoria
+   */
   getMeliInfoCategory(idCategory: string): Observable<any>{
     const params = `${this.URI}/sites/MLU/search?category=${idCategory}`;
     return this.http.get<any>(params);
@@ -296,6 +312,9 @@ export class MeliPublicationsService {
       return this.http.put<any>(params, productPublished);
   }
 
+  /* Obtiene los atributos requeridos para publicar
+  *  un Item dada su categoria
+  */
   getAttributesRequired(categoryId: string): Observable<AttributesRequiredModel[]>{
     this.attributesList = [];
     const params = `${this.URI}/categories/${categoryId}/attributes`;
