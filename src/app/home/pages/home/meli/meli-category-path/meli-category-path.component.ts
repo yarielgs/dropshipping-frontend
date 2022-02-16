@@ -48,37 +48,47 @@ export class MeliCategoryPathComponent implements OnInit {
     }
   }
 
-  getSubCategories(idCategory: string){
+  getSubCategories(idCategory: string) {
     this.pathList = [];
-    this.meliPublicationsService.getMeliSubCategories(idCategory).subscribe(resp => {
+    this.meliPublicationsService.getMeliSubCategories(idCategory).subscribe(async resp => {
       this.subcategory = true;
       this.meliCategory = resp;
       this.meliCategory.path_from_root.forEach(element => {
         this.pathList.push(element.name);
       });
-      if(Object.keys(this.meliCategory).length !== 0){
+
+      if(Object.keys(this.meliCategory).length !== 0) {
         let aCategory = new MeliME2Category('-1');
 
         //Entra al if si la categoria es Hoja
-        if(this.meliCategory.children_categories.length === 0){
+        if(this.meliCategory.children_categories.length === 0) {
             aCategory.idLastCategory = this.meliCategory.id;
+
             //Validar si categoria es mercado enviable segun me2 .
-            if(this.meliCategory.shipping_modes.includes('me2')) {
-              aCategory.isME2 = true;
-            }else {
-              //si la categoria es igual a alguna categoria de la lista permitida como Mercado Enviable
+            this.meliPublicationsService.getShippingMode(this.meliCategory.id).subscribe(modes => {
+              if(modes.includes("me2")) {
+                aCategory.isME2 = true;
+              } else {
+                //si la categoria es igual a alguna categoria de la lista permitida como Mercado Enviable
+                if(this.categoriesME2AllowedList.some(f => f.id === this.meliCategory.id))
+                   aCategory.isME2 = true;
+                 else
+                   aCategory.isME2 = false;
+              }
+              this.categorySelected.emit(aCategory);
+            }, (error: any) => {
               if(this.categoriesME2AllowedList.some(f => f.id === this.meliCategory.id))
-                 aCategory.isME2 = true;
-               else
-                 aCategory.isME2 = false;
-            }
+                aCategory.isME2 = true;
+              else
+                aCategory.isME2 = false;
+
+              this.categorySelected.emit(aCategory);
+               }
+            );
         }
-        this.categorySelected.emit(aCategory);
-
       }
+      this.pathOut.emit(this.pathList);
     });
-    this.pathOut.emit(this.pathList);
-
   }
 
 }

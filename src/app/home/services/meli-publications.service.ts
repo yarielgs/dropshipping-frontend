@@ -43,6 +43,8 @@ export class MeliPublicationsService {
      this.attributesList = [];
   }
 
+   /* Obtiene las Categorias de Mercado Libre
+  */
   getMeliCategories(): Observable<MeliCategory[]>{
     let meliCategoryList: MeliCategory[] = [];
     const params = `${this.URI}/sites/MLU/categories`;
@@ -65,6 +67,7 @@ export class MeliPublicationsService {
   */
   getMeliSubCategories(idCategory: string): Observable<MeliCategory>{
     const params = `${this.URI}/categories/${idCategory}`;
+
     return this.http.get<MeliCategory>(params).pipe(map((resp: any) => {
       let meliCategory = new MeliCategory();
       meliCategory.id = resp.id;
@@ -78,6 +81,55 @@ export class MeliPublicationsService {
       meliCategory.shipping_modes = resp.settings.shipping_modes;
       return meliCategory;
     }));
+  }
+
+  /*
+   * Obtiene el Shipping Mode de una categorias. Metodo asincrono (await)
+   *
+   * Descripcion:
+   * Este metodo es para consumir directo a Meli.
+   * No es utilizado por ningun metodo por ahora.
+   */
+ async getShippingModeOfCategories(idCategory: string): Promise<any[]> {
+  const params = `${this.URI}/categories/${idCategory}/shipping_preferences`;
+
+  return this.http.get<any[]>(params).pipe(map((resp: any) => {
+    let shippingModeList : any[] = [];
+    resp.logistics.forEach(element => {
+      shippingModeList.push(element.mode);
+    });
+    return shippingModeList;
+  })).toPromise();
+}
+
+/*
+   * Obtiene el Shipping Mode de una categorias. Metodo asincrono
+   *
+   * Descripcion:
+   * Este metodo es para consumir directo a Meli.
+   * No es utilizado por ningun metodo por ahora.
+   */
+getShippingModeOfCategories2(idCategory: string): Observable<string[]> {
+  const params = `${this.URI}/categories/${idCategory}/shipping_preferences`;
+
+  return this.http.get<string[]>(params).pipe(map((resp: any) => {
+    let shippingModeList : string[] = [];
+    resp.logistics.forEach(element => {
+      shippingModeList.push(element.mode);
+    });
+    return shippingModeList;
+  }));
+}
+
+/*
+   * Obtiene el Shipping Mode de una categorias.
+   *
+   * Descripcion:
+   * Este metodo es para consumir desde la API de Drop.
+   */
+  getShippingMode(idCategory: string): Observable<string[]>{
+    const params = `${this.URI_MELI_BUSINESS}/shipping-mode/${idCategory}`;
+    return this.http.get<string[]>(params);
   }
 
   /* Obtiene las categorias almacenadas en Base Datos como
