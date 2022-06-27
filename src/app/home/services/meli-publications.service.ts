@@ -26,7 +26,6 @@ import { MeliPathRoot } from 'src/app/models/meli-publication/meli-path-from-roo
 import { MeliCategoryME2 } from '../pages/home/meli-configuration/models/meli-category-me2.model';
 
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -316,7 +315,10 @@ getShippingModeOfCategories2(idCategory: string): Observable<string[]> {
         let attributes: Attributes[] = [];
         attributes.push(new Attributes("SELLER_SKU", "SKU", productSelected.sku));
         if(attributesRequired.length !== 0){
-            attributesRequired.forEach( f => { attributes.push(new Attributes( f.id, null, "N/A"));});
+            attributesRequired.forEach( f => { attributes.push(new Attributes( f.id, f.name,
+              f.value_type !== undefined && f.value_type === 'number_unit' ? "10 cm" : "N/A",
+              null,
+              null ));});
         }
 
         let tittle = productSelected.productName.length > 60 ? productSelected.productName.substring(0,60) : productSelected.productName;
