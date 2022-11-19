@@ -12,7 +12,7 @@ Run `ng serve --ssl true` for a dev server. Navigate to `https://localhost:4200/
 
 ## Development server 2
 
-Run `npm start` for a dev server. execute `ng serve --ssl true.
+Run `npm run start` for a dev server. execute `ng serve --ssl true.
 
 ## Code scaffolding
 
