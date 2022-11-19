@@ -316,7 +316,7 @@ getShippingModeOfCategories2(idCategory: string): Observable<string[]> {
         attributes.push(new Attributes("SELLER_SKU", "SKU", productSelected.sku));
         if(attributesRequired.length !== 0){
             attributesRequired.forEach( f => { attributes.push(new Attributes( f.id, f.name,
-              f.value_type !== undefined && f.value_type === 'number_unit' ? "10 cm" : "N/A",
+              f.value_type !== undefined && f.value_type !== 'string' ? "10" : "N/A",
               null,
               null ));});
         }
