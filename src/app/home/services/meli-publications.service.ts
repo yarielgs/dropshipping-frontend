@@ -248,7 +248,7 @@ getShippingModeOfCategories2(idCategory: string): Observable<string[]> {
         let attributes: Attributes[] = [];
         attributes.push(new Attributes("SELLER_SKU", "SKU", element.sku));
         if(attributesRequired.length !== 0){
-          attributesRequired.forEach( f => { attributes.push(new Attributes( f.id, null, "N/A"));});
+          attributesRequired.forEach( f => { attributes.push(this.getAttribute(f));});
         }
         let tittle = element.name.length > 60 ? element.name.substring(0,60) : element.name;
         let item = new ItemMeliRequest(tittle, idCategory, priceFinal, "UYU", element.currentStock.toString(), "buy_it_now", "new",
@@ -315,10 +315,7 @@ getShippingModeOfCategories2(idCategory: string): Observable<string[]> {
         let attributes: Attributes[] = [];
         attributes.push(new Attributes("SELLER_SKU", "SKU", productSelected.sku));
         if(attributesRequired.length !== 0){
-            attributesRequired.forEach( f => { attributes.push(new Attributes( f.id, f.name,
-              f.value_type !== undefined && f.value_type !== 'string' ? "10" : "N/A",
-              null,
-              null ));});
+            attributesRequired.forEach( f => { attributes.push(this.getAttribute(f));});
         }
 
         let tittle = productSelected.productName.length > 60 ? productSelected.productName.substring(0,60) : productSelected.productName;
@@ -391,5 +388,33 @@ getShippingModeOfCategories2(idCategory: string): Observable<string[]> {
     scData = await this.configService.readAttributesConfig().toPromise();
     return scData;
   }
+
+  getAttribute(f: AttributesRequiredModel): Attributes {
+
+    switch(f.value_type) { 
+      case 'string': { 
+         return new Attributes(f.id, f.name,"N/A", null, null);
+      } 
+      case 'number': { 
+        return new Attributes(f.id, f.name,"1", null, null);
+      } 
+      case 'number_unit': { 
+        var unit = f.allowed_units[0].name;
+        return new Attributes(f.id, f.name,"10 " + unit, null, null);
+      } 
+      case 'boolean': { 
+        return new Attributes(f.id, f.name,"false", null, null);
+      } 
+      case 'list': { 
+        var val = f.value[0];
+        return new Attributes(f.id, f.name, val.name, val.id, null, null);
+      } 
+      default: { 
+        return new Attributes(f.id, f.name,"", null, null);
+      } 
+   }
+
+  }
+
 
 }
