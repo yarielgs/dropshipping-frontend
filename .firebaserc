@@ -1,5 +1,15 @@
 {
   "projects": {
-    "default": "pepeganga-dropshipping"
-  }
+    "default": "dropshipping-dev"
+  },
+  "targets": {
+    "dropshipping-dev": {
+      "hosting": {
+        "dev": [
+          "dropshipping-dev"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }
