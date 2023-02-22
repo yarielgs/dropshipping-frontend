@@ -1631,7 +1631,7 @@ pre code {
   background-color: #fff;
   border-color: #bac8f3;
   outline: 0;
-  box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+  box-shadow: 0 0 0 0.2rem #FFD939;
 }
 .form-control::-webkit-input-placeholder {
   color: #858796;
@@ -2134,14 +2134,14 @@ fieldset:disabled a.btn {
   pointer-events: none;
 }
 .btn-primary {
-  color: #fff;
-  background-color: #4e73df;
-  border-color: #4e73df;
+  color:#202124;
+  background-color: #FFD939;
+  border-color: #FFD939;
 }
 .btn-primary:hover {
   color: #fff;
-  background-color: #2e59d9;
-  border-color: #2653d4;
+  background-color: #FFD939;
+  border-color: #FFD939;
 }
 .btn-primary.focus,
 .btn-primary:focus {
@@ -2149,16 +2149,16 @@ fieldset:disabled a.btn {
 }
 .btn-primary.disabled,
 .btn-primary:disabled {
-  color: #fff;
-  background-color: #4e73df;
-  border-color: #4e73df;
+  color: #202124;
+  background-color: #fad538;
+  border-color: #fad538;
 }
 .btn-primary:not(:disabled):not(.disabled).active,
 .btn-primary:not(:disabled):not(.disabled):active,
 .show > .btn-primary.dropdown-toggle {
-  color: #fff;
-  background-color: #2653d4;
-  border-color: #244ec9;
+  color: #202124;
+  background-color: #fad538;
+  border-color: #fad538;
 }
 .btn-primary:not(:disabled):not(.disabled).active:focus,
 .btn-primary:not(:disabled):not(.disabled):active:focus,
@@ -3989,7 +3989,7 @@ input[type="submit"].btn-block {
   background-color: #fff;
   background-clip: border-box;
   border: 1px solid #e3e6f0;
-  border-radius: 0.35rem;
+  border-radius: 2.35rem;
 }
 .card > hr {
   margin-right: 0;
