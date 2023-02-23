@@ -1,3 +1,4 @@
+
 <!-- Collapsable Card Example -->
 <div class="card shadow mb-4">
   <!-- Card Header - Accordion -->
@@ -12,15 +13,16 @@
 
         <div class="row p-3">
           <div class="col-md-6">
-            <div class="form-group">
-              <label for="idSku">SKU:</label>
-              <input type="text" class="form-control" name="skuSearch" id="idSku" [(ngModel)]="skuSearch" placeholder="Buscar por SKU...">
-            </div>
 
             <div class="form-group">
               <label for="idTitle">Título:</label>
               <input type="text" class="form-control" name="titleSearch" [(ngModel)]="titleSearch" id="idTitle"
                 placeholder="Buscar por título...">
+            </div>
+
+            <div class="form-group">
+              <label for="idSku">SKU:</label>
+              <input type="text" class="form-control" name="skuSearch" id="idSku" [(ngModel)]="skuSearch" placeholder="Buscar por SKU...">
             </div>
           </div>
 
@@ -106,9 +108,29 @@
               Pausar Seleccionados</a>
             <a class="dropdown-item pointer" href="javascript:void(0)" (click)= "changeStatusMultiplePublications(5)"><i class="fas fa-stop text-secondary m-2"></i>
               Finalizar Seleccionados</a>
+              <a class="dropdown-item pointer" href="javascript:void(0)" (click)="deleteSetPublication(false)"><i class="fas fa-trash text-danger m-2"></i>
+                Eliminar Seleccionados</a>
           </div>
+
         </div>
       </div>
+<!--
+      <div class="dropdown no-arrow">
+        <a class="dropdown-toggle btn btn-danger" href="javascript:void(0);" role="button" id="dropdownMenuDelete"
+        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fas fa-trash"></i>
+        Eliminar
+        <i class="fas fa-ellipsis-v fa-sm fa-fw"></i>
+      </a>
+      <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in btn-block"
+        aria-labelledby="dropdownMenuDelete" style="width: auto;">
+        <a class="dropdown-item pointer" href="javascript:void(0);" (click)="deleteSetPublication(true)"><i class="fas fa-trash text-danger m-2"></i>
+          Eliminar todos</a>
+        <a class="dropdown-item pointer" *ngIf="!disable" href="javascript:void(0);" (click)="deleteSetPublication(false)"><i class="fas fa-trash text-danger m-2"></i>
+          Eliminar seleccionados</a>
+      </div>
+    </div>
+  -->
     </div>
   </div>
 
@@ -130,6 +152,7 @@
             <th>Meli Id</th>
             <th>SKU</th>
             <th>Estado</th>
+            <th>Flex</th>
             <th>Precio</th>
             <th>Cantidad</th>
             <th>Cuenta de Meli</th>
@@ -147,7 +170,7 @@
                 </div>
               </td>
               <td>
-                <img class="img-fluid rounded" width="50px" height="50px" [src]="product.images |notImage" alt="Imagen">
+                <img class="img-fluid rounded" width="50px" height="50px" [src]="product.images |uploadImage" alt="Imagen">
               </td>
               <td  >
                 <p [ngbTooltip]="product.title">
@@ -203,6 +226,20 @@
               </div>
 
               </td>
+              <td>
+                <div *ngIf="product.flex === 0" class="d-flex flex-wrap"
+                  role="alert" ngbTooltip="Flex inactivo">
+                  <span class="badge badge-secondary m-1">no flex</span>
+                </div>
+                <div *ngIf="product.flex === 1" class="d-flex flex-wrap" role="alert"
+                  ngbTooltip="Flex activo">
+                  <span class="badge badge-success m-1">flex</span>
+                </div>
+                <div *ngIf="product.flex === 2 || product.flex === null" class="d-flex flex-wrap"
+                  role="alert" ngbTooltip="Sin confirmar la información en mercado libre. ">
+                  <span class="badge badge-warning m-1"> sin confirmar</span>
+                </div>
+              </td>
               <td>UYU <strong>{{product.pricePublication }}</strong></td>
               <td class="text-right"> {{ product.currentStock }} </td>
               <td>{{ product.accountName }}</td>
@@ -251,10 +288,8 @@
         </select>
       </div>
 
-      <div class="dataTables_info py-2 " id="dataTable_info" role="status" aria-live="polite">
-        <span class="align-middle">Mostrando {{page}} a {{size}} de {{pagePublised.totalElements}} registros</span>
-
-      </div>
+       <!--Table Paginator Info-->
+       <app-table-paginator-info [total] = "pagePublised?.totalElements" ></app-table-paginator-info>
 
     </div>
 
@@ -299,5 +334,5 @@
 </div>
 
 
-<app-global-loading [globalLoading]="loading" [globalLoadingDescription]="'Cargando publicaciones...'">
+<app-global-loading [globalLoading]="loading" [globalLoadingDescription]="msgLoading">
 </app-global-loading>
