@@ -5,14 +5,19 @@
     <!-- Outer Row -->
     <div class="row justify-content-center">
 
-      <div class="col-xl-10 col-lg-12 col-md-9 py-5">
+      <div class="col-xl-10 col-lg-12 col-md-9 ">
 
         <div class="card o-hidden border-0 shadow-lg my-5">
           <div class="card-body p-0">
             <!-- Nested Row within Card Body -->
             <div class="row">
-              <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
-              <div class="col-lg-6">
+              <div class="col-lg-6 pt-5 d-lg-block bg-login-image border-icon">
+                <div class="logo-container text-center">
+                  <img src="assets/img/BeeSeller-07.png" class="w-50 text-center" />
+                  <p class="text-center pdrop">Dropshipping</p>
+                </div>
+              </div>
+              <div class="col-lg-6 bg-login-image">
                 <div class="p-5">
                   <div class="text-center">
                     <h1 class="h4 text-gray-900 mb-4">¡Bienvenido a Bee Seller!</h1>
@@ -32,17 +37,13 @@
                     </button>
                   </div>
 
-                  <form
-                  [formGroup]="registerForm"
-                  autocomplete="on"
-                  (ngSubmit)="login()"
-                  class="user">
+                  <form [formGroup]="registerForm" autocomplete="on" (ngSubmit)="login()" class="user">
                     <div class="form-group">
                       <input [class.is-invalid]="fieldNotValid('email')" formControlName="email"
                         class="form-control form-control-user" id="exampleInputEmail" aria-describedby="emailHelp"
-                        placeholder="Correo" required  autofocus>
+                        placeholder="Correo" required autofocus>
                       <div *ngIf="fieldNotValid('email') && email.errors?.email" class="invalid-feedback">
-                        <strong  class="ml-3">
+                        <strong class="ml-3">
                           Su correo no es válido.
                         </strong>
                       </div>
@@ -53,15 +54,16 @@
                       </div>
                     </div>
                     <div class="form-group">
-                      <input [class.is-invalid]="fieldNotValid('password')" type="password" formControlName="password" class="form-control form-control-user" id="exampleInputPassword"
-                        placeholder="Contraseña" required>
+                      <input [class.is-invalid]="fieldNotValid('password')" type="password" formControlName="password"
+                        class="form-control form-control-user" id="exampleInputPassword" placeholder="Contraseña"
+                        required>
 
-                        <div *ngIf="fieldNotValid('password') && password.errors.required" class="invalid-feedback">
-                          <strong class="ml-3">
-                            Este campo es obligatorio.
-                          </strong>
-                        </div>
-                        <!-- <div *ngIf="fieldNotValid('password') && password.errors.minlength" class="invalid-feedback">
+                      <div *ngIf="fieldNotValid('password') && password.errors.required" class="invalid-feedback">
+                        <strong class="ml-3">
+                          Este campo es obligatorio.
+                        </strong>
+                      </div>
+                      <!-- <div *ngIf="fieldNotValid('password') && password.errors.minlength" class="invalid-feedback">
                           <strong class="ml-3">
                             Su contraseña debe tener al menos 4 caracteres.
                           </strong>
@@ -72,10 +74,7 @@
 
                     <div class="form-group">
                       <div class="custom-control custom-checkbox small">
-                        <input type="checkbox"
-                        class="custom-control-input"
-                        id="customCheck"
-                        formControlName="remember">
+                        <input type="checkbox" class="custom-control-input" id="customCheck" formControlName="remember">
                         <label class="custom-control-label" for="customCheck">Recuérdame</label>
                       </div>
                     </div>
@@ -100,11 +99,11 @@
 
   </div>
 
-  
-    <div class="footer-container">
-      <img src="../img/">
-      <p>Copyright © Bee Seller SAS 2023</p>
-    </div>
-  
+
+  <div class="">
+    <img class="w-100 footer-container" src="assets/img/apoyan.png" />
+  </div>
+  <p style="text-align:center; margin-top: 11px;">Copyright © Bee Seller SAS 2023</p>
+  <br><br><br>
 
 </div>
