@@ -131,8 +131,8 @@
                     <label class="custom-control-label" [for]="'check' + product.sku"></label>
                   </div>
                 </td>
-                <td>
-                  <img class="img-fluid rounded" width="50px" height="50px" [src]="product.images |notImage"
+                <td><!--OJO nuevas implementaciones-->
+                  <img class="img-fluid rounded" width="50px" height="50px" [src]="product.images |uploadImage"
                     alt="Imagen">
                 </td>
                 <td>
@@ -191,11 +191,8 @@
         </select>
         </div>
 
-        <div   class="dataTables_info py-2 " id="dataTable_info" role="status"
-          aria-live="polite">
-          <span class="align-middle">Mostrando {{currentPage}} a {{size}} de {{pageProductsMeli.totalElements}} registros <i *ngIf="loadPaginator"  class="fas fa-spin fa-spinner fa-2x ml-2"></i> </span>
-
-        </div>
+        <!--Table Paginator Info-->
+        <app-table-paginator-info [total] = "pageProductsMeli?.totalElements" ></app-table-paginator-info>
 
       </div>
 
@@ -331,6 +328,7 @@
                         <tr>
                           <th scope="col">Cuenta</th>
                           <th scope="col" class="text-center">Margen de ganancia</th>
+                          <th scope="col" class="text-center">Flex</th>
                           <th scope="col" class="text-right">Eliminar</th>
                         </tr>
                       </thead>
@@ -338,6 +336,13 @@
                         <tr *ngFor="let relationship of accountMarginsList">
                           <td>{{relationship.accountName}}</td>
                           <td class="text-center">{{relationship.nameMargin}}</td>
+                          <td class="text-center">
+                            <div class="custom-control custom-checkbox small">
+                              <input type="checkbox" [(ngModel)]="relationship.flex" [disabled]="!relationship.showOptionFlexbyAdmin"
+                                class="custom-control-input" [id]="'check' + relationship.idAccount" (change)="meliEnabledFlex(relationship)">
+                              <label class="custom-control-label" [for]="'check' + relationship.idAccount"></label>
+                            </div>
+                          </td>
                           <td class="text-right">
                             <a class="pointer" href="javascript:void(0);" data-toggle="modal" data-target="#confirmationModal" (click)="previewDelete(relationship)" ><i class="fas fa-trash m-2 text-danger delete-icon"></i></a>
                           </td>
@@ -355,7 +360,7 @@
         </div>
        </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" (click)="publishProducts()" [disabled]="lastCategorySelected === '-1' || accountMarginsList.length === 0 || home === true || (warranty === true && warrantyType === -1)" >Publicar</button>
+        <button type="button" class="btn btn-primary" (click)="publishProducts()" [disabled]="lastCategorySelected.idLastCategory === '-1' || lastCategorySelected.isME2 === false || accountMarginsList.length === 0 || home === true || (warranty === true && warrantyType === -1)" >Publicar</button>
         <button type="button" class="btn btn-secondary" (click)="closeModalPublish()" #closePublishModal data-dismiss="modal">Cancelar</button>
       </div>
     </div>
@@ -483,8 +488,9 @@
       </div>
 
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" (click)="saveCommonInfo()">Guardar</button>
+      <div class="modal-footer">  <!--OJO nuevas implementaciones-->
+        <!-- <button type="button" class="btn btn-primary" (click)="saveCommonInfo()">Guardar</button> -->
+        <button type="button" class="btn btn-primary" (click)="saveCommonInfo2()">Guardar</button>
         <button type="button" class="btn btn-secondary" #closeModal data-dismiss="modal" (click)="clearAllImage()">Cancelar</button>
       </div>
     </div>
