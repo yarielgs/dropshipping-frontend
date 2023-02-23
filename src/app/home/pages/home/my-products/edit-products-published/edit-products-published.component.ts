@@ -18,6 +18,8 @@ import { AccountMeliStates } from 'src/app/enums/account-meli-states.enum';
 import { MarketplaceType } from 'src/app/enums/marketplacetype.enum';
 import { StatesOfMeli } from 'src/app/enums/states-of-meli.enum';
 import { EditableProductModel } from 'src/app/models/editable.product.model';
+import { MeliME2Category } from 'src/app/models/meli-publication/meli-me2-category';
+import { UploadImagesService } from 'src/app/home/services/upload-images.service';
 
 
 @Component({
@@ -48,10 +50,11 @@ export class EditProductsPublishedComponent implements OnInit {
 
   loadedAccountMeli: boolean = false;
   loadedMarginMeli: boolean = false;
-  reloadConfig: boolean = false; // si e habilitó la reconfiguracion
+  reloadConfig: boolean = false; // si habilitó la reconfiguracion
   activeConfig: boolean = false;
   init: boolean = true;
   hideCard: boolean = false;
+  formSaved: boolean = false;
 
   edit = false;
   message: string;
@@ -68,6 +71,7 @@ export class EditProductsPublishedComponent implements OnInit {
 
   /**Seccion para la vista Publicar */
   meliAccountsList: MeliAccount[];
+  meliAccountSelected: MeliAccount;
   accountMarginsList: AccountMarginModel[];
   initialMeliAccounts: MeliAccount[];
   account_margin: AccountMarginModel;
@@ -80,13 +84,14 @@ export class EditProductsPublishedComponent implements OnInit {
   responsePredictor: ResponseCategoryPredictor;
   withoutPredictor: boolean = false;
 
-  lastCategorySelected: string = '-1';
+  lastCategorySelected = new MeliME2Category('-1');
   home: boolean = false;
   pathList: string[];
 
 
   constructor(private _router: ActivatedRoute, private router: Router, public productsStorageUserService: ProductsStorageUserService, public meliAccountService: MeliAccountService,
-    public marginService: MarginService,public meliPublicationsService: MeliPublicationsService, public productsMeliPublishedService: ProductsMeliPublishedService ) { }
+    public marginService: MarginService,public meliPublicationsService: MeliPublicationsService, public productsMeliPublishedService: ProductsMeliPublishedService,
+    public uploadImageService: UploadImagesService ) { }
 
   ngOnInit(): void {
     this.account_margin = new AccountMarginModel();
@@ -161,7 +166,8 @@ export class EditProductsPublishedComponent implements OnInit {
       this.meliPublicationsService.getMeliSubCategories(idCategory).subscribe(category => {
           this.meliCategoryActive = category;
           this.subCategoriesActiveList = this.meliCategoryActive.path_from_root;
-          this.lastCategorySelected = this.meliCategoryActive.id;
+          this.lastCategorySelected.idLastCategory = this.meliCategoryActive.id;
+          this.lastCategorySelected.isME2 = this.meliCategoryActive.shipping_modes.includes('me2');
           for (let index = 0; index < this.subCategoriesActiveList.length; index++) {
             if(index + 1 === this.subCategoriesActiveList.length){
               this.pathActive = this.pathActive + this.subCategoriesActiveList[index].name;
@@ -193,6 +199,46 @@ export class EditProductsPublishedComponent implements OnInit {
       //Elimino las imagenes fisicamente del servidor
       if(this.imagesDeletedList.length !== 0){
       this.productsStorageUserService.deleteImages(this.imagesDeletedList).subscribe();
+      this.imagesDeletedList = [];
+    }
+
+    },(error: any) => {
+      this.loadingModal = false;
+      this.close();
+      Swal.fire({
+        position: 'top-end',
+        icon: 'error',
+        title: `Error`,
+        text: `Error al actualizar. Sincronice sus productos.`,
+        showConfirmButton: false,
+        timer: 5000
+      });
+      this.imagesDeletedList = [];
+      this.productsDeletedList = [];
+    });
+
+  };
+
+  //nuevo metodo
+  saveForm2(){
+    this.loadingModal = true;
+    this.productsMeliPublishedService.updateProductsPublished(this.productMeliPublished, this.productsDeletedList).subscribe(item => {
+      this.productsDeletedList = [];
+      this.loadingModal = false;
+      Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: `Actualizado`,
+        text: `Sus cambios han sido actualizados correctamente.`,
+        showConfirmButton: false,
+        timer: 5000
+      });
+
+      this.productMeliPublished = item;
+
+      //Elimino las imagenes fisicamente del servidor
+      if(this.imagesDeletedList.length !== 0){
+      this.uploadImageService.deleteImages(this.imagesDeletedList).subscribe();
       this.imagesDeletedList = [];
     }
 
@@ -358,6 +404,80 @@ export class EditProductsPublishedComponent implements OnInit {
 
       });
   }
+
+  //nuevo metodo
+  addedImage2() {
+    if (!this.file) {
+      Swal.fire({
+        position: 'top-end',
+        icon: 'error',
+        title: `Debe seleccionar un archivo`,
+        showConfirmButton: false,
+        timer: 5000
+      });
+      return;
+    }
+    if (this.file.type.match(/image\/*/) == null) {
+      Swal.fire({
+        position: 'top-end',
+        icon: 'error',
+        title: `Solo imagenes`,
+        text: 'El archivo no es una imagen',
+        showConfirmButton: false,
+        timer: 5000
+      });
+      return;
+    }
+    const formData: FormData = new FormData();
+    let filename = this.file.name.replace(/ /g, "");
+    formData.append('multipartFile', this.file, filename.trim());
+
+    this.uploadImageService.uploadImage(formData)
+      .subscribe(resp => {
+        if(resp !== '') {
+        let image_added = new Image();
+        image_added.order = this.orderImage;
+        image_added.title = this.titleImage;
+        image_added.photos = resp;
+        this.productMeliPublished.images.push(image_added);
+
+        this.clearImage();
+        this.close();
+      }
+      },(error: any) => {
+        if(error.status >= 200 && error.status <= 299)
+        {
+          let image_added = new Image();
+          image_added.order = this.orderImage;
+          image_added.title = this.titleImage;
+          image_added.photos = error.error.text;
+          this.productMeliPublished.images.push(image_added);
+        }
+        else if(error.error.message.includes('Maximum upload size exceeded')){
+        Swal.fire({
+          position: 'top-end',
+          icon: 'error',
+          title: `Error`,
+          text: 'Su imagen excede el tamaño máximo de configurado, Contacte con el administrador para mayor información',
+          showConfirmButton: false,
+          timer: 5000
+        });
+        }else{
+          Swal.fire({
+            position: 'top-end',
+            icon: 'error',
+            title: `Error`,
+            text: 'Error almacenando la imagen. Contacte con el administrador',
+            showConfirmButton: false,
+            timer: 5000
+          });
+        }
+        this.clearImage();
+        this.close();
+
+      });
+  }
+
   clearImage(){
     this.orderImage = null;
     this.titleImage = "";
@@ -402,6 +522,8 @@ export class EditProductsPublishedComponent implements OnInit {
       }else{
         accountMargin.accountName = account.businessName;
         accountMargin.idAccount = account.id;
+        accountMargin.showOptionFlexbyAdmin = account.enabledFlexByAdmin === 1 ? true : false; // verifica permiso de opcion flex disponible
+        accountMargin.flex = this.productMeliPublished.flex === 1 ? true : false;
 
         if(this.margin !== -1){
           var margin = this.marginsList.find(element => element.id == this.margin);
@@ -422,6 +544,35 @@ export class EditProductsPublishedComponent implements OnInit {
     }
   }
 
+  meliEnabledFlex(relationship: AccountMarginModel) {
+
+    if(relationship.flex) {
+      this.meliAccountService.isEnabledFlexToMeliAccount(relationship.idAccount).subscribe(result => {
+        if(result === false) {
+          Swal.fire({
+            title: 'IMPORTANTE!!!',
+            text: 'Su cuenta de Mercado Libre no le permite envios flex.',
+            icon: 'warning',
+            showCancelButton: false,
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'Entendido!'
+          })
+          this.accountMarginsList.forEach( f => { if(f.idAccount === relationship.idAccount) f.flex = false });
+        }
+      }, error => {
+        Swal.fire({
+          icon: 'warning',
+          title: `IMPORTANTE!!!`,
+          text: `No se ha podido comprobar en Mercado Libre si le permite esta opción. Por el momento no puede publicar con flex. Intente mas tarde.`,
+          showCancelButton: false,
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: 'Entendido!'
+        });
+        this.accountMarginsList.forEach( f => { if(f.idAccount === relationship.idAccount) f.flex = false });
+      } )
+    }
+  }
+
   changeConfig(check: boolean){
     this.checkConfig.nativeElement.checked = 0;
     if(!this.reloadConfig){ // no ha sido reconfigurado
@@ -429,7 +580,7 @@ export class EditProductsPublishedComponent implements OnInit {
         Swal.fire({
           title: 'Importante',
           icon: 'info',
-          text: 'La configuración actual se perderá al habilitar esta opción. ¿Deseas continuar?',
+          text: 'El margen asociado y el precio de publicación actual se perderán al habilitar esta opción. ¿Deseas continuar?',
           showCloseButton: true,
           showCancelButton: true,
           focusConfirm: false,
@@ -456,6 +607,13 @@ export class EditProductsPublishedComponent implements OnInit {
 
   }
 
+  reloadView(){
+    let currentUrl = this.router.url;
+    this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
+        this.router.navigate([currentUrl]);
+    });
+  }
+
   getAccountMeli(){
     this.meliAccountsList = [];
     this.initialMeliAccounts = [];
@@ -475,13 +633,17 @@ export class EditProductsPublishedComponent implements OnInit {
     })
   }
 
+  compareAccountById(o1, o2) {
+    return o1.id === o2.id
+  }
+
   deleteRelationAccountMargin(){
     if(this.account_margin != null){
       let account = this.initialMeliAccounts.find(element => element.id == this.account_margin.idAccount);
-      let position = this.initialMeliAccounts.indexOf(account);
-      this.meliAccountsList.splice(position, 0, account);
-      let position2 = this.accountMarginsList.indexOf(this.account_margin);
-      this.accountMarginsList.splice(position2, 1);
+      this.meliAccountsList = [account]; // Solo muestra la cuenta de ML con la cual fue publicado el producto
+      this.meliAccountSelected = account;// Para que la cuenta aparezca fija y no tener que volver a seleccionar
+      let position = this.accountMarginsList.indexOf(this.account_margin);
+      this.accountMarginsList.splice(position, 1);
     }
   }
 
@@ -513,7 +675,7 @@ export class EditProductsPublishedComponent implements OnInit {
   clearSome(){
     this.account_margin = null;
     this.margin = -1;
-    this.meliAccount = -1;
+    //this.meliAccount = -1;
   }
 
   clearAll(){
@@ -529,7 +691,7 @@ export class EditProductsPublishedComponent implements OnInit {
 
   closeEditPublished(){
     this.clearAll();
-    this.router.navigate(['/published-products']);
+    this.router.navigate(['/home/published-products']);
   }
 
   publishProducts(){
@@ -565,7 +727,7 @@ export class EditProductsPublishedComponent implements OnInit {
       timer: 5000
     })
     .then((result) => {
-      this.router.navigate(['/published-products']);
+      this.router.navigate(['/home/published-products']);
     });
 
       let editableProduct =  new EditableProductModel();
@@ -581,7 +743,7 @@ export class EditProductsPublishedComponent implements OnInit {
       editableProduct.states = 1;
 
   // llamada al servicio Publicar
-   this.meliPublicationsService.createPublicationByEditableProduct(this.accountMarginsList, this.lastCategorySelected, this.warrantyType, this.warrantyTime, this.warranty, editableProduct, this.reloadConfig);
+   this.meliPublicationsService.createPublicationByEditableProduct(this.accountMarginsList, this.lastCategorySelected.idLastCategory, this.warrantyType, this.warrantyTime, this.warranty, editableProduct);
    this.clearAll();
   }
 
@@ -601,10 +763,12 @@ export class EditProductsPublishedComponent implements OnInit {
       }).then((result) => {
         if (result.isConfirmed) {
           this.callUpdateProductPublishService();
+          this.formSaved = true;
         }
       })
     }else{
       this.callUpdateProductPublishService();
+      this.formSaved = true;
     }
 
   }
@@ -657,8 +821,20 @@ export class EditProductsPublishedComponent implements OnInit {
     this.home = false;
   }
 
-  getCategorySelected(idCategory: string){
-    this.lastCategorySelected = idCategory;
+  getCategorySelected(category: MeliME2Category){
+    this.lastCategorySelected = category;
+    if(this.lastCategorySelected.idLastCategory !== '-1'){
+      if(this.lastCategorySelected.isME2 === false ){
+        Swal.fire({
+          title: 'IMPORTANTE!!!',
+          text: 'La categoría seleccionada no permite Mercado Envío como único modo. Seleccione otra categoría que sea mercado enviable.',
+          icon: 'warning',
+          showCancelButton: false,
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: 'Entendido!'
+        })
+      }
+    }
   }
 
   setHome(){

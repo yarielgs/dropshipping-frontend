@@ -33,11 +33,9 @@ import { PublishedProductComponent } from './pages/home/my-products/published-pr
 import { SellerOrdersComponent } from './pages/home/orders/seller-orders/seller-orders.component';
 import { MeliCategoryPathComponent } from './pages/home/meli/meli-category-path/meli-category-path.component';
 import { EditProductsPublishedComponent } from './pages/home/my-products/edit-products-published/edit-products-published.component';
-import { GlobalLoadingComponent } from './components/global-loading/global-loading.component';
 import { OperationsComponent } from './pages/home/operations/operations.component';
 import { AttributeRequiredComponent } from './components/modals/attribute-required/attribute-required.component';
 import { HistorialOperationComponent } from './pages/home/historial-operation/historial-operation.component';
-import { SystemConfigurationComponent } from './pages/home/system-configuration/system-configuration.component';
 import { ChartLineOrdersComponent } from './pages/home/charts/chart-line-orders/chart-line-orders.component';
 import { DashboardComponent } from './pages/home/dashboard/dashboard.component';
 import { DashboardAdminComponent } from './pages/home/dashboard/dashboard-admin/dashboard-admin.component';
@@ -47,6 +45,9 @@ import { BetterSkuComponent } from './pages/home/dashboard/components/better-sku
 import { StockVsTotalComponent } from './pages/home/dashboard/components/stock-vs-total/stock-vs-total.component';
 import { ActivePublicationsComponent } from './pages/home/dashboard/components/active-publications/active-publications.component';
 import { ChartLineOrdersSellersComponent } from './pages/home/charts/chart-line-orders-sellers/chart-line-orders-sellers.component';
+import { UploadImagePipe } from './pipes/upload-image.pipe';
+import { TablePaginatorInfoComponent } from './components/table-paginator-info/table-paginator-info.component';
+import { UploadEditImagePipe } from './pipes/upload-edit-image.pipe';
 
 
 
@@ -75,7 +76,6 @@ import { ChartLineOrdersSellersComponent } from './pages/home/charts/chart-line-
     SellerOrdersComponent,
     MeliCategoryPathComponent,
     EditProductsPublishedComponent,
-    GlobalLoadingComponent,
     OperationsComponent,
     AttributeRequiredComponent,
     HistorialOperationComponent,
@@ -83,13 +83,15 @@ import { ChartLineOrdersSellersComponent } from './pages/home/charts/chart-line-
     ChartLineOrdersComponent,
     DashboardAdminComponent,
     DashboardComponent,
-    SystemConfigurationComponent,
     DashboardSellerComponent,
     TotalSalesComponent,
     BetterSkuComponent,
     StockVsTotalComponent,
     ActivePublicationsComponent,
-    ChartLineOrdersSellersComponent],
+    ChartLineOrdersSellersComponent,
+    UploadImagePipe,
+    TablePaginatorInfoComponent,
+    UploadEditImagePipe],
 
   exports: [HomeComponent,
     SidebardComponent,
@@ -106,13 +108,13 @@ import { ChartLineOrdersSellersComponent } from './pages/home/charts/chart-line-
     NotImageProfilePipe,
     EditProductsComponent,
     NotImagePipe,
+    UploadEditImagePipe,
     ListMarginsComponent,
     SellerOrdersComponent,
     MeliCategoryPathComponent,
     EditProductsPublishedComponent,
     DashboardAdminComponent,
     DashboardComponent,
-    SystemConfigurationComponent,
     TotalSalesComponent],
   imports: [
     SharedModule,

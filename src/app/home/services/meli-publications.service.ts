@@ -22,7 +22,8 @@ import { EditableProductModel } from 'src/app/models/editable.product.model';
 import { ProductMeliPublished } from 'src/app/models/meli-publication/product-meli-published.model';
 import { AttributesRequiredModel } from 'src/app/models/meli-publication/meli-attributes-required.model';
 import { SystemConfigModel } from 'src/app/models/system-configuration/system-config.model';
-
+import { MeliPathRoot } from 'src/app/models/meli-publication/meli-path-from-root.model';
+import { MeliCategoryME2 } from '../pages/home/meli-configuration/models/meli-category-me2.model';
 
 
 @Injectable({
@@ -41,6 +42,8 @@ export class MeliPublicationsService {
      this.attributesList = [];
   }
 
+   /* Obtiene las Categorias de Mercado Libre
+  */
   getMeliCategories(): Observable<MeliCategory[]>{
     let meliCategoryList: MeliCategory[] = [];
     const params = `${this.URI}/sites/MLU/categories`;
@@ -58,8 +61,12 @@ export class MeliPublicationsService {
     }));
   }
 
+  /* Obtiene las subcategorias de una categoria
+  *  pasada por parametro.
+  */
   getMeliSubCategories(idCategory: string): Observable<MeliCategory>{
     const params = `${this.URI}/categories/${idCategory}`;
+
     return this.http.get<MeliCategory>(params).pipe(map((resp: any) => {
       let meliCategory = new MeliCategory();
       meliCategory.id = resp.id;
@@ -70,8 +77,91 @@ export class MeliPublicationsService {
       meliCategory.path_from_root = resp.path_from_root;
       meliCategory.children_categories = resp.children_categories;
       meliCategory.attribute_types = resp.attribute_types;
+      meliCategory.shipping_modes = resp.settings.shipping_modes;
       return meliCategory;
     }));
+  }
+
+  /*
+   * Obtiene el Shipping Mode de una categorias. Metodo asincrono (await)
+   *
+   * Descripcion:
+   * Este metodo es para consumir directo a Meli.
+   * No es utilizado por ningun metodo por ahora.
+   */
+ async getShippingModeOfCategories(idCategory: string): Promise<any[]> {
+  const params = `${this.URI}/categories/${idCategory}/shipping_preferences`;
+
+  return this.http.get<any[]>(params).pipe(map((resp: any) => {
+    let shippingModeList : any[] = [];
+    resp.logistics.forEach(element => {
+      shippingModeList.push(element.mode);
+    });
+    return shippingModeList;
+  })).toPromise();
+}
+
+/*
+   * Obtiene el Shipping Mode de una categorias. Metodo asincrono
+   *
+   * Descripcion:
+   * Este metodo es para consumir directo a Meli.
+   * No es utilizado por ningun metodo por ahora.
+   */
+getShippingModeOfCategories2(idCategory: string): Observable<string[]> {
+  const params = `${this.URI}/categories/${idCategory}/shipping_preferences`;
+
+  return this.http.get<string[]>(params).pipe(map((resp: any) => {
+    let shippingModeList : string[] = [];
+    resp.logistics.forEach(element => {
+      shippingModeList.push(element.mode);
+    });
+    return shippingModeList;
+  }));
+}
+
+/*
+   * Obtiene el Shipping Mode de una categorias.
+   *
+   * Descripcion:
+   * Este metodo es para consumir desde la API de Drop.
+   */
+  getShippingMode(idCategory: string): Observable<string[]>{
+    const params = `${this.URI_MELI_BUSINESS}/shipping-mode/${idCategory}`;
+    return this.http.get<string[]>(params);
+  }
+
+  /* Obtiene las categorias almacenadas en Base Datos como
+  *  Me2 que fueron addicionadas por el Admin
+  */
+  getAllowedListCategoriesME2(): Observable<MeliCategoryME2[]> {
+    const params = `${this.URI_MELI_BUSINESS}/categories-me2`;
+    return this.http.get<MeliCategoryME2[]>(params);
+  }
+
+  /* Almacena las categorias que por defecto no estan
+  *  marcadas como ME2 en Meli pero se conoce que son
+  *  Me2.
+  */
+  saveAllowedListCategoriesME2(categoriesList: MeliCategoryME2[]): Observable<MeliCategoryME2[]> {
+    const params = `${this.URI_MELI_BUSINESS}/save-categories-me2`;
+    let catList: MeliCategoryME2[] = [];
+
+    return this.http.post<MeliCategoryME2[]>(params, categoriesList)
+      .pipe(map((resp: any) => {
+        resp.forEach(element => {
+          catList.push(new MeliCategoryME2(element.id, element.name, element.path_from_root));
+        });
+        return catList;
+      }));
+  }
+
+  /* Elimina de la lista las categorias que fueron
+  *  adicionadas a la lista de ME2 por el Admin.
+  */
+  deleteCategoryFromAllowedList(category: MeliCategoryME2): Observable<boolean> {
+    const params = `${this.URI_MELI_BUSINESS}/delete-category-me2`;
+    return this.http.post<boolean>(params, category);
   }
 
   getCategoryByPredictorNO(titleProduct: string): Observable<MeliPredictorCategory[]>{
@@ -97,6 +187,9 @@ export class MeliPublicationsService {
    return this.http.get<any>(params);
    }
 
+   /*
+   * Obtiene los detalles de una categoria
+   */
   getMeliInfoCategory(idCategory: string): Observable<any>{
     const params = `${this.URI}/sites/MLU/search?category=${idCategory}`;
     return this.http.get<any>(params);
@@ -113,7 +206,6 @@ export class MeliPublicationsService {
     /*Obtiene estos valores de la configuracion del sistema*/
     let scData = this.getSystemConfig();
     let listingType = (await scData).publication_config.publication_type;
-    let flex = (await scData).publication_config.flex === 'yes' ? 1 : 0;
 
     relationshipList.forEach(relation => {
       itemCustomList = [];
@@ -135,7 +227,8 @@ export class MeliPublicationsService {
           imagesList.push(new ItemPictures(image.photos));
         });
 
-        let shipping: Shipping = new Shipping("me2", false, false, []);
+        let flex = relation.flex ? "self_service_in" : "self_service_out";
+        let shipping: Shipping = new Shipping("me2", false, false, [], [flex]);
 
         let saleTerms: SaleTerms[] = [];
         warrantyType = +warrantyType;
@@ -156,7 +249,7 @@ export class MeliPublicationsService {
         attributes.push(new Attributes("SELLER_SKU", "SKU", element.sku));
         if(attributesRequired.length !== 0){
           attributesRequired.forEach( f => { attributes.push(new Attributes( f.id, null, "N/A"));});
-      }
+        }
         let tittle = element.name.length > 60 ? element.name.substring(0,60) : element.name;
         let item = new ItemMeliRequest(tittle, idCategory, priceFinal, "UYU", element.currentStock.toString(), "buy_it_now", "new",
         listingType, element.description, imagesList, attributes, null, shipping, warranty ? saleTerms : null, ["immediate_payment"]);
@@ -165,13 +258,13 @@ export class MeliPublicationsService {
 
       })
 
-      const params = `${this.URI_MELI_BUSINESS}/publications-flow/${relation.idAccount}?idMargin=${relation.idMargin}&flex=${flex}`;
+      const params = `${this.URI_MELI_BUSINESS}/publications-flow/${relation.idAccount}?idMargin=${relation.idMargin}`;
       this.http.post<any>(params, itemCustomList).subscribe(result =>{});
     });
   }, error => {});
   }
 
-  createPublicationByEditableProduct(relationshipList: AccountMarginModel[], idCategory: string, warrantyType: number, warrantyTime: number, warranty: boolean, productSelected: EditableProductModel, reloadConfig: boolean): void{
+  createPublicationByEditableProduct(relationshipList: AccountMarginModel[], idCategory: string, warrantyType: number, warrantyTime: number, warranty: boolean, productSelected: EditableProductModel): void{
 
     let itemCustomList: ItemCustomModel[] = [];
 
@@ -181,21 +274,20 @@ export class MeliPublicationsService {
         /*Obtiene estos valores de la configuracion del sistema*/
         let scData = this.getSystemConfig();
         let listingType = (await scData).publication_config.publication_type;
-        let flex = (await scData).publication_config.flex === 'yes' ? 1 : 0;
 
         relationshipList.forEach(relation => {
           itemCustomList = [];
           let priceFinal = 0;
 
-        if(relation.idMargin === -1 || !reloadConfig ){// Para el republicar // Quitar validacion "!reloadConfig" despues de arreglar todo como va
-          priceFinal = Math.round(productSelected.price);
+        if(relation.idMargin === -1 ){
+          priceFinal = Math.round(productSelected.price_costUYU);
         }
         else if(relation.typeMargin === 1/*fijo*/){
-          priceFinal = Math.round(productSelected.price + relation.valueMargin);
+          priceFinal = Math.round(productSelected.price_costUYU + relation.valueMargin);
         }
         else{
           /*Por Ciento*/
-          priceFinal = Math.round((productSelected.price * (relation.valueMargin/100)) + productSelected.price);
+          priceFinal = Math.round((productSelected.price_costUYU * (relation.valueMargin/100)) + productSelected.price_costUYU);
         }
 
         let imagesList: ItemPictures[] = [];
@@ -203,7 +295,8 @@ export class MeliPublicationsService {
           imagesList.push(new ItemPictures(image.photos));
         });
 
-        let shipping: Shipping = new Shipping("me2", false, false, []);
+        let flex = relation.flex ? "self_service_in" : "self_service_out";
+        let shipping: Shipping = new Shipping("me2", false, false, [], [flex]);
 
         let saleTerms: SaleTerms[] = [];
         warrantyType = +warrantyType;
@@ -222,7 +315,10 @@ export class MeliPublicationsService {
         let attributes: Attributes[] = [];
         attributes.push(new Attributes("SELLER_SKU", "SKU", productSelected.sku));
         if(attributesRequired.length !== 0){
-            attributesRequired.forEach( f => { attributes.push(new Attributes( f.id, null, "N/A"));});
+            attributesRequired.forEach( f => { attributes.push(new Attributes( f.id, f.name,
+              f.value_type !== undefined && f.value_type === 'number_unit' ? "10 cm" : "N/A",
+              null,
+              null ));});
         }
 
         let tittle = productSelected.productName.length > 60 ? productSelected.productName.substring(0,60) : productSelected.productName;
@@ -232,7 +328,7 @@ export class MeliPublicationsService {
           productSelected.price_costUSD, productSelected.price));
 
 
-        const params = `${this.URI_MELI_BUSINESS}/publications-flow/${relation.idAccount}?idMargin=${relation.idMargin}&flex=${flex}`;
+        const params = `${this.URI_MELI_BUSINESS}/publications-flow/${relation.idAccount}?idMargin=${relation.idMargin}`;
         this.http.post<any>(params, itemCustomList).subscribe(result =>{});
       });
     }, error => {});
@@ -245,15 +341,21 @@ export class MeliPublicationsService {
       let priceFinal = 0;
       relationshipList.forEach(relation => {
 
-            if(relation.idMargin === -1 || !reloadConfig){ // no fue reconfigurado
+            if(!reloadConfig){ // no fue reconfigurado
               priceFinal = Math.round(+productPublished.pricePublication);
             }
-            else if(relation.typeMargin === 1/*fijo*/){
-              priceFinal = Math.round((+productPublished.pricePublication) + relation.valueMargin);
-            }
             else{
-              /*Por Ciento*/
-              priceFinal = Math.round((+productPublished.pricePublication * (relation.valueMargin/100)) + (+productPublished.pricePublication));
+              if(relation.idMargin === -1){
+                priceFinal = Math.round(+productPublished.priceCostUYU);
+              }
+              else if(relation.typeMargin === 1/*fijo*/){
+                priceFinal = Math.round((+productPublished.priceCostUYU) + relation.valueMargin);
+              }
+              else{
+                /*Por Ciento*/
+                priceFinal = Math.round((+productPublished.priceCostUYU * (relation.valueMargin/100)) + (+productPublished.priceCostUYU));
+              }
+              productPublished.margin = relation.idMargin;
             }
             productPublished.pricePublication = priceFinal.toString();
 
@@ -264,6 +366,9 @@ export class MeliPublicationsService {
       return this.http.put<any>(params, productPublished);
   }
 
+  /* Obtiene los atributos requeridos para publicar
+  *  un Item dada su categoria
+  */
   getAttributesRequired(categoryId: string): Observable<AttributesRequiredModel[]>{
     this.attributesList = [];
     const params = `${this.URI}/categories/${categoryId}/attributes`;

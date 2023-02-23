@@ -157,7 +157,7 @@
               <tr *ngFor="let image of editableProduct.images">
                 <th scope="row">
                   <img alt="imagen ilustrativa"
-                    src="{{image.photos}}" *ngIf="!edit || id !== image.id"
+                    src="{{image.photos |uploadEditImage}}" *ngIf="!edit || id !== image.id"
                     width="55">
                   <input class="form-control text-box single-line" type="text" name="urlP" [(ngModel)]="urlP" *ngIf="edit && id === image.id">
                 </th>
@@ -192,8 +192,8 @@
             <div class="form-group row mb-2">
               <div class="col-md-10"></div>
               <div class="col-md-2">
-                <button type="button" class="btn btn-primary" (click)="saveForm()">Guardar</button>
-                <a class="btn btn-secondary" routerLink="/publish-myproducts" data-toggle="collapse"
+                <button type="button" class="btn btn-primary" (click)="saveForm2()">Guardar</button>
+                <a class="btn btn-secondary" routerLink="/home/publish-myproducts" data-toggle="collapse"
                  style="margin-left: 2%;">Cerrar
                 </a>
               </div>
@@ -348,6 +348,7 @@
                           <tr>
                             <th scope="col">Cuenta</th>
                             <th scope="col" class="text-center">Margen de ganancia</th>
+                            <th scope="col" class="text-center">Flex</th>
                             <th scope="col" class="text-right">Eliminar</th>
                           </tr>
                         </thead>
@@ -355,6 +356,13 @@
                           <tr *ngFor="let relationship of accountMarginsList">
                             <td>{{relationship.accountName}}</td>
                             <td class="text-center">{{relationship.nameMargin}}</td>
+                            <td class="text-center">
+                              <div class="custom-control custom-checkbox small">
+                                <input type="checkbox" [(ngModel)]="relationship.flex" [disabled]="!relationship.showOptionFlexbyAdmin"
+                                  class="custom-control-input" [id]="'check' + relationship.idAccount" (change)="meliEnabledFlex(relationship)">
+                                <label class="custom-control-label" [for]="'check' + relationship.idAccount"></label>
+                              </div>
+                            </td>
                             <td class="text-right">
                               <a class="pointer" href="javascript:void(0);" data-toggle="modal" data-target="#confirmationModalRelationShip" (click)="previewDelete(relationship)" ><i class="fas fa-trash m-2 text-danger delete-icon"></i></a>
                             </td>
@@ -368,7 +376,7 @@
            </div>
          </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary" (click)="publishProducts()" [disabled]="lastCategorySelected === '-1' || accountMarginsList.length === 0 || home === true || (warranty === true && warrantyType === -1)" >Publicar</button>
+            <button type="button" class="btn btn-primary" (click)="publishProducts()" [disabled]="lastCategorySelected.idLastCategory === '-1' || lastCategorySelected.isME2 === false || accountMarginsList.length === 0 || home === true || (warranty === true && warrantyType === -1)" >Publicar</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="closeModalPublish()">Cerrar</button>
           </div>
         </div>
@@ -469,7 +477,7 @@
 
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" (click)="addedImage()">Agregar</button>
+        <button type="button" class="btn btn-primary" (click)="addedImage2()">Agregar</button>
         <button type="button" #closeModal class="btn btn-secondary" data-dismiss="modal" (click)="clearImage()">Cancelar</button>
       </div>
     </div>

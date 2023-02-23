@@ -23,6 +23,11 @@ import { States } from 'src/app/enums/states.enum';
 import { MarketplaceType } from 'src/app/enums/marketplacetype.enum';
 import { AccountMeliStates } from 'src/app/enums/account-meli-states.enum';
 import { elementAt } from 'rxjs/operators';
+import { MeliME2Category } from 'src/app/models/meli-publication/meli-me2-category';
+import { error } from 'protractor';
+import { UploadImagesService } from 'src/app/home/services/upload-images.service';
+import { environment } from 'src/environments/environment';
+import { CommonInfoRequest } from 'src/app/models/upload-images/common-info-request.model';
 
 
 @Component({
@@ -38,6 +43,10 @@ export class PublishMyproductsComponent implements OnInit {
   @ViewChild('closeMargin') closeMargin;
   @ViewChild('closePublishModal') closePublishModal;
   @ViewChild('file') file;
+
+  //Load images
+  URI = environment.URI_ROOT;
+  URI_UPLOAD_IMAGES = '/upload/api/bucket';
 
   //Loading Modal
   loadingModal = false;
@@ -83,7 +92,9 @@ export class PublishMyproductsComponent implements OnInit {
   imagePath: string;
   imgURL: any;
   imagesList: string[];
+  //Quitar esta lista y dejar la de abajo cdo los cambios funcionen bien
   imageStoreList: string[];
+  commonInfoList: CommonInfoRequest[];
   description = "";
 
   //Variables from Publish in Meli
@@ -97,14 +108,16 @@ export class PublishMyproductsComponent implements OnInit {
   marginsList: Margin[];
   margin: number = -1;
   meliAccount: number = -1;
-  lastCategorySelected: string = '-1';
+  lastCategorySelected = new MeliME2Category('-1');
+  isME2
   warrantyType: number = -1;
   warrantyTime: number = 0;
   warranty: boolean = false;
 
 
   constructor(public productStoreService: ProductsStorageService, public productStoreUserService: ProductsStorageUserService, public dialog: MatDialog,
-    private authService: AuthService, public meliAccountService: MeliAccountService, public marginService: MarginService, public meliPublicationsService: MeliPublicationsService, private router: Router) {
+    private authService: AuthService, public meliAccountService: MeliAccountService, public marginService: MarginService,
+    public meliPublicationsService: MeliPublicationsService, private router: Router, public uploadImageService: UploadImagesService) {
 
   }
 
@@ -160,6 +173,7 @@ export class PublishMyproductsComponent implements OnInit {
     this.productsSelected = [];
     this.disable = true;
     this.imageStoreList = [];
+    this.commonInfoList = [];
     this.accountMarginsList = [];
     this.pathList = [];
 
@@ -405,11 +419,138 @@ export class PublishMyproductsComponent implements OnInit {
     }
   }
 
+  //nuevo metodo
+  saveCommonInfo2() {
+    this.loadingModal = true;
+    this.commonInfoList = [];
+    if (this.productsSelected.length === 0) {
+      Swal.fire({
+        position: 'top-end',
+        icon: 'error',
+        title: `Error en el proceso`,
+        text: `Usted no ha seleccionado productos en la tabla`,
+        showConfirmButton: false,
+        timer: 5000
+      });
+      this.closeActiveModalLoading();
+      return;
+    }
+
+    if (this.fileList.length !== 0) {
+      this.fileList.forEach(ima => {
+        if (ima.type.match(/image\/*/) === null) {
+          this.close();
+          Swal.fire({
+            position: 'top-end',
+            icon: 'error',
+            title: `Solo imagenes`,
+            text: 'Existen archivos que no son una imagen',
+            showConfirmButton: false,
+            timer: 5000
+          });
+          this.closeActiveModalLoading();
+          return;
+        }
+      })
+    }
+
+    this.productsSelected.forEach(item => {
+      this.commonInfoList.push(new CommonInfoRequest(item.sku, []));
+    })
+
+    if (this.fileList.length !== 0) {
+      this.uploadImageService.uploadImageSyn(this.fileList, this.commonInfoList).then(data => {
+        this.commonInfoList = data;
+        this.updateInDataBaseCommonInfo2();
+      }, error => {
+        this.closeActiveModalLoading();
+        if (error.error.message.includes('Maximum upload size exceeded')) {
+          Swal.fire({
+            position: 'top-end',
+            icon: 'error',
+            title: `Error en el proceso`,
+            text: 'Su imagen excede el tamaño máximo permitido de 2MB (Mega Byte).',
+            showConfirmButton: false,
+            timer: 5000
+          });
+        } else {
+          Swal.fire({
+            position: 'top-end',
+            icon: 'error',
+            title: `Error en el proceso`,
+            text: `La información no fue almacenada. Contacte con el administrador del sistema`,
+            showConfirmButton: false,
+            timer: 5000
+          })
+        }
+      });
+    } else if (this.description.length !== 0) {
+      this.updateInDataBaseCommonInfo2();
+    }
+    else {
+      Swal.fire({
+        position: 'top-end',
+        icon: 'error',
+        title: `Error en el proceso`,
+        text: `Usted no ha adicionado nueva información.`,
+        showConfirmButton: false,
+        timer: 5000
+      });
+      this.closeActiveModalLoading();
+      return;
+    }
+  }
+
+
   updateInDataBaseCommonInfo() {
     this.profileId = null;
     this.profileId = this.authService.authenticationDataExtrac().profileId;
 
     this.productStoreUserService.updateCommonInfo(this.profileId, this.description, this.productsSelected, this.imageStoreList).subscribe(result => {
+      if (result.success === true) {
+        this.loadProductsPaginator(this.currentPage);
+        this.closeActiveModalLoading();
+        Swal.fire({
+          position: 'top-end',
+          icon: 'success',
+          title: `Información almacenada`,
+          text: `La información fue almacenada correctamente`,
+          showConfirmButton: false,
+          timer: 5000
+        });
+        this.clearAllImage();
+        this.close();
+      }
+      else {
+        this.closeActiveModalLoading();
+        Swal.fire({
+          position: 'top-end',
+          icon: 'error',
+          title: `Error en el proceso`,
+          text: `La información no fue almacenada. Contacte con el administrador del sistema`,
+          showConfirmButton: false,
+          timer: 5000
+        });
+      }
+    }, error => {
+      this.closeActiveModalLoading();
+      Swal.fire({
+        position: 'top-end',
+        icon: 'error',
+        title: `Error en el proceso`,
+        text: `La información no fue almacenada. Contacte con el administrador del sistema`,
+        showConfirmButton: false,
+        timer: 5000
+      });
+    })
+  }
+
+  //nuevo metodo
+  updateInDataBaseCommonInfo2() {
+    this.profileId = null;
+    this.profileId = this.authService.authenticationDataExtrac().profileId;
+
+    this.productStoreUserService.updateCommonInfo2(this.profileId, this.description, this.commonInfoList).subscribe(result => {
       if (result.success === true) {
         this.loadProductsPaginator(this.currentPage);
         this.closeActiveModalLoading();
@@ -673,8 +814,21 @@ export class PublishMyproductsComponent implements OnInit {
     this.home = false;
   }
 
-  getCategorySelected(idCategory: string) {
-    this.lastCategorySelected = idCategory;
+  getCategorySelected(category: MeliME2Category) {
+    this.lastCategorySelected = category;
+    if(this.lastCategorySelected.idLastCategory !== '-1'){
+      if(this.lastCategorySelected.isME2 === false ){
+        Swal.fire({
+          title: 'IMPORTANTE!!!',
+          text: 'La categoría seleccionada no permite Mercado Envío como único modo. Seleccione otra categoría que sea mercado enviable.',
+          icon: 'warning',
+          showCancelButton: false,
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: 'Entendido!'
+        })
+      }
+    }
+
     //Pendiente para cuando se seleccione los atributos
    /* if(this.lastCategorySelected !== '-1'){
       this.attributeRequiredList = [];
@@ -731,6 +885,8 @@ export class PublishMyproductsComponent implements OnInit {
       }else{
         accountMargin.accountName = account.businessName;
         accountMargin.idAccount = account.id;
+        accountMargin.showOptionFlexbyAdmin = account.enabledFlexByAdmin === 1 ? true : false; // verifica permiso de opcion flex disponible
+        accountMargin.flex = false; // valor de flex en las publicaciones
 
         if (this.margin !== -1) {
           var margin = this.marginsList.find(element => element.id == this.margin);
@@ -748,6 +904,35 @@ export class PublishMyproductsComponent implements OnInit {
         this.closeModalMargin();
       }
 
+    }
+  }
+
+  meliEnabledFlex(relationship: AccountMarginModel) {
+
+    if(relationship.flex) {
+      this.meliAccountService.isEnabledFlexToMeliAccount(relationship.idAccount).subscribe(result => {
+        if(result === false) {
+          Swal.fire({
+            title: 'IMPORTANTE!!!',
+            text: 'Su cuenta de Mercado Libre no le permite envios flex.',
+            icon: 'warning',
+            showCancelButton: false,
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'Entendido!'
+          })
+          this.accountMarginsList.forEach( f => { if(f.idAccount === relationship.idAccount) f.flex = false });
+        }
+      }, error => {
+        Swal.fire({
+          icon: 'warning',
+          title: `IMPORTANTE!!!`,
+          text: `No se ha podido comprobar en Mercado Libre si le permite esta opción. Por el momento no puede publicar con flex. Intente mas tarde.`,
+          showCancelButton: false,
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: 'Entendido!'
+        });
+        this.accountMarginsList.forEach( f => { if(f.idAccount === relationship.idAccount) f.flex = false });
+      } )
     }
   }
 
@@ -823,7 +1008,7 @@ export class PublishMyproductsComponent implements OnInit {
 
   callPublishProductsService(){
     // llamada al servicio Publicar
-    this.meliPublicationsService.createPublicationList(this.accountMarginsList, this.lastCategorySelected, this.warrantyType, this.warrantyTime, this.warranty, this.productsSelected);
+    this.meliPublicationsService.createPublicationList(this.accountMarginsList, this.lastCategorySelected.idLastCategory, this.warrantyType, this.warrantyTime, this.warranty, this.productsSelected);
       for( var i = 0; i < this.pageProductsMeli.itemsMeliGrid.length; i++) {
         if ( this.pageProductsMeli.itemsMeliGrid[i].selected === true) {
           this.pageProductsMeli.itemsMeliGrid.splice(i, 1);

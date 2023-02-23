@@ -13,6 +13,8 @@ import { Margin } from 'src/app/models/margin';
 import { MeliAccount } from 'src/app/models/meli.account';
 import { AccountMeliStates } from 'src/app/enums/account-meli-states.enum';
 import { MarketplaceType } from 'src/app/enums/marketplacetype.enum';
+import { MeliME2Category } from 'src/app/models/meli-publication/meli-me2-category';
+import { UploadImagesService } from 'src/app/home/services/upload-images.service';
 
 @Component({
   selector: 'app-edit-products',
@@ -60,13 +62,13 @@ export class EditProductsComponent implements OnInit {
   responsePredictor: ResponseCategoryPredictor;
   withoutPredictor: boolean = false;
 
-  lastCategorySelected: string = '-1';
+  lastCategorySelected = new MeliME2Category('-1');
   home: boolean = false;
   pathList: string[];
 
 
   constructor(private _router: ActivatedRoute, private router: Router, public productsStorageUserService: ProductsStorageUserService, public meliAccountService: MeliAccountService,
-    public marginService: MarginService,public meliPublicationsService: MeliPublicationsService ) { }
+    public marginService: MarginService,public meliPublicationsService: MeliPublicationsService, public uploadImageService: UploadImagesService ) { }
 
   ngOnInit(): void {
     this.loadingInitModal = true;
@@ -128,6 +130,46 @@ export class EditProductsComponent implements OnInit {
       //Elimino las imagenes fisicamente del servidor
       if(this.imagesDeletedList.length !== 0){
       this.productsStorageUserService.deleteImages(this.imagesDeletedList).subscribe();
+      this.imagesDeletedList = [];
+    }
+
+    },(error: any) => {
+      this.loadingModal = false;
+      this.close();
+      Swal.fire({
+        position: 'top-end',
+        icon: 'error',
+        title: `Error`,
+        text: `Error al actualizar. Sincronice sus productos.`,
+        showConfirmButton: false,
+        timer: 5000
+      });
+      this.imagesDeletedList = [];
+      this.productsDeletedList = [];
+    });
+
+  };
+
+  //nuevo metodo
+  saveForm2(){
+    this.loadingModal = true;
+    this.productsStorageUserService.updateCustomProduct(this.editableProduct, this.productsDeletedList).subscribe(item => {
+      this.editableProduct = item;
+      this.productsDeletedList = [];
+      this.loadingModal = false;
+      this.close();
+      Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: `Actualizado`,
+        text: `Sus productos han sido actualizados correctamente.`,
+        showConfirmButton: false,
+        timer: 5000
+      });
+
+      //Elimino las imagenes fisicamente del servidor
+      if(this.imagesDeletedList.length !== 0) {
+      this.uploadImageService.deleteImages(this.imagesDeletedList).subscribe();
       this.imagesDeletedList = [];
     }
 
@@ -273,7 +315,7 @@ export class EditProductsComponent implements OnInit {
           position: 'top-end',
           icon: 'error',
           title: `Error`,
-          text: 'Su imagen excede el tamaño máximo de 2MB (Mega Byte), lea la ayuda para mas información',
+          text: 'Su imagen excede el tamaño máximo permitido, lea la ayuda para mas información',
           showConfirmButton: false,
           timer: 5000
         });
@@ -293,6 +335,81 @@ export class EditProductsComponent implements OnInit {
 
       });
   }
+
+  //nuevo metodo
+  addedImage2() {
+    if (!this.file) {
+      Swal.fire({
+        position: 'top-end',
+        icon: 'error',
+        title: `Debe seleccionar un archivo`,
+        showConfirmButton: false,
+        timer: 5000
+      });
+      return;
+    }
+    if (this.file.type.match(/image\/*/) == null) {
+      Swal.fire({
+        position: 'top-end',
+        icon: 'error',
+        title: `Solo imagenes`,
+        text: 'El archivo no es una imagen',
+        showConfirmButton: false,
+        timer: 5000
+      });
+      return;
+    }
+    const formData: FormData = new FormData();
+    let filename = this.file.name.replace(/ /g, "");
+    formData.append('multipartFile', this.file, filename.trim());
+
+    this.uploadImageService.uploadImage(formData)
+      .subscribe(resp => {
+        if(resp !== '') {
+        let image_added = new Image();
+        image_added.order = this.orderImage;
+        image_added.title = this.titleImage;
+        image_added.photos = resp;
+        this.editableProduct.images.push(image_added);
+        this.myfile.nativeElement.value = "";
+        this.clearImage();
+        this.close();
+      }
+      },(error: any) => {
+        if(error.status >= 200 && error.status <= 299)
+        {
+          let image_added = new Image();
+          image_added.order = this.orderImage;
+          image_added.title = this.titleImage;
+          image_added.photos = error.error.text;
+          this.editableProduct.images.push(image_added);
+        }
+        else if(error.error.message.includes('Maximum upload size exceeded')){
+        Swal.fire({
+          position: 'top-end',
+          icon: 'error',
+          title: `Error`,
+          text: 'Su imagen excede el tamaño máximo permitido, lea la ayuda para mas información',
+          showConfirmButton: false,
+          timer: 5000
+        });
+        }else{
+          Swal.fire({
+            position: 'top-end',
+            icon: 'error',
+            title: `Error`,
+            text: 'Error almacenando la imagen. Contacte con el administrador',
+            showConfirmButton: false,
+            timer: 5000
+          });
+        }
+        this.myfile.nativeElement.value = "";
+        this.clearImage();
+        this.close();
+
+      });
+  }
+
   clearImage(){
     this.orderImage = 0;
     this.titleImage = "";
@@ -330,6 +447,8 @@ export class EditProductsComponent implements OnInit {
       else{
         accountMargin.accountName = account.businessName;
         accountMargin.idAccount = account.id;
+        accountMargin.showOptionFlexbyAdmin = account.enabledFlexByAdmin === 1 ? true : false; // verifica permiso de opcion flex disponible
+        accountMargin.flex = false; // valor de flex en las publicaciones
 
         if(this.margin !== -1){
           var margin = this.marginsList.find(element => element.id == this.margin);
@@ -347,6 +466,35 @@ export class EditProductsComponent implements OnInit {
         this.closeModalMargin();
       }
 
+    }
+  }
+
+  meliEnabledFlex(relationship: AccountMarginModel) {
+
+    if(relationship.flex) {
+      this.meliAccountService.isEnabledFlexToMeliAccount(relationship.idAccount).subscribe(result => {
+        if(result === false) {
+          Swal.fire({
+            title: 'IMPORTANTE!!!',
+            text: 'Su cuenta de Mercado Libre no le permite envios flex.',
+            icon: 'warning',
+            showCancelButton: false,
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'Entendido!'
+          })
+          this.accountMarginsList.forEach( f => { if(f.idAccount === relationship.idAccount) f.flex = false });
+        }
+      }, error => {
+        Swal.fire({
+          icon: 'warning',
+          title: `IMPORTANTE!!!`,
+          text: `No se ha podido comprobar en Mercado Libre si le permite esta opción. Por el momento no puede publicar con flex. Intente mas tarde.`,
+          showCancelButton: false,
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: 'Entendido!'
+        });
+        this.accountMarginsList.forEach( f => { if(f.idAccount === relationship.idAccount) f.flex = false });
+      } )
     }
   }
 
@@ -413,7 +561,7 @@ export class EditProductsComponent implements OnInit {
   closeModalPublish(){
     this.clearAll();
     //this.initialMeliAccounts.forEach(element => { this.meliAccountsList.push(element);});
-    this.router.navigate(['/publish-myproducts']);
+    this.router.navigate(['/home/publish-myproducts']);
   }
 
   publishProducts(){
@@ -443,7 +591,7 @@ export class EditProductsComponent implements OnInit {
 
   callPublishProductsService(){
     // llamada al servicio Publicar
-    this.meliPublicationsService.createPublicationByEditableProduct(this.accountMarginsList, this.lastCategorySelected, this.warrantyType, this.warrantyTime, this.warranty, this.editableProduct,/*por el replublicar*/ true);
+    this.meliPublicationsService.createPublicationByEditableProduct(this.accountMarginsList, this.lastCategorySelected.idLastCategory, this.warrantyType, this.warrantyTime, this.warranty, this.editableProduct);
     this.clearAll();
 
     Swal.fire({
@@ -455,7 +603,7 @@ export class EditProductsComponent implements OnInit {
       timer: 5000
     })
     .then((result) => {
-      this.router.navigate(['/publish-myproducts']);
+      this.router.navigate(['/home/publish-myproducts']);
     });
   }
 
@@ -465,8 +613,20 @@ export class EditProductsComponent implements OnInit {
     this.home = false;
   }
 
-  getCategorySelected(idCategory: string){
-    this.lastCategorySelected = idCategory;
+  getCategorySelected(category: MeliME2Category){
+    this.lastCategorySelected = category;
+    if(this.lastCategorySelected.idLastCategory !== '-1'){
+      if(this.lastCategorySelected.isME2 === false ){
+        Swal.fire({
+          title: 'IMPORTANTE!!!',
+          text: 'La categoría seleccionada no permite Mercado Envío como único modo. Seleccione otra categoría que sea mercado enviable.',
+          icon: 'warning',
+          showCancelButton: false,
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: 'Entendido!'
+        })
+      }
+    }
   }
 
   setHome(){
