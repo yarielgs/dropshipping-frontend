@@ -10584,9 +10584,10 @@ a:focus {
 }
 
 .bg-login-image {
-  background: url("../img/pepeganga_login.jpg");
+  background: url("../img/BeeSeller-07.png");
   background-position: center;
-  background-size: cover;
+  background-size: 260px;
+  background-repeat: no-repeat;
 }
 
 .bg-register-image {
