@@ -34,7 +34,7 @@ export class BreadcrumbsComponent implements OnDestroy {
   ) {
     this.titleSub$ = this.loadTitleBreadcrumbs().subscribe(({ title }) => {
       this.title = title;
-      document.title = `Pepeganga-${this.title}`;
+      document.title = `Bee Seller - ${this.title}`;
     });
     this.urlSeg$ = this.loadURLBreadcrumbs().subscribe((url) => {
       this.url = url[0].path;
