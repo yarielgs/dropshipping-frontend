@@ -507,7 +507,12 @@ pre code {
     max-width: 540px;
   }
   .footer-container {
-    /*content: url("");*/
+    content: url("../img/Apoyan-sm.png");
+  }
+}
+@media (max-width: 576px) {
+  .footer-container {
+    content: url("../img/Apoyan-sm.png");;
   }
 }
 @media (min-width: 768px) {
@@ -518,6 +523,9 @@ pre code {
 @media (min-width: 992px) {
   .container {
     max-width: 960px;
+  }
+  .footer-container {
+    content: url("../img/apoyan.png");
   }
 }
 @media (min-width: 1200px) {

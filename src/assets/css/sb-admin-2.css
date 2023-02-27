@@ -563,6 +563,9 @@ pre code {
   .container {
     max-width: 540px;
   }
+  .footer-container {
+    content: url("../img/Apoyan-sm.png");
+  }
 }
 
 @media (min-width: 768px) {
