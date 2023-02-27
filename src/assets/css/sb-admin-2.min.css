@@ -9033,7 +9033,7 @@ a:focus {
   border: 0;
   font-weight: 900;
   content: "\f105";
-  font-family: "Font Awesome 5 Free";
+  font-family: 'Red Hat Text', sans-serif;
 }
 .sidebar .nav-item.dropdown.show .dropdown-toggle::after,
 .topbar .nav-item.dropdown.show .dropdown-toggle::after {
@@ -9280,13 +9280,19 @@ a:focus {
   height: 4.375rem;
   text-decoration: none;
   font-size: 1rem;
-  font-weight: 800;
   padding: 1.5rem 1rem;
   text-align: center;
-  text-transform: uppercase;
   letter-spacing: 0.05rem;
   z-index: 1;
+  
 }
+.sidebar-drop {
+  font-size: 1rem;
+  text-align: center;
+  margin-top: 18px;
+  margin-bottom: 42px;
+}
+
 .sidebar .sidebar-brand .sidebar-brand-icon i {
   font-size: 2rem;
 }
