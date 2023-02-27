@@ -9,7 +9,7 @@ export class SidebarService {
 
   storeMenu: any = [
     {
-      title: 'Almacén',
+      title: 'Almacén Bee Seller',
       icon: 'fas fa-warehouse',
       subtitle: 'Productos',
       divider: 'sidebar-divider',

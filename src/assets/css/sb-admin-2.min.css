@@ -1582,6 +1582,7 @@ pre code {
   .table-responsive-md > .table-bordered {
     border: 0;
   }
+  
 }
 @media (max-width: 991.98px) {
   .table-responsive-lg {
@@ -3785,6 +3786,15 @@ input[type="submit"].btn-block {
   .navbar-expand-md > .container-fluid {
     padding-right: 0;
     padding-left: 0;
+  }
+  .sidebar {
+    width: 12rem !important;
+  }
+  .sidebar-dark .nav-item.activo .nav-link { 
+    width: 100% !important;
+  }
+  .sidebar-dark .nav-item .nav-link { 
+    width: 100% !important;
   }
 }
 @media (min-width: 768px) {
@@ -8544,6 +8554,9 @@ button.bg-dark:hover {
 .text-uppercase {
   text-transform: uppercase !important;
 }
+.sidebar {
+  transition: all 1s;
+}
 .text-capitalize {
   text-transform: capitalize !important;
 }
@@ -8569,7 +8582,7 @@ button.bg-dark:hover {
   color: #fff !important;
 }
 .text-primary {
-  color: #4e73df !important;
+  color: #202124 !important;
 }
 a.text-primary:focus,
 a.text-primary:hover {
@@ -8583,21 +8596,21 @@ a.text-secondary:hover {
   color: #60616f !important;
 }
 .text-success {
-  color: #1cc88a !important;
+  color: #202124 !important;
 }
 a.text-success:focus,
 a.text-success:hover {
   color: #13855c !important;
 }
 .text-info {
-  color: #36b9cc !important;
+  color: #202124 !important;
 }
 a.text-info:focus,
 a.text-info:hover {
   color: #258391 !important;
 }
 .text-warning {
-  color: #f6c23e !important;
+  color: #202124 !important;
 }
 a.text-warning:focus,
 a.text-warning:hover {
@@ -8751,7 +8764,7 @@ a:focus {
   display: flex;
 }
 #wrapper #content-wrapper {
-  background-color: #f8f9fc;
+  background-color: #FEF8F1;
   width: 100%;
   overflow-x: hidden;
 }
@@ -8845,6 +8858,11 @@ a:focus {
   background-image: linear-gradient(180deg, #4e73df 10%, #224abe 100%);
   background-size: cover;
 }
+
+.bg-navbar {
+  background-color: #202124;
+}
+
 .bg-gradient-secondary {
   background-color: #858796;
   background-image: linear-gradient(180deg, #858796 10%, #60616f 100%);
@@ -8952,7 +8970,7 @@ a:focus {
   justify-content: center;
 }
 .border-left-primary {
-  border-left: 0.25rem solid #4e73df !important;
+  border-left: 0.25rem solid #F9D7F1 !important;
 }
 .border-bottom-primary {
   border-bottom: 0.25rem solid #4e73df !important;
@@ -8964,19 +8982,19 @@ a:focus {
   border-bottom: 0.25rem solid #858796 !important;
 }
 .border-left-success {
-  border-left: 0.25rem solid #1cc88a !important;
+  border-left: 0.25rem solid #F9D7F1 !important;
 }
 .border-bottom-success {
   border-bottom: 0.25rem solid #1cc88a !important;
 }
 .border-left-info {
-  border-left: 0.25rem solid #36b9cc !important;
+  border-left: 0.25rem solid #F9D7F1 !important;
 }
 .border-bottom-info {
   border-bottom: 0.25rem solid #36b9cc !important;
 }
 .border-left-warning {
-  border-left: 0.25rem solid #f6c23e !important;
+  border-left: 0.25rem solid #F9D7F1 !important;
 }
 .border-bottom-warning {
   border-bottom: 0.25rem solid #f6c23e !important;
@@ -9028,7 +9046,7 @@ a:focus {
   border: 0;
   font-weight: 900;
   content: "\f105";
-  font-family: "Font Awesome 5 Free";
+  font-family: 'Red Hat Text', sans-serif;
 }
 .sidebar .nav-item.dropdown.show .dropdown-toggle::after,
 .topbar .nav-item.dropdown.show .dropdown-toggle::after {
@@ -9275,13 +9293,19 @@ a:focus {
   height: 4.375rem;
   text-decoration: none;
   font-size: 1rem;
-  font-weight: 800;
   padding: 1.5rem 1rem;
   text-align: center;
-  text-transform: uppercase;
   letter-spacing: 0.05rem;
   z-index: 1;
+  
 }
+.sidebar-drop {
+  font-size: 1rem;
+  text-align: center;
+  margin-top: 18px;
+  margin-bottom: 42px;
+}
+
 .sidebar .sidebar-brand .sidebar-brand-icon i {
   font-size: 2rem;
 }
@@ -9296,6 +9320,9 @@ a:focus {
   padding: 0 1rem;
   font-weight: 800;
   font-size: 0.65rem;
+}
+.sidebar {
+  height: 100%;
 }
 @media (min-width: 768px) {
   .sidebar {
@@ -9409,6 +9436,7 @@ a:focus {
   }
   .sidebar.toggled .sidebar-brand .sidebar-brand-icon i {
     font-size: 2rem;
+    content: url("assets/img/Bee-horizontal-black(2).png");
   }
   .sidebar.toggled .sidebar-brand .sidebar-brand-text {
     display: none;
@@ -9489,7 +9517,7 @@ a:focus {
   color: rgba(255, 255, 255, 0.5);
 }
 .sidebar-dark .nav-item.active .nav-link {
-  color: #fff;
+  color: #FFD939;
 }
 .sidebar-dark .nav-item.active .nav-link i {
   color: #fff;

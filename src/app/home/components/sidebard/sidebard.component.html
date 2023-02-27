@@ -1,13 +1,17 @@
  <!-- Sidebar -->
- <ul #sidebarItem class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+ <ul #sidebarItem class="navbar-nav bg-navbar sidebar sidebar-dark accordion" id="accordionSidebar">
 
   <!-- Sidebar - Brand -->
   <a class="sidebar-brand d-flex align-items-center justify-content-center" routerLink="/home">
-    <div class="sidebar-brand-icon rotate-n-15">
-      <img class="img-profile rounded-circle logo-size" [src]="logoSrc">
+    <div class="sidebar-brand-icon " *ngIf="!toggled">
+      <img class="logo-size" src= "assets/img/Bee-horizontal-black.png">
     </div>
-    <div class="sidebar-brand-text mx-3">Bee Seller</div>
+    <div class="sidebar-brand-icon " *ngIf="toggled">
+      <img class="logo-size2" src= "assets/img/Bee-horizontal-black(2).png">
+    </div>
+   <!-- <div class="sidebar-brand-text mx-3">Bee Seller</div> -->
   </a>
+  <p *ngIf="!toggled" class="sidebar-drop">Dropshipping</p>
 
   <!-- Divider -->
   <hr class="sidebar-divider my-0">
@@ -22,16 +26,70 @@
       <i class="fas fa-fw fa-tachometer-alt"></i>
       <span [hidden]="toggled" class="ml-2">Tablero de control</span></a>
   </li>
+  <hr class="sidebar-divider my-0">
+  <!--<li class="nav-item">
+    <a routerLinkActive="active" class="nav-link collapsed" href="#"  data-toggle="collapse" [attr.data-target]="'#test'+4" aria-expanded="true" [attr.aria-controls]="'test'+4">
+      <i [class]="adminItem.icon"></i>
+      <span [hidden]="toggled" class="ml-2">{{ adminItem.title }}</span>
+    </a>
+    <div  [id]="'test'+4" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar" >
+      <div class="bg-white py-2 collapse-inner rounded">
+        <h6  class="collapse-header">{{ adminItem.subtitle }}</h6>
+        <div *ngFor="let subitem of adminItem.submenu" >
 
-  <!-- Divider -->
-  <hr class="sidebar-divider">
+          <a class="collapse-item" *ngIf="sidebarService.hashRoles(subitem.roles)" [routerLink]="subitem.url" >
+            {{ subitem.title }}
+          </a>
+        </div>
 
-  <!-- Heading -->
- <!-- <div class="sidebar-heading">
-    Inventario
-  </div> -->
+      </div>
+    </div>
 
+  <hr  [class]="adminItem.divider">
+ </li> -->
+  <!--<li class="nav-item active">
+    <a class="nav-link"
+    routerLink="/home/store"
+    routerLinkActive="active"
+    *ngIf="sidebarService.hashRoles(['ROLE_ADMIN', 'ROLE_SELLER', 'ROLE_INVITED'])"
+    >
+      <i class="fas fa-fw fa-tachometer-alt"></i>
+      <span [hidden]="toggled" class="ml-2">Almacén Bee Seller</span></a>
+  </li>
 
+  <li class="nav-item">
+    <a routerLinkActive="active" class="nav-link collapsed" href="#"  data-toggle="collapse" [attr.data-target]="'#test'+4" aria-expanded="true" [attr.aria-controls]="'test'+4">
+      <i [class]="productItem.icon"></i>
+      <span [hidden]="toggled" class="ml-2">{{ productItem.title }}</span>
+    </a>
+    <div  [id]="'test'+4" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar" >
+      <div class="bg-white py-2 collapse-inner rounded">
+        <h6  class="collapse-header">{{ productItem.subtitle }}</h6>
+        <div *ngFor="let subitem of productItem.submenu" >
+
+          <a class="collapse-item" *ngIf="sidebarService.hashRoles(subitem.roles)" [routerLink]="subitem.url" >
+            {{ subitem.title }}
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+  <hr  [class]="productItem.divider">
+ </li>
+
+  <li class="nav-item active">
+    <a class="nav-link"
+    routerLink="/home/dashboard"
+    routerLinkActive="active"
+    *ngIf="sidebarService.hashRoles(['ROLE_ADMIN', 'ROLE_SELLER'])"
+    >
+      <i class="fas fa-fw fa-tachometer-alt"></i>
+      <span [hidden]="toggled" class="ml-2">Ventas</span></a>
+  </li>
+
+ 
+  <hr class="sidebar-divider"> -->
     <!-- Nav Item - Pages Collapse Menu -->
   <li class="nav-item" *ngFor="let item of sidebarService.storeMenu; let i=index">
     <a routerLinkActive="active" class="nav-link collapsed" href="#"  data-toggle="collapse" [attr.data-target]="'#test'+i" aria-expanded="true" [attr.aria-controls]="'test'+i">
