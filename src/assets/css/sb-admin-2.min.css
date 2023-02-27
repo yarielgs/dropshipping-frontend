@@ -8569,7 +8569,7 @@ button.bg-dark:hover {
   color: #fff !important;
 }
 .text-primary {
-  color: #4e73df !important;
+  color: #202124 !important;
 }
 a.text-primary:focus,
 a.text-primary:hover {
@@ -8751,7 +8751,7 @@ a:focus {
   display: flex;
 }
 #wrapper #content-wrapper {
-  background-color: #f8f9fc;
+  background-color: #FFD939;
   width: 100%;
   overflow-x: hidden;
 }
@@ -9307,6 +9307,9 @@ a:focus {
   padding: 0 1rem;
   font-weight: 800;
   font-size: 0.65rem;
+}
+.sidebar {
+  height: 100%;
 }
 @media (min-width: 768px) {
   .sidebar {
