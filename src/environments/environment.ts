@@ -1,21 +1,8 @@
-// This file can be replaced during build by using the `fileReplacements` array.
-// `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
-// The list of file replacements can be found in `angular.json`.
-
 export const environment = {
-  production: false,
-  URI_ROOT: 'https://dev-api.dropshipping.bee-seller.com/pepeganga',
-  URI_MELI: `http://auth.mercadolibre.com.uy/authorization?response_type=code&client_id=1737771850020695&state=${Math.floor(Math.random() * 100)}&redirect_uri=https://dropshipping-dev.web.app/home/meli-accounts`,
+  production: true,
+  URI_ROOT: 'https://dev.pepeganga-api.com/pepeganga',
+  URI_MELI: `http://auth.mercadolibre.com.uy/authorization?response_type=code&client_id=648079461510645&state=${Math.floor(Math.random() * 100)}&redirect_uri=https://drop-beeseller.web.app/home/meli-accounts`,
   URI_MELI_PUBLIC: 'https://api.mercadolibre.com',
-  URI_RESET_PASS: 'https://dropshipping-dev.web.app/auth/reset',
-  URI_UPLOAD_BUCKET: 'https://dev-api.dropshipping.bee-seller.com/pepeganga/upload/api/bucket/download-file-from-upload-bucket?pathFile='
+  URI_RESET_PASS: 'https://drop-beeseller.web.app/auth/reset',
+  URI_UPLOAD_BUCKET: 'https://dev.pepeganga-api.com/pepeganga/upload/api/bucket/download-file-from-upload-bucket?pathFile='
 };
-
-/*
- * For easier debugging in development mode, you can import the following file
- * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
- *
- * This import should be commented out in production mode because it will have a negative impact
- * on performance if an error is thrown.
- */
-// import 'zone.js/dist/zone-error';  // Included with Angular CLI.
