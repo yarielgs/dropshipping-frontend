@@ -6,7 +6,7 @@
 }*/
 
 .bagckgrounddrop {
-  background-image: url('C:\Users\brian\OneDrive\Escritorio\BEE SELLER\Logos\backgroundrop.png');
+  background-image: url('src/assets/img/backgroundrop.png');
   background-size: cover;
   background-position: center;
 }
