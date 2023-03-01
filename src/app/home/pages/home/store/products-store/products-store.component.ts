@@ -140,7 +140,7 @@ export class ProductsStoreComponent implements OnInit {
         this.buildUbicationMeliFilter()
       )
       .subscribe(
-        (pageItemGrid) => {
+        (pageItemGrid) => {          
           this.pageProducts = this.productStoreService.pageProducts;
           let countSelected = 0;
           this.loading = false;
@@ -205,8 +205,8 @@ export class ProductsStoreComponent implements OnInit {
     this.checkAll = !this.checkAll;
 
     this.pageProducts.itemsGrid.forEach((element) => {
-      element.selected = this.checkAll;
-      if (element.selected === true) {
+      element.selected = element.currentStock && this.checkAll;
+      if (element.selected === true && element.currentStock > 0) {
         let position1 = this.productsSelected.indexOf(element.sku);
         if (position1 === -1) {
           this.productsSelected.push(element.sku);
@@ -229,7 +229,7 @@ export class ProductsStoreComponent implements OnInit {
     let position = this.productsSelected.indexOf(product.sku);
     if (position === -1) {
       product.selected = !product.selected;
-      if (product.selected === true) {
+      if (product.selected === true && product.currentStock > 0) {
         this.productsSelected.push(product.sku);
       }
     } else {
