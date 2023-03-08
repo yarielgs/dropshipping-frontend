@@ -20,26 +20,22 @@ export class ChooseMarketplacesComponent implements OnInit {
   marketplaceType: MarketplaceType;
   profileId: number;
 
-  constructor(public userService: UserService, public productsStorageUserService: ProductsStorageUserService, private authService: AuthService, private router: Router ) {
+  constructor(public userService: UserService, public productsStorageUserService: ProductsStorageUserService, private authService: AuthService, private router: Router) {
 
-    if(this.authService.isAuthenticated)
-    {
+    if (this.authService.isAuthenticated) {
       this.loading = true;
       this.profileId = this.authService.authenticationDataExtrac().profileId;
       productsStorageUserService.getDetailsMarketplaces(this.profileId).subscribe(resp => {
         this.loading = false;
         this.marketplaceDetailsList = resp;
-      }, error => { console.log(error);  this.loading = false; });
+      }, error => { console.log(error); this.loading = false; });
 
     }
-    else{
+    else {
       this.router.navigate(['auth/login']);
     }
   }
 
   ngOnInit(): void {
   }
-
-
-
 }

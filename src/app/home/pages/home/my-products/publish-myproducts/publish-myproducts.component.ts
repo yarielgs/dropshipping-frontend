@@ -186,6 +186,13 @@ export class PublishMyproductsComponent implements OnInit {
         .subscribe(pageItemCustomGrid => {
           this.pageProductsMeli = this.productStoreUserService.pageProductsMeli;
           this.totalPages = +this.pageProductsMeli.totalPages;
+
+          this.pageProductsMeli.itemsMeliGrid.forEach((value, index) => {
+            if (value.currentStock == 0) {
+              --this.pageProductsMeli.totalElements
+            }
+          })
+
           if (this.pageProductsMeli.itemsMeliGrid.length <= 0) {
             this.errorProducts = true;
           }
@@ -204,7 +211,7 @@ export class PublishMyproductsComponent implements OnInit {
     this.checkAll = !this.checkAll;
 
     this.pageProductsMeli.itemsMeliGrid.forEach(element => {
-      if(element.specialPaused !== 1){
+      if (element.specialPaused !== 1) {
         element.selected = this.checkAll;
         if (element.selected === true) {
           let position1 = -1;
@@ -601,49 +608,49 @@ export class PublishMyproductsComponent implements OnInit {
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.isConfirmed) {
-          this.loadingModalDelete = true;
-          this.productStoreUserService.deleteProductsFromStore(this.productsSelected).subscribe(resp => {
-      if (resp === true) {
-        this.loadingModalDelete = false;
-        this.productsSelected = [];
-        this.loadProductsPaginator(this.currentPage);
-        Swal.fire({
-          position: 'top-end',
-          icon: 'success',
-          title: `Éxitos`,
-          text: `Los productos fueron eliminados satisfactoriamente.`,
-          showConfirmButton: false,
-          timer: 5000
-        });
+        this.loadingModalDelete = true;
+        this.productStoreUserService.deleteProductsFromStore(this.productsSelected).subscribe(resp => {
+          if (resp === true) {
+            this.loadingModalDelete = false;
+            this.productsSelected = [];
+            this.loadProductsPaginator(this.currentPage);
+            Swal.fire({
+              position: 'top-end',
+              icon: 'success',
+              title: `Éxitos`,
+              text: `Los productos fueron eliminados satisfactoriamente.`,
+              showConfirmButton: false,
+              timer: 5000
+            });
 
-        if (this.productsSelected.length === 0) {
-          this.disable = true;
-        } else {
-          this.disable = false;
-        }
-      }
-      else {
-        this.loadingModalDelete = false;
-        Swal.fire({
-          position: 'top-end',
-          icon: 'error',
-          title: `Error eliminando`,
-          text: `Productos no eliminados. Sincronize y vuelva a intentarlo`,
-          showConfirmButton: false,
-          timer: 5000
+            if (this.productsSelected.length === 0) {
+              this.disable = true;
+            } else {
+              this.disable = false;
+            }
+          }
+          else {
+            this.loadingModalDelete = false;
+            Swal.fire({
+              position: 'top-end',
+              icon: 'error',
+              title: `Error eliminando`,
+              text: `Productos no eliminados. Sincronize y vuelva a intentarlo`,
+              showConfirmButton: false,
+              timer: 5000
+            });
+          }
+        }, error => {
+          this.loadingModalDelete = false;
+          Swal.fire({
+            position: 'top-end',
+            icon: 'error',
+            title: `Error eliminando`,
+            text: `Productos no eliminados. Sincronize y vuelva a intentarlo`,
+            showConfirmButton: false,
+            timer: 5000
+          });
         });
-      }
-    }, error => {
-      this.loadingModalDelete = false;
-      Swal.fire({
-        position: 'top-end',
-        icon: 'error',
-        title: `Error eliminando`,
-        text: `Productos no eliminados. Sincronize y vuelva a intentarlo`,
-        showConfirmButton: false,
-        timer: 5000
-      });
-    });
 
       }
     })
@@ -667,55 +674,55 @@ export class PublishMyproductsComponent implements OnInit {
         this.productToDelete = product;
         this.loadingDeleteProduct = true;
         this.productStoreUserService.deleteProductFromStore(product).subscribe(resp => {
-      if (resp === true) {
-        this.loadingDeleteProduct = false;
-        //this.loadingModalDelete = false;
-        this.loadProductsPaginator(this.currentPage);
-        this.productToDelete = null;
-        Swal.fire({
-          position: 'top-end',
-          icon: 'success',
-          title: `Éxitos`,
-          text: `Producto eliminados satisfactoriamente.`,
-          showConfirmButton: false,
-          timer: 5000
-        });
+          if (resp === true) {
+            this.loadingDeleteProduct = false;
+            //this.loadingModalDelete = false;
+            this.loadProductsPaginator(this.currentPage);
+            this.productToDelete = null;
+            Swal.fire({
+              position: 'top-end',
+              icon: 'success',
+              title: `Éxitos`,
+              text: `Producto eliminados satisfactoriamente.`,
+              showConfirmButton: false,
+              timer: 5000
+            });
 
-        let pos = this.productsSelected.indexOf(product);
-        if (pos !== -1)
-          this.productsSelected.splice(pos, 1);
-        if (this.productsSelected.length === 0) {
-          this.disable = true;
-        } else {
-          this.disable = false;
-        }
-      }
-      else {
-        this.productToDelete = null;
-        this.loadingDeleteProduct = false;
-        this.loadingModalDelete = false;
-        Swal.fire({
-          position: 'top-end',
-          icon: 'error',
-          title: `Error eliminando`,
-          text: `Producto no eliminado. Sincronice y vuelva a intentarlo`,
-          showConfirmButton: false,
-          timer: 5000
+            let pos = this.productsSelected.indexOf(product);
+            if (pos !== -1)
+              this.productsSelected.splice(pos, 1);
+            if (this.productsSelected.length === 0) {
+              this.disable = true;
+            } else {
+              this.disable = false;
+            }
+          }
+          else {
+            this.productToDelete = null;
+            this.loadingDeleteProduct = false;
+            this.loadingModalDelete = false;
+            Swal.fire({
+              position: 'top-end',
+              icon: 'error',
+              title: `Error eliminando`,
+              text: `Producto no eliminado. Sincronice y vuelva a intentarlo`,
+              showConfirmButton: false,
+              timer: 5000
+            });
+          }
+        }, error => {
+          this.productToDelete = null;
+          this.loadingDeleteProduct = false;
+          this.loadingModalDelete = false;
+          Swal.fire({
+            position: 'top-end',
+            icon: 'error',
+            title: `Error eliminando`,
+            text: `Producto no eliminado. Sincronice y vuelva a intentarlo`,
+            showConfirmButton: false,
+            timer: 5000
+          });
         });
-      }
-    }, error => {
-      this.productToDelete = null;
-      this.loadingDeleteProduct = false;
-      this.loadingModalDelete = false;
-      Swal.fire({
-        position: 'top-end',
-        icon: 'error',
-        title: `Error eliminando`,
-        text: `Producto no eliminado. Sincronice y vuelva a intentarlo`,
-        showConfirmButton: false,
-        timer: 5000
-      });
-    });
       }
     });
   }
@@ -816,8 +823,8 @@ export class PublishMyproductsComponent implements OnInit {
 
   getCategorySelected(category: MeliME2Category) {
     this.lastCategorySelected = category;
-    if(this.lastCategorySelected.idLastCategory !== '-1'){
-      if(this.lastCategorySelected.isME2 === false ){
+    if (this.lastCategorySelected.idLastCategory !== '-1') {
+      if (this.lastCategorySelected.isME2 === false) {
         Swal.fire({
           title: 'IMPORTANTE!!!',
           text: 'La categoría seleccionada no permite Mercado Envío como único modo. Seleccione otra categoría que sea mercado enviable.',
@@ -830,12 +837,12 @@ export class PublishMyproductsComponent implements OnInit {
     }
 
     //Pendiente para cuando se seleccione los atributos
-   /* if(this.lastCategorySelected !== '-1'){
-      this.attributeRequiredList = [];
-      this.meliPublicationsService.getAttributesRequired(idCategory).subscribe(attr => {
-        this.attributeRequiredList = attr;
-      });
-    }*/
+    /* if(this.lastCategorySelected !== '-1'){
+       this.attributeRequiredList = [];
+       this.meliPublicationsService.getAttributesRequired(idCategory).subscribe(attr => {
+         this.attributeRequiredList = attr;
+       });
+     }*/
   }
 
   setHome() {
@@ -873,7 +880,7 @@ export class PublishMyproductsComponent implements OnInit {
 
       var account = this.meliAccountsList.find(element => element.id == this.meliAccount);
 
-      if(account.me2 !== 1){
+      if (account.me2 !== 1) {
         Swal.fire({
           title: 'Cuenta no permitida',
           text: 'La cuenta seleccionada no tiene mercado envío configurado. Configure su cuenta en Mercado Libre y vuelva a re-vincular su cuenta.',
@@ -882,7 +889,7 @@ export class PublishMyproductsComponent implements OnInit {
           confirmButtonColor: '#3085d6',
           confirmButtonText: 'Entendido!'
         })
-      }else{
+      } else {
         accountMargin.accountName = account.businessName;
         accountMargin.idAccount = account.id;
         accountMargin.showOptionFlexbyAdmin = account.enabledFlexByAdmin === 1 ? true : false; // verifica permiso de opcion flex disponible
@@ -909,9 +916,9 @@ export class PublishMyproductsComponent implements OnInit {
 
   meliEnabledFlex(relationship: AccountMarginModel) {
 
-    if(relationship.flex) {
+    if (relationship.flex) {
       this.meliAccountService.isEnabledFlexToMeliAccount(relationship.idAccount).subscribe(result => {
-        if(result === false) {
+        if (result === false) {
           Swal.fire({
             title: 'IMPORTANTE!!!',
             text: 'Su cuenta de Mercado Libre no le permite envios flex.',
@@ -920,7 +927,7 @@ export class PublishMyproductsComponent implements OnInit {
             confirmButtonColor: '#3085d6',
             confirmButtonText: 'Entendido!'
           })
-          this.accountMarginsList.forEach( f => { if(f.idAccount === relationship.idAccount) f.flex = false });
+          this.accountMarginsList.forEach(f => { if (f.idAccount === relationship.idAccount) f.flex = false });
         }
       }, error => {
         Swal.fire({
@@ -931,8 +938,8 @@ export class PublishMyproductsComponent implements OnInit {
           confirmButtonColor: '#3085d6',
           confirmButtonText: 'Entendido!'
         });
-        this.accountMarginsList.forEach( f => { if(f.idAccount === relationship.idAccount) f.flex = false });
-      } )
+        this.accountMarginsList.forEach(f => { if (f.idAccount === relationship.idAccount) f.flex = false });
+      })
     }
   }
 
@@ -978,12 +985,12 @@ export class PublishMyproductsComponent implements OnInit {
     let allTitle = true;
 
     this.productsSelected.forEach(prod => {
-       if(prod.name.length > 60){
-          allTitle = false;
-        }
+      if (prod.name.length > 60) {
+        allTitle = false;
+      }
     });
 
-    if(!allTitle){
+    if (!allTitle) {
       Swal.fire({
         position: 'top-end',
         title: 'Título o Nombre del producto demasiado extenso',
@@ -1000,52 +1007,52 @@ export class PublishMyproductsComponent implements OnInit {
           this.callPublishProductsService();
         }
       })
-    }else{
+    } else {
       this.callPublishProductsService();
     }
 
   }
 
-  callPublishProductsService(){
+  callPublishProductsService() {
     // llamada al servicio Publicar
     this.meliPublicationsService.createPublicationList(this.accountMarginsList, this.lastCategorySelected.idLastCategory, this.warrantyType, this.warrantyTime, this.warranty, this.productsSelected);
-      for( var i = 0; i < this.pageProductsMeli.itemsMeliGrid.length; i++) {
-        if ( this.pageProductsMeli.itemsMeliGrid[i].selected === true) {
-          this.pageProductsMeli.itemsMeliGrid.splice(i, 1);
-          i--;
-        }
+    for (var i = 0; i < this.pageProductsMeli.itemsMeliGrid.length; i++) {
+      if (this.pageProductsMeli.itemsMeliGrid[i].selected === true) {
+        this.pageProductsMeli.itemsMeliGrid.splice(i, 1);
+        i--;
       }
-      this.productsSelected = [];
-      this.closeModalPublish();
-      Swal.fire({
-        position: 'top-end',
-        icon: 'info',
-        title: `Productos en publicación`,
-        text: `Los productos están siendo publicados`,
-        showConfirmButton: false,
-        timer: 5000
-      }).then(() => {
-        //this.checkP.nativeElement.checked = 0;
-          if(this.pageProductsMeli.itemsMeliGrid.length === 0){
-            this.loadProductsPaginator(1);
-          }
-        });
     }
+    this.productsSelected = [];
+    this.closeModalPublish();
+    Swal.fire({
+      position: 'top-end',
+      icon: 'info',
+      title: `Productos en publicación`,
+      text: `Los productos están siendo publicados`,
+      showConfirmButton: false,
+      timer: 5000
+    }).then(() => {
+      //this.checkP.nativeElement.checked = 0;
+      if (this.pageProductsMeli.itemsMeliGrid.length === 0) {
+        this.loadProductsPaginator(1);
+      }
+    });
+  }
 
-    updateElementOfProduct(originP: ProductCustom, copyP: ProductCustom) {
-      copyP.currentStock = originP.currentStock;
-      copyP.deleted = originP.deleted;
-      copyP.description = originP.description;
-      copyP.images = originP.images;
-      copyP.sku = originP.sku;
-      copyP.specialPaused = originP.specialPaused;
-      copyP.name = originP.name;
-      copyP.priceUSD = originP.priceUSD;
-      copyP.priceUYU = originP.priceUYU;
-      copyP.price_costUSD = originP.price_costUSD;
-      copyP.price_costUYU = originP.price_costUYU;
-      copyP.selected = originP.selected;
-      copyP.state = originP.state;
-    }
+  updateElementOfProduct(originP: ProductCustom, copyP: ProductCustom) {
+    copyP.currentStock = originP.currentStock;
+    copyP.deleted = originP.deleted;
+    copyP.description = originP.description;
+    copyP.images = originP.images;
+    copyP.sku = originP.sku;
+    copyP.specialPaused = originP.specialPaused;
+    copyP.name = originP.name;
+    copyP.priceUSD = originP.priceUSD;
+    copyP.priceUYU = originP.priceUYU;
+    copyP.price_costUSD = originP.price_costUSD;
+    copyP.price_costUYU = originP.price_costUYU;
+    copyP.selected = originP.selected;
+    copyP.state = originP.state;
+  }
 
 }

@@ -14,7 +14,7 @@ import { StockVsTotalItemDto } from '../../../../../models/statistics/stock.vs.t
 export class DashboardSellerComponent implements OnInit {
 
   //Temporal value because can be several accounts
-  currentAccount: MeliAccount = new  MeliAccount();
+  currentAccount: MeliAccount = new MeliAccount();
 
   // Total sales
   hiddenSellChart = true;
@@ -37,35 +37,35 @@ export class DashboardSellerComponent implements OnInit {
   countActivePublications = 0;
 
   constructor(private accountService: MeliAccountService,
-              private statisticService: StatisticService) { }
+    private statisticService: StatisticService) { }
 
   ngOnInit(): void {
 
     this.getStockVsTotalOfItems();
     this.currentAccountPromise()
-    .then( accounts => {
-      this.currentAccount = accounts[0];
-      if(this.currentAccount.userIdBss){
-        console.log('Temporal loggin', this.currentAccount.userIdBss)
-        
-        this.getCountAllSales();
-        this.getBetterSku();
-        this.getCountActivePublications();       
-      } else {
+      .then(accounts => {
+        this.currentAccount = accounts[0];
+        if (this.currentAccount.userIdBss) {
+          // console.log('Temporal loggin', this.currentAccount.userIdBss)
+
+          this.getCountAllSales();
+          this.getBetterSku();
+          this.getCountActivePublications();
+        } else {
+          this.reset();
+        }
+      })
+      .catch(error => {
+        console.log(error);
         this.reset();
-      }
-    })
-    .catch(error => {
-      console.log(error);
-      this.reset();
-    })
+      })
   }
 
 
   getCountAllSales(): void {
 
     this.statisticService.getCountAllSales(this.currentAccount.userIdBss).subscribe((count: CountPaidAndCancellerSalesDto) => {
-      console.log(count)
+      // console.log(count)
       this.countAllSalesPaid = count.paid;
       this.countAllSalesCancelled = count.cancelled;
     }, error => {
@@ -78,7 +78,7 @@ export class DashboardSellerComponent implements OnInit {
   getBetterSku(): void {
 
     this.statisticService.getBetterSku(this.currentAccount.userIdBss).subscribe((resp: any) => {
-      console.log('Better sku', resp)
+      // console.log('Better sku', resp)
       if (resp?.sku) {
         this.betterSku = `${resp.sku} : ${resp.count}`;
       } else {
@@ -92,13 +92,13 @@ export class DashboardSellerComponent implements OnInit {
 
   openBetterSkuModal() {
     this.currentAccount?.userIdBss ? this.getBettersSku() : null;
-   
+
   }
 
   getBettersSku(): void {
     this.loadingBettersSku = true;
     this.statisticService.getBettersSku(100, this.currentAccount.userIdBss).subscribe((resp: BetterSkuDto[]) => {
-      console.log('Betters sku', resp)
+      // console.log('Betters sku', resp)
       this.bettersSku = resp;
       this.loadingBettersSku = false;
     }, error => {
@@ -109,8 +109,7 @@ export class DashboardSellerComponent implements OnInit {
   }
 
   getStockVsTotalOfItems(): void {
-    console.log('PASANDO  X VSSS');
-    
+    // console.log('PASANDO  X VSSS');
     this.statisticService.getStockVsTotalOfItems().subscribe(dto => {
       this.stockVsTotal = dto;
     }, error => {
@@ -123,7 +122,7 @@ export class DashboardSellerComponent implements OnInit {
   getCountActivePublications(): void {
 
     this.statisticService.getCountActivePublications(this.currentAccount.userIdBss).subscribe(count => {
-      console.log(count)
+      // console.log(count)
       this.countActivePublications = count as number;
     }, error => {
       console.log('Error in getCountActivePublications(): ', error);
@@ -134,16 +133,16 @@ export class DashboardSellerComponent implements OnInit {
   get percent(): string {
     return `${this.getPercent(this.stockVsTotal.withStock, this.stockVsTotal.total)}%`
   }
-  
+
   getPercent(number1: number, number2: number): number {
     return number1 && number2 ? Math.round((number1 / number2) * 100) : 0;
   }
 
- currentAccountPromise = (): Promise<MeliAccount[]> => {
-    return new Promise( (resolve, reject) => {
+  currentAccountPromise = (): Promise<MeliAccount[]> => {
+    return new Promise((resolve, reject) => {
 
-      this.accountService.getAccounts().subscribe( (acounts: MeliAccount[]) => {
-        if(acounts){
+      this.accountService.getAccounts().subscribe((acounts: MeliAccount[]) => {
+        if (acounts) {
           resolve(acounts)
         } else reject('Meli accounts not found')
       }, error => {
@@ -152,7 +151,7 @@ export class DashboardSellerComponent implements OnInit {
     })
   }
 
-  validateBetterSku(){
+  validateBetterSku() {
     return this.betterSku ? this.betterSku : 'NINGUNO'
   }
   private reset(): void {
