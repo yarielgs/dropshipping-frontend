@@ -372,7 +372,7 @@ getShippingModeOfCategories2(idCategory: string): Observable<string[]> {
 
     return this.http.get<AttributesRequiredModel[]>(params).pipe(map((resp: any[]) => {
       resp.forEach(element => {
-        if(element.tags.required){
+        if(element.tags.required || element.tags.conditional_required || element.tags.new_required){
           let attributeRequired = new AttributesRequiredModel(element.id, element.name, element.tags, element.value_type, element.value_max_length,
             element.values, element.allowed_units, element.attribute_group_id, element.attribute_group_name);
           this.attributesList.push(attributeRequired);
@@ -392,25 +392,27 @@ getShippingModeOfCategories2(idCategory: string): Observable<string[]> {
   getAttribute(f: AttributesRequiredModel): Attributes {
 
     switch(f.value_type) { 
-      case 'string': { 
-         return new Attributes(f.id, f.name,"N/A", null, null);
+      case 'string': {
+         var value = f.id.toUpperCase() == "GTIN" ? "012345600005" :"N/A";
+          
+         return new Attributes(f.id, f.name, value, null, null, [], "OTHERS", "Otros");
       } 
       case 'number': { 
-        return new Attributes(f.id, f.name,"1", null, null);
+        return new Attributes(f.id, f.name,"1", null, null, [], "OTHERS", "Otros");
       } 
       case 'number_unit': { 
         var unit = f.allowed_units[0].name;
-        return new Attributes(f.id, f.name,"10 " + unit, null, null);
+        return new Attributes(f.id, f.name,"10 " + unit, null, null, [], "OTHERS", "Otros");
       } 
       case 'boolean': { 
-        return new Attributes(f.id, f.name,"false", null, null);
+        return new Attributes(f.id, f.name,"false", null, null, [], "OTHERS", "Otros");
       } 
       case 'list': { 
         var val = f.value[0];
-        return new Attributes(f.id, f.name, val.name, val.id, null, null);
+        return new Attributes(f.id, f.name, val.name, val.id, null, [], "OTHERS", "Otros");
       } 
       default: { 
-        return new Attributes(f.id, f.name,"", null, null);
+        return new Attributes(f.id, f.name,"", null, null, [], "OTHERS", "Otros");
       } 
    }
 

@@ -6,7 +6,9 @@ export class Tag {
         public variation_attribute?: boolean,
         public multivalued?: boolean,
         public required?: boolean,
-        public conditional_required?: boolean
+        public conditional_required?: boolean,
+        public catalog_required?: boolean,
+        public new_required?: boolean
       ){}
     
 }
