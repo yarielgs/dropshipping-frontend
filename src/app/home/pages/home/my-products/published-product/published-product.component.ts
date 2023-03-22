@@ -399,6 +399,7 @@ export class PublishedProductComponent implements OnInit {
     let isCorrect = true;
     let allClosed = true;
     let allTitle = true;
+    let imageCount = true;
 
     this.productsSelected.forEach(prod => {
       if(prod.status !== 'closed'){
@@ -408,6 +409,10 @@ export class PublishedProductComponent implements OnInit {
       else if(prod.title.length > 60){
           isCorrect = false;
           allTitle = false;
+        }
+        else if(prod.images.length > 12) {
+          isCorrect = false;
+          imageCount = false;
         }
     });
 
@@ -427,6 +432,17 @@ export class PublishedProductComponent implements OnInit {
         title: 'Título o Nombre del producto no válido',
         text: 'No se permite publicar produtos con título mayor de 60 caracteres',
         icon: 'info',
+        showConfirmButton: false,
+        timer: 5000
+      })
+    }
+
+    if(!imageCount){
+      Swal.fire({
+        position: 'top-end',
+        icon: 'error',
+        title: `No Publicado`,
+        text: `Mercado libre no permite publicar productos con mas de 12 imagenes.`,
         showConfirmButton: false,
         timer: 5000
       })

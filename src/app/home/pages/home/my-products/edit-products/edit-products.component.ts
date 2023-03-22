@@ -565,26 +565,38 @@ export class EditProductsComponent implements OnInit {
   }
 
   publishProducts(){
-    if(this.editableProduct.productName.length > 60){
+    if(this.editableProduct.images.length > 12){
       Swal.fire({
         position: 'top-end',
-        title: 'Título o Nombre del producto demasiado extenso',
-        text: 'Mercado Libre no permite publicar produtos con título mayor de 60 caracteres, de no editarse, la aplicación acortará el título al tamaño permitido',
-        icon: 'info',
-        showConfirmButton: true,
-        confirmButtonText: 'Continuar',
-        confirmButtonColor: '#28a745',
-        showCancelButton: true,
-        cancelButtonText: 'Cancelar',
-        cancelButtonColor: '#d33'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.callPublishProductsService();
-        }
-      })
-    }else{
-      this.callPublishProductsService();
+        icon: 'error',
+        title: `No Publicado`,
+        text: `Mercado libre no permite publicar productos con mas de 12 imagenes.`,
+        showConfirmButton: false,
+        timer: 5000
+      });
+    } else {
+      if(this.editableProduct.productName.length > 60){
+        Swal.fire({
+          position: 'top-end',
+          title: 'Título o Nombre del producto demasiado extenso',
+          text: 'Mercado Libre no permite publicar produtos con título mayor de 60 caracteres, de no editarse, la aplicación acortará el título al tamaño permitido',
+          icon: 'info',
+          showConfirmButton: true,
+          confirmButtonText: 'Continuar',
+          confirmButtonColor: '#28a745',
+          showCancelButton: true,
+          cancelButtonText: 'Cancelar',
+          cancelButtonColor: '#d33'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.callPublishProductsService();
+          }
+        })
+      }else{
+        this.callPublishProductsService();
+      }
     }
+    
 
 
   }
