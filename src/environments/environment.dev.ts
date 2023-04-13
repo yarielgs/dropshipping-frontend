@@ -5,9 +5,9 @@
 export const environment = {
   production: false,
   URI_ROOT: 'https://dev-api.dropshipping.bee-seller.com/pepeganga',
-  URI_MELI: `http://auth.mercadolibre.com.uy/authorization?response_type=code&client_id=1737771850020695&state=${Math.floor(Math.random() * 100)}&redirect_uri=https://localhost:4200/home/meli-accounts`,
+  URI_MELI: `http://auth.mercadolibre.com.uy/authorization?response_type=code&client_id=308575204088057&state=${Math.floor(Math.random() * 100)}&redirect_uri=https://dev.dropshipping.bee-seller.com/home/meli-accounts`,
   URI_MELI_PUBLIC: 'https://api.mercadolibre.com',
-  URI_RESET_PASS: 'https://localhost:4200/auth/reset'
+  URI_RESET_PASS: 'https://dev.dropshipping.bee-seller.com/auth/reset'
 };
 
 /*
