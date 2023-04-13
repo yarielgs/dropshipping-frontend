@@ -248,7 +248,7 @@ getShippingModeOfCategories2(idCategory: string): Observable<string[]> {
         let attributes: Attributes[] = [];
         attributes.push(new Attributes("SELLER_SKU", "SKU", element.sku));
         if(attributesRequired.length !== 0){
-          attributesRequired.forEach( f => { attributes.push(new Attributes( f.id, null, "N/A"));});
+          attributesRequired.forEach( f => { attributes.push(this.getAttribute(f));});
         }
         let tittle = element.name.length > 60 ? element.name.substring(0,60) : element.name;
         let item = new ItemMeliRequest(tittle, idCategory, priceFinal, "UYU", element.currentStock.toString(), "buy_it_now", "new",
@@ -315,10 +315,7 @@ getShippingModeOfCategories2(idCategory: string): Observable<string[]> {
         let attributes: Attributes[] = [];
         attributes.push(new Attributes("SELLER_SKU", "SKU", productSelected.sku));
         if(attributesRequired.length !== 0){
-            attributesRequired.forEach( f => { attributes.push(new Attributes( f.id, f.name,
-              f.value_type !== undefined && f.value_type === 'number_unit' ? "10 cm" : "N/A",
-              null,
-              null ));});
+            attributesRequired.forEach( f => { attributes.push(this.getAttribute(f));});
         }
 
         let tittle = productSelected.productName.length > 60 ? productSelected.productName.substring(0,60) : productSelected.productName;
@@ -375,7 +372,7 @@ getShippingModeOfCategories2(idCategory: string): Observable<string[]> {
 
     return this.http.get<AttributesRequiredModel[]>(params).pipe(map((resp: any[]) => {
       resp.forEach(element => {
-        if(element.tags.required){
+        if(element.tags.required || element.tags.conditional_required || element.tags.new_required){
           let attributeRequired = new AttributesRequiredModel(element.id, element.name, element.tags, element.value_type, element.value_max_length,
             element.values, element.allowed_units, element.attribute_group_id, element.attribute_group_name);
           this.attributesList.push(attributeRequired);
@@ -391,5 +388,35 @@ getShippingModeOfCategories2(idCategory: string): Observable<string[]> {
     scData = await this.configService.readAttributesConfig().toPromise();
     return scData;
   }
+
+  getAttribute(f: AttributesRequiredModel): Attributes {
+
+    switch(f.value_type) { 
+      case 'string': {
+         var value = f.id.toUpperCase() == "GTIN" ? "012345600005" :"N/A";
+          
+         return new Attributes(f.id, f.name, value, null, null, [], "OTHERS", "Otros");
+      } 
+      case 'number': { 
+        return new Attributes(f.id, f.name,"1", null, null, [], "OTHERS", "Otros");
+      } 
+      case 'number_unit': { 
+        var unit = f.allowed_units[0].name;
+        return new Attributes(f.id, f.name,"10 " + unit, null, null, [], "OTHERS", "Otros");
+      } 
+      case 'boolean': { 
+        return new Attributes(f.id, f.name,"false", null, null, [], "OTHERS", "Otros");
+      } 
+      case 'list': { 
+        var val = f.value[0];
+        return new Attributes(f.id, f.name, val.name, val.id, null, [], "OTHERS", "Otros");
+      } 
+      default: { 
+        return new Attributes(f.id, f.name,"", null, null, [], "OTHERS", "Otros");
+      } 
+   }
+
+  }
+
 
 }
