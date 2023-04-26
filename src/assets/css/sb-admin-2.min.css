@@ -9517,7 +9517,7 @@ a:focus {
   color: rgba(255, 255, 255, 0.5);
 }
 .sidebar-dark .nav-item.active .nav-link {
-  color: #FFD939;
+  color: rgba(255, 255, 255, 0.8);
 }
 .sidebar-dark .nav-item.active .nav-link i {
   color: #fff;

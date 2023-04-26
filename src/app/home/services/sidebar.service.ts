@@ -6,7 +6,32 @@ import { RoleEnum } from '../../enums/role.enum';
   providedIn: 'root'
 })
 export class SidebarService {
-
+  configuracionMenu: any = {
+      title: 'Configuración',
+      icon: 'fas fa-user-lock',
+      subtitle: 'Panel',
+      divider: 'sidebar-divider',
+      submenu: [
+        { title: 'Usuarios', url: '/home/users-admin', roles: [RoleEnum.ADMIN] },
+        { title: 'Vendedores', url: '/home/sellers', roles: [RoleEnum.ADMIN] },
+        { title: 'Márgenes', url: '/home/margins', roles: [RoleEnum.ADMIN, RoleEnum.SELLER] },
+        { title: 'Marketplaces', url: '/home/list-marketplaces', roles: [RoleEnum.ADMIN] },
+        { title: 'Cuentas Mercado Libre', url: '/home/meli-accounts', roles: [RoleEnum.ADMIN, RoleEnum.SELLER] },
+        { title: 'Configuración del sistema', url: '/home/configuration', roles: [RoleEnum.ADMIN] }
+      ]
+    };
+    misproductosMenu: any = {
+      
+        title: 'Mis productos',
+        icon: 'fas fa-store',
+        subtitle: 'Mis productos',
+        divider: 'sidebar-divider',
+        submenu: [
+          { title: 'Mis productos', url: '/home/publish-myproducts', roles: [RoleEnum.ADMIN, RoleEnum.SELLER] },
+          { title: 'Productos Publicados', url: '/home/published-products', roles: [RoleEnum.ADMIN, RoleEnum.SELLER] }
+        ]
+     }
+  
   storeMenu: any = [
     {
       title: 'Configuración',
@@ -22,7 +47,7 @@ export class SidebarService {
         { title: 'Configuración del sistema', url: '/home/configuration', roles: [RoleEnum.ADMIN] }
       ]
     },
-    {
+    /*{
       title: 'Almacén Bee Seller',
       icon: 'fas fa-warehouse',
       subtitle: 'Productos',
@@ -30,7 +55,7 @@ export class SidebarService {
       submenu: [
         { title: 'Listar productos', url: '/home/store', roles: [RoleEnum.ADMIN, RoleEnum.SELLER, RoleEnum.INVITED] }
       ]
-    },
+    },*/
     {
       title: 'Mis productos',
       icon: 'fas fa-store',
@@ -41,7 +66,7 @@ export class SidebarService {
         { title: 'Productos Publicados', url: '/home/published-products', roles: [RoleEnum.ADMIN, RoleEnum.SELLER] }
       ]
     },
-    {
+    /*{
       title: 'Ventas',
       icon: 'fas fa-dollar-sign ml-2',
       subtitle: 'Ventas',
@@ -51,8 +76,10 @@ export class SidebarService {
         { title: 'Operaciones', url: '/home/operations', roles: [RoleEnum.ADMIN, RoleEnum.OPERATOR] },
         { title: 'Histórico-Operaciones', url: '/home/historical-operations', roles: [RoleEnum.ADMIN, RoleEnum.OPERATOR] }
       ],
-    },
+    },*/
   ];
+
+  
 
 
   constructor(public authService: AuthService) { }
