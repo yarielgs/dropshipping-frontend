@@ -28,6 +28,7 @@ import { error } from 'protractor';
 import { UploadImagesService } from 'src/app/home/services/upload-images.service';
 import { environment } from 'src/environments/environment';
 import { CommonInfoRequest } from 'src/app/models/upload-images/common-info-request.model';
+import filtersSKU from 'src/app/config/filtersSKU';
 
 
 @Component({
@@ -188,7 +189,7 @@ export class PublishMyproductsComponent implements OnInit {
           this.totalPages = +this.pageProductsMeli.totalPages;
 
           this.pageProductsMeli.itemsMeliGrid.forEach((value, index) => {
-            if (value.currentStock == 0) {
+            if (value.currentStock == 0 || filtersSKU.includes(value.sku)) {
               --this.pageProductsMeli.totalElements
             }
           })
