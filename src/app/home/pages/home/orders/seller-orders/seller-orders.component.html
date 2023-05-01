@@ -1,12 +1,13 @@
 <!-- Collapsable Card Example -->
 <div class="card shadow mb-4">
   <!-- Card Header - Accordion -->
-  <a href="#collapseCardFilterProductStorage" class="d-block card-header py-3" data-toggle="collapse" role="button"
+ <!-- <a href="#collapseCardFilterProductStorage" class="d-block card-header py-3" data-toggle="collapse" role="button"
     aria-expanded="false" aria-controls="collapseCardFilterProductStorage">
     <h6 class="m-0 font-weight-bold text-primary">Buscar por...</h6>
   </a>
   <!-- Card Content - Collapse -->
-  <div class="collapse" id="collapseCardFilterProductStorage">
+  <div class="" id="collapseCardFilterProductStorage">
+    <h6 class="m-0 font-weight-bold text-primary">Buscar por...</h6>
     <form #f="ngForm">
       <div class="card-body container">
 
@@ -89,7 +90,7 @@
 
         <div class="row">
           <div class="col d-flex justify-content-center">
-            <button [disabled]="dateFromControl.invalid || dateToControl.invalid " class="btn btn-outline-primary mr-1" (click)="searchOrders()">
+            <button [disabled]="dateFromControl.invalid || dateToControl.invalid " class="btn btn-primary mr-1" (click)="searchOrders()">
               <i *ngIf="!loadingSearch" class="fas fa-search m-1"></i>
               <i *ngIf="loadingSearch" class="fas fa-spin fa-spinner m-1"></i>
               Buscar
