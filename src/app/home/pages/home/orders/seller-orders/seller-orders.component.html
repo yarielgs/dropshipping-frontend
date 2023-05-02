@@ -6,8 +6,15 @@
     <h6 class="m-0 font-weight-bold text-primary">Buscar por...</h6>
   </a>
   <!-- Card Content - Collapse -->
+  
+    <div class="card-header py-3">
+  
+      <div
+        class="d-flex flex-md-row flex-sm-column align-items-md-center justify-content-md-between align-items-sm-center justify-content-sm-center">
+        <h6 class="m-0 font-weight-bold text-primary">Buscar por...</h6>
+      </div>
+    </div>
   <div class="" id="collapseCardFilterProductStorage">
-    <h6 class="m-0 font-weight-bold text-primary">Buscar por...</h6>
     <form #f="ngForm">
       <div class="card-body container">
 
@@ -27,6 +34,7 @@
                 <option value="paid">Pagada</option>
                 <option value="cancelled">Cancelada</option>
               </select>
+              
               <div class="input-group-append">
                 <label class="input-group-text" for="inputGroupOrderStatus">Estado de la órden</label>
               </div>
@@ -49,6 +57,7 @@
                 <div class="input-group-append">
                   <button class="btn btn-outline-secondary calendar" (click)="dateFrom.toggle()" type="button"><i
                       class="fas fa-calendar-alt"></i></button>
+                      
                 </div>
               </div>
             </div>

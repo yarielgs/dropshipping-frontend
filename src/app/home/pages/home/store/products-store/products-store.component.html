@@ -1,12 +1,17 @@
 <!-- Collapsable Card Example -->
 <div class="card shadow mb-4">
   <!-- Card Header - Accordion -->
-  <a href="#collapseCardFilterProductStorage" class="d-block card-header py-3" data-toggle="collapse" role="button"
+  <!--<a href="#collapseCardFilterProductStorage" class="d-block card-header py-3" data-toggle="collapse" role="button"
     aria-expanded="false" aria-controls="collapseCardFilterProductStorage">
     <h6 class="m-0 font-weight-bold text-primary">Buscar por...</h6>
   </a>
   <!-- Card Content - Collapse -->
-  <div class="collapse" id="collapseCardFilterProductStorage">
+  <div class="card-header py-3">
+    <div class="d-flex flex-md-row flex-sm-column align-items-md-center justify-content-md-between align-items-sm-center justify-content-sm-center">
+      <h6 class="m-0 font-weight-bold text-primary">Buscar por...</h6>
+    </div>
+  </div>
+  <div class="" id="collapseCardFilterProductStorage">
     <form #f="ngForm">
       <div class="card-body container">
 
@@ -104,7 +109,7 @@
         <div class="row">
           <div class="col d-flex justify-content-center">
 
-            <button class="btn btn-outline-primary mr-1" (click)="searchProducts()">
+            <button class="btn btn-primary mr-1" (click)="searchProducts()">
               <i *ngIf="!loadPaginator" class="fas fa-search m-1"></i> <i *ngIf="loadPaginator"
                 class="fas fa-spin fa-spinner m-1"></i> Buscar</button>
             <button class="btn btn-outline-secondary ml-1" (click)="clearSearch(f)"> <i *ngIf="loadingClear"
