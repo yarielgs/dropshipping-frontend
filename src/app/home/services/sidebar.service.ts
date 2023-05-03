@@ -66,7 +66,7 @@ export class SidebarService {
         { title: 'Productos Publicados', url: '/home/published-products', roles: [RoleEnum.ADMIN, RoleEnum.SELLER] }
       ]
     },
-    /*{
+    {
       title: 'Ventas',
       icon: 'fas fa-dollar-sign ml-2',
       subtitle: 'Ventas',
@@ -76,8 +76,20 @@ export class SidebarService {
         { title: 'Operaciones', url: '/home/operations', roles: [RoleEnum.ADMIN, RoleEnum.OPERATOR] },
         { title: 'Histórico-Operaciones', url: '/home/historical-operations', roles: [RoleEnum.ADMIN, RoleEnum.OPERATOR] }
       ],
-    },*/
+    },
   ];
+
+  ventas: any =     {
+    title: 'Ventas',
+    icon: 'fas fa-dollar-sign ml-2',
+    subtitle: 'Ventas',
+    divider: 'sidebar-divider',
+    submenu: [
+      { title: 'Órdenes', url: '/home/seller-orders', roles: [RoleEnum.ADMIN, RoleEnum.SELLER] },
+      { title: 'Operaciones', url: '/home/operations', roles: [RoleEnum.ADMIN, RoleEnum.OPERATOR] },
+      { title: 'Histórico-Operaciones', url: '/home/historical-operations', roles: [RoleEnum.ADMIN, RoleEnum.OPERATOR] }
+    ],
+  };
 
   
 

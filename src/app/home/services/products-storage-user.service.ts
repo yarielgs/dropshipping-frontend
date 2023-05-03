@@ -13,6 +13,7 @@ import { ProductCustom } from '../../models/myproducts.custom.model'
 
 import { AuthService } from 'src/app/core/services/auth.service'
 import { CommonInfoRequest } from 'src/app/models/upload-images/common-info-request.model';
+import filtersSKU from 'src/app/config/filtersSKU';
 
 
 @Injectable({
@@ -62,7 +63,7 @@ export class ProductsStorageUserService {
     &minPrice=${minPrice}&maxPrice=${maxPrice}`;
 
     return this.http.get<PageProductMeliStorage>(uri).pipe(map((resp: any) => {
-      this.pageProductsMeli.itemsMeliGrid = resp.itemsMeliGridList;
+      this.pageProductsMeli.itemsMeliGrid = resp.itemsMeliGridList.filter((elem: any) => !filtersSKU.includes(elem.sku));;
       this.pageProductsMeli.totalElements = resp.totalElements;
       this.pageProductsMeli.size = resp.size;
       this.pageProductsMeli.totalPages = resp.totalPages;

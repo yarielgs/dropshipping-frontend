@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { CategoryProductStoraje } from '../../models/category.product.storaje';
 import { FamilyProductStorage } from '../../models/family.product.store';
 import { AuthService } from 'src/app/core/services/auth.service';
+import filtersSKU from 'src/app/config/filtersSKU';
 
 @Injectable({
   providedIn: 'root',
@@ -84,7 +85,7 @@ export class ProductsStorageService {
     };
     return this.http.post<PageProductStorage>(uri, searchItem).pipe(
       map((resp: any) => {
-        this.pageProducts.itemsGrid = resp.itemsGrid;
+        this.pageProducts.itemsGrid = resp.itemsGrid.filter((elem: any) => !filtersSKU.includes(elem.sku));
         this.pageProducts.totalElements = resp.totalElements;
         this.pageProducts.currentStock = resp.currentStock;
         this.pageProducts.size = resp.size;

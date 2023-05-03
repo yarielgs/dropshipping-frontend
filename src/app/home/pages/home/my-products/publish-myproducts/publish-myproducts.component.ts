@@ -189,7 +189,7 @@ export class PublishMyproductsComponent implements OnInit {
           this.totalPages = +this.pageProductsMeli.totalPages;
 
           this.pageProductsMeli.itemsMeliGrid.forEach((value, index) => {
-            if (value.currentStock == 0 || filtersSKU.includes(value.sku)) {
+            if (value.currentStock == 0) {
               --this.pageProductsMeli.totalElements
             }
           })
