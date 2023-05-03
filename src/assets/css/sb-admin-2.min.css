@@ -4052,6 +4052,20 @@ input[type="submit"].btn-block {
   background-color: #f8f9fc;
   border-bottom: 1px solid #e3e6f0;
 }
+.card-header-black{
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 0;
+  background-color: #202124;
+  border-bottom: 1px solid #202124;
+  border-radius: 3px;
+}
+.card-header-pink {
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 0;
+  background-color: #F9D7F1;
+  border-bottom: 1px solid #F9D7F1;
+  border-radius: 3px;
+}
 .card-header:first-child {
   border-radius: calc(0.35rem - 1px) calc(0.35rem - 1px) 0 0;
 }

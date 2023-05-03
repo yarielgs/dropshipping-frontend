@@ -7,11 +7,11 @@
   </a>
   <!-- Card Content - Collapse -->
 
-  <div class="card-header py-3">
+  <div class="card-header-black py-3">
 
     <div
       class="d-flex flex-md-row flex-sm-column align-items-md-center justify-content-md-between align-items-sm-center justify-content-sm-center">
-      <h6 class="m-0 font-weight-bold text-primary">Buscar por...</h6>
+      <h6 class="m-0 font-weight-bold text-white">Buscar por...</h6>
     </div>
   </div>
   <div class="" id="collapseCardFilterProductStorage">
@@ -25,6 +25,14 @@
                 id="idClientName" placeholder="Nombre del cliente...">
             </div>
           </div>
+          <!-- Hay que cambiar el filtro a "Nombre o SKU"
+          <div class="row">
+            <div class="col-md-2">
+              <div class="form-group">
+                <input type="text" class="form-control" name="clientNameSearch" [(ngModel)]="clientNameSearch"
+                  id="idClientName" placeholder="Nombre o SKU">
+              </div>
+            </div> -->
           <div class="col-md-3">
             <div class="input-group mb-3">
               <select class="custom-select" name="orderStatusSearch" [(ngModel)]="orderStatusSearch"
@@ -164,7 +172,7 @@
 
 
 <div class="card shadow mb-4">
-  <div class="card-header py-3">
+  <div class="card-header-pink py-3">
 
     <div
       class="d-flex flex-md-row flex-sm-column align-items-md-center justify-content-md-between align-items-sm-center justify-content-sm-center">
