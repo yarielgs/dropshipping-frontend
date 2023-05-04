@@ -1,39 +1,33 @@
 <!-- Collapsable Card Example -->
 <div class="card shadow mb-4">
-  <!-- Card Header - Accordion -->
-  <!--<a href="#collapseCardFilterProductStorage" class="d-block card-header py-3" data-toggle="collapse" role="button"
-    aria-expanded="false" aria-controls="collapseCardFilterProductStorage">
-    <h6 class="m-0 font-weight-bold text-primary">Buscar por...</h6>
-  </a>
-  <!-- Card Content - Collapse -->
   <div class="card-header-black py-3">
     <div
       class="d-flex flex-md-row flex-sm-column align-items-md-center justify-content-md-between align-items-sm-center justify-content-sm-center">
       <h6 class="m-0 font-weight-bold text-white">Buscar por...</h6>
     </div>
   </div>
-  <div class="container" id="collapseCardFilterProductStorage">
-    <form action="" #f="ngForm">
-      <div class="card-body container">
+  <!--<div class="container" id="collapseCardFilterProductStorage"> -->
+  <form action="" #f="ngForm" class="">
+    <!--<div class="card-body container-fluid"> -->
 
-        <div class="row px-3 pt-0 justify-content-center">
-          <div class="col-md-3">
-            <div class="form-group">
-              <input type="text" class="form-control" name="titleSearch" [(ngModel)]="titleSearch" id="idTitle"
-                placeholder="Buscar por nombre...">
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <input type="text" class="form-control" name="skuSearch" id="idSku" [(ngModel)]="skuSearch"
-                placeholder="Buscar por SKU...">
-            </div>
-          </div>
-          <!-- TO DO: -->
-          <div class="col-md-3">
+    <div class="row mt-3 pt-0 justify-content-center">
+      <div class="col-md-4">
+        <div class="form-group">
+          <input type="text" class="form-control" name="titleSearch" [(ngModel)]="titleSearch" id="idTitle"
+            placeholder="Buscar por nombre...">
+        </div>
+      </div>
+      <div class="col-md-4 ">
+        <div class="form-group">
+          <input type="text" class="form-control" name="skuSearch" id="idSku" [(ngModel)]="skuSearch"
+            placeholder="Buscar por SKU...">
+        </div>
+      </div>
+      <!-- TO DO: ATENCIÓN: USAR LA CLASE COL-MD-3 -->
+      <!--<div class="col-md-3">
             <div class="input-group mb-3">
               <div class="input-group-prepend">
-                <label class="input-group-text" for="inputFamily">Stock:</label>
+                <label class="input-group-text" for="inputFamily">Stock</label>
               </div>
 
               <select name="meliAccountSearch" id="inputFamily" class="custom-select"
@@ -42,57 +36,65 @@
                 <option [value]="">Sin stock</option>
               </select>
             </div>
-          </div>
-          <div class="col-md-3 pt-2">
-            <button class="btn btn-outline-secondary ml-1 mt-4" (click)="clearSearch(f)"> <i *ngIf="loadingClear"
+          </div> -->
+      <div class="col-md-3 ">
+        <div class="d-flex justify-content-center align-items-center">
+          <button class="btn btn-outline-secondary h-75 w-75 mx-2 " (click)="clearSearch(f)"> <i *ngIf="loadingClear"
               class="fas fa-spin fa-spinner m-1"></i><i *ngIf="!loadingClear" class="fas fa-broom m-1"></i>
             Limpiar</button>
-          </div>
         </div>
-        <div class="row px-3 pt-0 justify-content-center">
-          <div class="col-md-3">
-            <div class="form-group">
-              <label for="idMeliSearch">Id Mercado Libre:</label>
-              <input type="text" class="form-control" name="idMeliSearch" id="idMeliSearch" [(ngModel)]="idMeliSearch"
-                placeholder="Buscar por id de Mercado Libre...">
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <label for="inputFamily">Cuenta de Mercado Libre:</label>
-              <select name="meliAccountSearch" id="meliAccountSearch" class="form-control"
+      </div>
+    </div>
+    <div class="row  pt-0 justify-content-center">
+      <div class="col-md-4 ">
+        <div class="form-group">
+          <input type="text" class="form-control" name="idMeliSearch" id="idMeliSearch" [(ngModel)]="idMeliSearch"
+            placeholder="Id Mercado Libre...">
+        </div>
+      </div>
+      <!-- TO DO: -->
+      <!-- <div class="col-md-3">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <label class="input-group-text" for="inputGroupOrderStatus">Cuenta</label>
+              </div>
+              <select name="meliAccountSearch" id="meliAccountSearch" class="custom-select"
                 [(ngModel)]="meliAccountSearch">
                 <option [value]="meliAccountSearchClear">Todas</option>
                 <option *ngFor="let meli of meliAccountsList" [value]="meli.id">
                   {{meli.businessName}} </option>
               </select>
             </div>
+          </div> -->
+      <div class="col-md-4">
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <label class="input-group-text" for="inputGroupOrderStatus">Estado</label>
           </div>
-          <div class="col-md-3">
-            <div class="form-group">
-              <label for="typeStateSearch">Estado:</label>
-              <select name="typeStateSearch" id="typeStateSearch" [(ngModel)]="typeStateSearch" class="form-control">
-                <option [value]="typeStateSearchClear">Todas</option>
-                <option [value]="statesOfMeli.ACTIVE">Activo</option>
-                <option [value]="statesOfMeli.IN_PROCESS">En proceso</option>
-                <option [value]="statesOfMeli.PAUSED">Pausado</option>
-                <option [value]="statesOfMeli.CLOSED">Cerrado</option>
-                <option [value]="statesOfMeli.UNDER_REVIEW">En revisión</option>
-                <option [value]="statesOfMeli.INACTIVE">Inactivo</option>
-                <option [value]="statesOfMeli.PAYMENT_REQUIRED">Pago requerido</option>
-                <option [value]="statesOfMeli.FAIL">Fallado</option>
-              </select>
-            </div>
-          </div>
-          <div class="col-md-3 pt-2">
-            <button class="btn btn-primary mr-1 mt-4" (click)="searchProductsPublished()">
-              <i *ngIf="!loadPaginator" class="fas fa-search m-1"></i> <i *ngIf="loadPaginator"
-                class="fas fa-spin fa-spinner m-1"></i> Buscar</button>
-          </div>
+          <select name="typeStateSearch" id="typeStateSearch" [(ngModel)]="typeStateSearch" class="custom-select">
+            <option [value]="typeStateSearchClear">Todos</option>
+            <option [value]="statesOfMeli.ACTIVE">Activo</option>
+            <option [value]="statesOfMeli.IN_PROCESS">En proceso</option>
+            <option [value]="statesOfMeli.PAUSED">Pausado</option>
+            <option [value]="statesOfMeli.CLOSED">Cerrado</option>
+            <option [value]="statesOfMeli.UNDER_REVIEW">En revisión</option>
+            <option [value]="statesOfMeli.INACTIVE">Inactivo</option>
+            <option [value]="statesOfMeli.PAYMENT_REQUIRED">Pago requerido</option>
+            <option [value]="statesOfMeli.FAIL">Fallado</option>
+          </select>
         </div>
       </div>
-    </form>
-  </div>
+      <div class="col-md-3">
+        <div class="d-flex justify-content-center align-items-center">
+          <button class="btn btn-primary h-75 w-75 mx-2" (click)="searchProductsPublished()">
+            <i *ngIf="!loadPaginator" class="fas fa-search m-1"></i> <i *ngIf="loadPaginator"
+              class="fas fa-spin fa-spinner m-1"></i> Buscar</button>
+        </div>
+      </div>
+    </div>
+    <!--</div> -->
+  </form>
+  <!--</div> -->
 </div>
 
 <!-- DataTales Example -->
