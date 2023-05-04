@@ -35,16 +35,15 @@
             </div> -->
           <div class="col-md-3">
             <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <label class="input-group-text" for="inputGroupOrderStatus">Estado de la órden</label>
+              </div>
               <select class="custom-select" name="orderStatusSearch" [(ngModel)]="orderStatusSearch"
                 id="inputGroupOrderStatus">
                 <option [value]="orderStatusClear">Todos</option>
                 <option value="paid">Pagada</option>
                 <option value="cancelled">Cancelada</option>
               </select>
-
-              <div class="input-group-append">
-                <label class="input-group-text" for="inputGroupOrderStatus">Estado de la órden</label>
-              </div>
             </div>
           </div>
           <div class="col-md-2">
