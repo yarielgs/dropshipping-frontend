@@ -6,9 +6,10 @@
     <h6 class="m-0 font-weight-bold text-primary">Buscar por...</h6>
   </a>
   <!-- Card Content - Collapse -->
-  <div class="card-header py-3">
-    <div class="d-flex flex-md-row flex-sm-column align-items-md-center justify-content-md-between align-items-sm-center justify-content-sm-center">
-      <h6 class="m-0 font-weight-bold text-primary">Buscar por...</h6>
+  <div class="card-header-black py-3">
+    <div
+      class="d-flex flex-md-row flex-sm-column align-items-md-center justify-content-md-between align-items-sm-center justify-content-sm-center">
+      <h6 class="m-0 font-weight-bold text-white">Buscar por...</h6>
     </div>
   </div>
   <div class="" id="collapseCardFilterProductStorage">
@@ -16,88 +17,98 @@
       <div class="card-body container">
 
         <div class="row p-3">
-          <div class="col-md-6">
+          <div class="col-md-2">
 
             <div class="form-group">
-              <label for="idNameProduct">Nombre:</label>
               <input type="text" class="form-control" name="nameSeach" [(ngModel)]="nameSeach" id="idNameProduct"
-                placeholder="Buscar por nombre...">
+                placeholder="Nombre...">
             </div>
-
-            <div class="form-group">
-              <label for="idSku">SKU:</label>
-              <input type="text" class="form-control" name="skuSearch" [(ngModel)]="skuSearch" id="idSku"
-                placeholder="Buscar por SKU...">
-            </div>
-
           </div>
-          <div class="col-md-6">
-
-            <div class="row">
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="inputFamily">Familia:</label>
-                  <select name="typeFamilySearch" [(ngModel)]="typeFamilySearch" id="inputFamily" class="form-control">
-                    <option [value]="typeFamilySearchClear">Todas</option>
-                    <option *ngFor="let family of productStoreService.families" [value]="family.id">
-                      {{family.description}} </option>
-                  </select>
-                </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <input type="text" class="form-control" name="skuSearch" [(ngModel)]="skuSearch" id="idSku"
+                placeholder="SKU...">
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <label class="input-group-text" for="inputFamily">Categoría</label>
               </div>
+              <select name="typeFamilySearch" [(ngModel)]="typeFamilySearch" id="inputFamily" class="custom-select">
+                <option [value]="typeFamilySearchClear">Todas</option>
+                <option *ngFor="let family of productStoreService.families" [value]="family.id">
+                  {{family.description}} </option>
+              </select>
+            </div>
+          </div>
 
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="inputCategory">Categoría:</label>
-                  <select name="typeCategorySearch" [(ngModel)]="typeCategorySearch" id="inputCategory"
-                    class="form-control">
-                    <option [value]="typeCategorySearchClear">Todas</option>
-                    <option *ngFor="let category of productStoreService.categories" [value]="category.id">
-                      {{category.description}} </option>
-                  </select>
+          <!--<div class="row"> -->
+
+          <div class="col-md-3">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <label class="input-group-text" for="inputCategory">Campaña</label>
+              </div>
+              <select name="typeCategorySearch" [(ngModel)]="typeCategorySearch" id="inputCategory"
+                class="custom-select">
+                <option [value]="typeCategorySearchClear">Todas</option>
+                <option *ngFor="let category of productStoreService.categories" [value]="category.id">
+                  {{category.description}} </option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <button class="btn btn-outline-secondary ml-1" (click)="clearSearch(f)"> <i *ngIf="loadingClear"
+                class="fas fa-spin fa-spinner m-1"></i><i *ngIf="!loadingClear" class="fas fa-broom m-1"></i>
+              Limpiar</button>
+          </div>
+          <!-- </div> -->
+
+          <div class="row p-3">
+            <div class="col-md-4">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" for="idMinPriceSearch">Precio mín:</label>
+
+                  <input class="form-control text-box single-line" type="number" step="5" min="0" max="100000"
+                    [(ngModel)]="minValue" name="idMinPriceSearch" id="idMinPriceSearch">
                 </div>
               </div>
             </div>
 
-            <div class="row">
-              <div class="col-md-6">
-                <div class="form-group mb-md-0">
-                  <div class="row" style="margin-bottom: 1rem">
-                    <div class="col-sm-6">
-                      <label for="idMinPriceSearch">Precio mín:</label>
-                      <input class="form-control text-box single-line" type="number" step="5" min="0" max="100000"
-                        [(ngModel)]="minValue" name="idMinPriceSearch" id="idMinPriceSearch">
-                    </div>
-                    <div class="col-sm-6">
-                      <label for="idMaxPriceSearch">Precio máx:</label>
-                      <input class="form-control text-box single-line" type="number" step="5" min="0" max="100000"
-                        [(ngModel)]="maxValue" name="idMaxPriceSearch" id="idMaxPriceSearch">
-                    </div>
-                  </div>
+            <div class="col-md-3">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" for="idMaxPriceSearch">Precio máx:</label>
+                  <input class="form-control text-box single-line" type="number" step="5" min="0" max="100000"
+                    [(ngModel)]="maxValue" name="idMaxPriceSearch" id="idMaxPriceSearch">
                 </div>
               </div>
-
-              <div class="col-12 col-md-6">
-                <div class="form-group">
-                  <label for="meliUbicationId">Ubicación:</label>
+            </div>
+            <div class="col-md-3">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" for="meliUbicationId">Ubicación:</label>
                   <div class="dropdown" id="meliUbicationId">
                     <button class="btn dropdown-toggle btn-outline-primary" type="button" id="dropdownMenuButton"
                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       Mercado Libre
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-
                       <a class="dropdown-item" href="#">
                         <div class="custom-control custom-checkbox">
-                          <input type="checkbox" class="custom-control-input" id="customCheck1" name="notExistInMeli" [(ngModel)]="notExistInMeli">
+                          <input type="checkbox" class="custom-control-input" id="customCheck1" name="notExistInMeli"
+                            [(ngModel)]="notExistInMeli">
                           <label class="custom-control-label" for="customCheck1"> Sin ubicación</label>
                         </div>
                       </a>
-
                       <a class="dropdown-item" href="#">
-                          <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="customCheck2" name="existInMeli" [(ngModel)]="existInMeli">
-                            <label class="custom-control-label" for="customCheck2"> En marketplace</label>
-                          </div>
+                        <div class="custom-control custom-checkbox">
+                          <input type="checkbox" class="custom-control-input" id="customCheck2" name="existInMeli"
+                            [(ngModel)]="existInMeli">
+                          <label class="custom-control-label" for="customCheck2"> En marketplace</label>
+                        </div>
                       </a>
                     </div>
                   </div>
@@ -105,6 +116,23 @@
               </div>
             </div>
           </div>
+          <!-- TO DO: filtro stock -->
+       <div class="col-md-3">
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <label class="input-group-text" for="inputFamily">Stock</label>
+          </div>
+          <select name="meliAccountSearch" id="inputFamily" class="custom-select">
+            <option [value]="">En stock</option>
+            <option [value]="">Sin stock</option>
+          </select>
+        </div>
+      </div> 
+          <div class="col-md-3">
+            <button class="btn btn-primary mr-1" (click)="searchProducts()">
+              <i *ngIf="!loadPaginator" class="fas fa-search m-1"></i> <i *ngIf="loadPaginator"
+                class="fas fa-spin fa-spinner m-1"></i> Buscar</button>
+              </div>
         </div>
         <div class="row">
           <div class="col d-flex justify-content-center">
@@ -125,7 +153,7 @@
 
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
-  <div class="card-header py-3">
+  <div class="card-header-pink py-3">
 
     <div
       class="d-flex flex-md-row flex-sm-column align-items-md-center justify-content-md-between align-items-sm-center justify-content-sm-center">
@@ -184,14 +212,15 @@
               </ng-container>
               <ng-template #elseTemplate>
                 <div class="custom-control custom-checkbox small">
-                  <input type="checkbox" [ngModel]="product.selected" disabled
-                    class="custom-control-input" [id]="'check' + product.sku">
+                  <input type="checkbox" [ngModel]="product.selected" disabled class="custom-control-input"
+                    [id]="'check' + product.sku">
                   <label class="custom-control-label" [for]="'check' + product.sku"></label>
                 </div>
               </ng-template>
             </td>
             <td>
-              <img class="img-fluid rounded" width="50px" height="50px" [src]="product.images |uploadImage" alt="Imagen">
+              <img class="img-fluid rounded" width="50px" height="50px" [src]="product.images |uploadImage"
+                alt="Imagen">
             </td>
             <td>
               <p [ngbTooltip]="product.name">
@@ -255,8 +284,8 @@
         </select>
       </div>
 
-       <!--Table Paginator Info-->
-       <app-table-paginator-info [total] = "pageProducts?.totalElements" ></app-table-paginator-info>
+      <!--Table Paginator Info-->
+      <app-table-paginator-info [total]="pageProducts?.totalElements"></app-table-paginator-info>
 
     </div>
 
