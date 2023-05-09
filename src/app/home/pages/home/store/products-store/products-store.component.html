@@ -12,13 +12,12 @@
       <h6 class="m-0 font-weight-bold text-white">Buscar por...</h6>
     </div>
   </div>
-  <div class="" id="collapseCardFilterProductStorage">
+  <!--<div class="" id="collapseCardFilterProductStorage"> -->
     <form #f="ngForm">
-      <div class="card-body container">
+      <!--<div class="card-body container">-->
 
-        <div class="row p-3">
+        <div class="row mt-3 ml-5 pt-0 justify-content-center">
           <div class="col-md-2">
-
             <div class="form-group">
               <input type="text" class="form-control" name="nameSeach" [(ngModel)]="nameSeach" id="idNameProduct"
                 placeholder="Nombre...">
@@ -42,9 +41,7 @@
               </select>
             </div>
           </div>
-
           <!--<div class="row"> -->
-
           <div class="col-md-3">
             <div class="input-group mb-3">
               <div class="input-group-prepend">
@@ -65,31 +62,29 @@
           </div>
           <!-- </div> -->
 
-          <div class="row p-3">
+          <div class="row ">
             <div class="col-md-4">
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
-                  <label class="input-group-text" for="idMinPriceSearch">Precio mín:</label>
-
-                  <input class="form-control text-box single-line" type="number" step="5" min="0" max="100000"
-                    [(ngModel)]="minValue" name="idMinPriceSearch" id="idMinPriceSearch">
+                  <label class="input-group-text" for="idMinPriceSearch">Precio mínimo</label>
                 </div>
+                <input class="form-control text-box single-line" type="number" step="5" min="0" max="100000"
+                  [(ngModel)]="minValue" name="idMinPriceSearch" id="idMinPriceSearch">
               </div>
             </div>
-
-            <div class="col-md-3">
+            <div class="col-md-4">
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
-                  <label class="input-group-text" for="idMaxPriceSearch">Precio máx:</label>
+                  <label class="input-group-text" for="idMaxPriceSearch">Precio máximo</label>
+                </div>
                   <input class="form-control text-box single-line" type="number" step="5" min="0" max="100000"
                     [(ngModel)]="maxValue" name="idMaxPriceSearch" id="idMaxPriceSearch">
-                </div>
               </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
-                  <label class="input-group-text" for="meliUbicationId">Ubicación:</label>
+                  <label class="input-group-text" for="meliUbicationId">Ubicación</label>
                   <div class="dropdown" id="meliUbicationId">
                     <button class="btn dropdown-toggle btn-outline-primary" type="button" id="dropdownMenuButton"
                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -117,38 +112,26 @@
             </div>
           </div>
           <!-- TO DO: filtro stock -->
-       <div class="col-md-3">
-        <div class="input-group mb-3">
-          <div class="input-group-prepend">
-            <label class="input-group-text" for="inputFamily">Stock</label>
-          </div>
-          <select name="meliAccountSearch" id="inputFamily" class="custom-select">
-            <option [value]="">En stock</option>
-            <option [value]="">Sin stock</option>
-          </select>
-        </div>
-      </div> 
-          <div class="col-md-3">
-            <button class="btn btn-primary mr-1" (click)="searchProducts()">
-              <i *ngIf="!loadPaginator" class="fas fa-search m-1"></i> <i *ngIf="loadPaginator"
-                class="fas fa-spin fa-spinner m-1"></i> Buscar</button>
+          <!--<div class="col-md-2">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <label class="input-group-text" for="inputFamily">Stock</label>
               </div>
-        </div>
-        <div class="row">
-          <div class="col d-flex justify-content-center">
-
+              <select name="meliAccountSearch" id="inputFamily" class="custom-select">
+                <option [value]="">En stock</option>
+                <option [value]="">Sin stock</option>
+              </select>
+            </div>
+          </div> -->
+          <div class="col-md-2">
             <button class="btn btn-primary mr-1" (click)="searchProducts()">
               <i *ngIf="!loadPaginator" class="fas fa-search m-1"></i> <i *ngIf="loadPaginator"
                 class="fas fa-spin fa-spinner m-1"></i> Buscar</button>
-            <button class="btn btn-outline-secondary ml-1" (click)="clearSearch(f)"> <i *ngIf="loadingClear"
-                class="fas fa-spin fa-spinner m-1"></i><i *ngIf="!loadingClear" class="fas fa-broom m-1"></i>
-              Limpiar</button>
           </div>
         </div>
-      </div>
+      <!--</div>-->
     </form>
-
-  </div>
+  <!--</div>-->
 </div>
 
 <!-- DataTales Example -->
