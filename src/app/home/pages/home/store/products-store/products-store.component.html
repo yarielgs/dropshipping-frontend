@@ -197,8 +197,8 @@
             <th>Imagen</th>
             <th>Nombre</th>
             <th>SKU</th>
-            <th>Familia</th>
             <th>Categoría</th>
+            <th>Campaña</th>
             <th>Costo BS</th>
             <th class="text-right">Stock</th>
             <th class="text-center">Ubicación</th>
@@ -234,7 +234,7 @@
             </td>
             <td>{{ product.sku}}</td>
             <td *ngIf="product.family">{{ product.family.description }}</td>
-            <td *ngIf="!product.family">Sin familia</td>
+            <td *ngIf="!product.family">Sin categoría</td>
             <td>
               <div *ngIf="product.categories.length > 0" class="dropdown no-arrow">
                 {{product.categories[0].description}}

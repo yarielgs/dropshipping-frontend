@@ -25,7 +25,7 @@
                 id="idClientName" placeholder="Nombre del cliente...">
             </div>
           </div>
-          <!-- Hay que cambiar el filtro a "Nombre o SKU"
+          <!-- TO DO: Hay que cambiar el filtro a "Nombre o SKU"
           <div class="row">
             <div class="col-md-2">
               <div class="form-group">
@@ -186,10 +186,12 @@
         <thead>
           <tr>
             <th class="text-right">ID</th>
-            <th>Estado</th>
-            <th>Cliente</th>
             <th>Fecha creación</th>
-            <th>Monto</th>
+            <!--<th>SKU</th> TO DO: debe reflejar el sku (del producto)-->
+            <th>Cliente</th><!-- TO DO: debe ser "Nombre" (del producto)-->
+            <!--<th>Cantidad</th> TO DO: debe reflejar la cantidad de unidades (del producto)-->
+            <th>Monto</th><!--debe reflejar el monto total por la cantidad de unidad(es)-->
+            <th>Estado</th>
             <th>Factura</th>
             <th>Salida del almacén</th>
             <th *ngIf="isAdmin()">Enviado a ERP</th>
