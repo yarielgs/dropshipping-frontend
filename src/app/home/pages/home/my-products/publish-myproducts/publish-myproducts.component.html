@@ -165,7 +165,7 @@
             </td>
             <td *ngIf="product.currentStock">{{ product.sku}}</td>
             <td *ngIf="product.family && product.currentStock">{{ product.family.description }}</td>
-            <td *ngIf="!product.family">Sin familia</td>
+            <td *ngIf="!product.family">Sin categoría</td>
             <td *ngIf="product.currentStock">UYU {{ product.priceUYU}} </td>
             <td *ngIf="product.currentStock">{{ product.currentStock}} </td>
             <td *ngIf="product.currentStock">
@@ -303,7 +303,7 @@
 
             <div class="col-md-6 izq-aling">
 
-              <div class="form-group row mb-2">
+             <!-- <div class="form-group row mb-2">
                 <div class="col-md-4 izq-aling">
                   <div class="row mb-2 label-wrapper">
                     <div class="col-md-9"><label class="control-label" for="Warranty" title="">Garantía</label></div>
@@ -339,7 +339,7 @@
                     [(ngModel)]="warrantyTime" name="warrantyTime" id="warrantyTime" [disabled]="!warranty">
                   <span class="field-validation-valid" data-valmsg-for="warrantyTime" data-valmsg-replace="true"></span>
                 </div>
-              </div>
+              </div>-->
 
               <div class="form-group row mb-2" style="margin-top: 2rem;">
                 <div class="col-md-4 izq-aling">
