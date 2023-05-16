@@ -48,6 +48,7 @@ import { ChartLineOrdersSellersComponent } from './pages/home/charts/chart-line-
 import { UploadImagePipe } from './pipes/upload-image.pipe';
 import { TablePaginatorInfoComponent } from './components/table-paginator-info/table-paginator-info.component';
 import { UploadEditImagePipe } from './pipes/upload-edit-image.pipe';
+import { PublicarProducto } from './components/modals/publicar-productos/publicar-productos.component';
 
 
 
@@ -78,6 +79,7 @@ import { UploadEditImagePipe } from './pipes/upload-edit-image.pipe';
     EditProductsPublishedComponent,
     OperationsComponent,
     AttributeRequiredComponent,
+    PublicarProducto,
     HistorialOperationComponent,
     DashboardAdminComponent,
     ChartLineOrdersComponent,
