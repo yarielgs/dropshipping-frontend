@@ -24,19 +24,18 @@
         </div>
       </div>
       <!-- TO DO: ATENCIÓN: USAR LA CLASE COL-MD-3 -->
-      <!--<div class="col-md-3">
-            <div class="input-group mb-3">
-              <div class="input-group-prepend">
-                <label class="input-group-text" for="inputFamily">Stock</label>
-              </div>
+      <div class="col-md-3">
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <label class="input-group-text" for="inputFamily">Stock</label>
+          </div>
 
-              <select name="meliAccountSearch" id="inputFamily" class="custom-select"
-                [(ngModel)]="meliAccountSearch">
-                <option [value]="meliAccountSearchClear">En stock</option>
-                <option [value]="">Sin stock</option>
-              </select>
-            </div>
-          </div> -->
+          <select name="meliAccountSearch" id="inputFamily" class="custom-select" [(ngModel)]="inStock">
+            <option [value]="true">En stock</option>
+            <option [value]="false">Sin stock</option>
+          </select>
+        </div>
+      </div>
       <div class="col-md-3 ">
         <div class="d-flex justify-content-center align-items-center">
           <button class="btn btn-outline-secondary h-75 w-75 mx-2 " (click)="clearSearch(f)"> <i *ngIf="loadingClear"

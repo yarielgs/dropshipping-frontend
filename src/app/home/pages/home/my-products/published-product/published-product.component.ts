@@ -40,6 +40,7 @@ export class PublishedProductComponent implements OnInit {
   public typeStateSearch = '';
   public errorProducts = false;
 
+  public inStock: boolean = null;
   // Paginator
 
   page = 1;
@@ -83,69 +84,69 @@ export class PublishedProductComponent implements OnInit {
     this.emptySearch = false;
     this.errorProducts = false;
     this.setMsgLoading('Cargando publicaciones...', onLoading);
-    console.log('page', this.page)
+
     this.productsMeliPublishedService.
       getProductsPublished(this.page - 1, this.size, this.skuSearch, this.idMeliSearch, this.meliAccountSearch === '' ? -1 : +this.meliAccountSearch,
-          this.typeStateSearch === '' ? '' : this.typeStateSearch, this.titleSearch).subscribe((resp: PageProductMeliPublished) => {
+        this.typeStateSearch === '' ? '' : this.typeStateSearch, this.titleSearch, this.inStock).subscribe((resp: PageProductMeliPublished) => {
 
-        if (this.loadingSearch && resp.numberOfElements === 0) {
-          this.emptySearch = true;
-          this.errorProducts = false;
-        } else {
-          this.emptySearch = false;
-          this.loadingSearch = false;
-        }
+          if (this.loadingSearch && resp.numberOfElements === 0) {
+            this.emptySearch = true;
+            this.errorProducts = false;
+          } else {
+            this.emptySearch = false;
+            this.loadingSearch = false;
+          }
 
-        if((this.skuSearch === '' && this.idMeliSearch === '' && this.meliAccountSearch === ''
-        && this.typeStateSearch === '' && this.titleSearch === '') && resp.numberOfElements === 0){
-          this.errorProducts = true;
-          this.emptySearch = false;
-        }
+          if ((this.skuSearch === '' && this.idMeliSearch === '' && this.meliAccountSearch === ''
+            && this.typeStateSearch === '' && this.titleSearch === '') && resp.numberOfElements === 0) {
+            this.errorProducts = true;
+            this.emptySearch = false;
+          }
 
-        this.pagePublised = resp;
-        this.productsMeliPublished = this.pagePublised.content;
-        this.setMsgLoading('Cargando publicaciones...', false);
-        this.loadingClear = false;
-        this.loadPaginator = false;
+          this.pagePublised = resp;
+          this.productsMeliPublished = this.pagePublised.content;
+          this.setMsgLoading('Cargando publicaciones...', false);
+          this.loadingClear = false;
+          this.loadPaginator = false;
 
-        let countSelected = 0;
-        this.pagePublised.content.forEach(element => {
-          this.productsSelected.forEach(select => {
-            if (element.id === select.id) {
-              element.selected = true;
-              this.updateElementOfProduct(element, select);
-              countSelected++;
-            }
+          let countSelected = 0;
+          this.pagePublised.content.forEach(element => {
+            this.productsSelected.forEach(select => {
+              if (element.id === select.id) {
+                element.selected = true;
+                this.updateElementOfProduct(element, select);
+                countSelected++;
+              }
+            });
           });
+          if (countSelected === this.size) {
+            this.checkAll = true;
+            this.checkAllP.nativeElement.checked = 1;
+          }
+          else {
+            this.checkAll = false;
+            this.checkAllP.nativeElement.checked = 0;
+          }
+
+          /** Send products published list to breascrumbs component **/
+          this.sendInfoToComponentService.setInfoOfProductPublishedSelectedView(this.productsSelected);
+          this.sendInfoToComponentService.setCountOfProductPublishedView(this.productsMeliPublished.length);
+
+        }, (error: any) => {
+          this.errorProducts = true;
+          this.loadingClear = false;
+          this.loadPaginator = false;
+          this.emptySearch = false;
+          this.setMsgLoading('Cargando publicaciones...', false);
         });
-        if (countSelected === this.size) {
-          this.checkAll = true;
-          this.checkAllP.nativeElement.checked = 1;
-        }
-        else {
-          this.checkAll = false;
-          this.checkAllP.nativeElement.checked = 0;
-        }
-
-        /** Send products published list to breascrumbs component **/
-        this.sendInfoToComponentService.setInfoOfProductPublishedSelectedView(this.productsSelected);
-        this.sendInfoToComponentService.setCountOfProductPublishedView(this.productsMeliPublished.length);
-
-      }, (error: any) => {
-        this.errorProducts = true;
-        this.loadingClear = false;
-        this.loadPaginator = false;
-        this.emptySearch = false;
-        this.setMsgLoading('Cargando publicaciones...', false);
-      });
 
   }
 
   searchProductsPublished() {
-      this.loadPaginator = true;
-      this.loadingSearch = true;
-      this.productsSelected = [];
-      this.loadProductsPaginator(false);
+    this.loadPaginator = true;
+    this.loadingSearch = true;
+    this.productsSelected = [];
+    this.loadProductsPaginator(false);
   }
 
   // Clear search form
@@ -158,6 +159,7 @@ export class PublishedProductComponent implements OnInit {
     this.meliAccountSearch = '';
     this.typeStateSearch = '';
     this.productsSelected = [];
+    this.inStock = null;
     this.loadProductsPaginator(false);
   }
 
@@ -165,11 +167,11 @@ export class PublishedProductComponent implements OnInit {
     return StatesOfMeli;
   }
 
-  getAccountMeli(){
+  getAccountMeli() {
     this.meliAccountsList = [];
     this.meliAccountService.getAccounts().subscribe(resp => {
       resp.forEach(element => {
-        if(element.marketplaceId === MarketplaceType.MERCADOLIBRE){
+        if (element.marketplaceId === MarketplaceType.MERCADOLIBRE) {
           this.meliAccountsList.push(element);
         }
       });
@@ -180,7 +182,7 @@ export class PublishedProductComponent implements OnInit {
     this.checkAll = !this.checkAll;
 
     this.pagePublised.content.forEach(element => {
-      if(element.specialPaused !== 1) {
+      if (element.specialPaused !== 1) {
         element.selected = this.checkAll;
         if (element.selected === true) {
           let position1 = -1;
@@ -190,8 +192,8 @@ export class PublishedProductComponent implements OnInit {
           }
         }
         else {
-          for( var i = 0; i < this.productsSelected.length; i++) {
-            if ( this.productsSelected[i].id === element.id) {
+          for (var i = 0; i < this.productsSelected.length; i++) {
+            if (this.productsSelected[i].id === element.id) {
               this.productsSelected.splice(i, 1);
               i--;
             }
@@ -205,8 +207,8 @@ export class PublishedProductComponent implements OnInit {
       this.disable = false;
     }
 
-     /** Send products published list to breascrumbs component **/
-     this.sendInfoToComponentService.setInfoOfProductPublishedSelectedView(this.productsSelected);
+    /** Send products published list to breascrumbs component **/
+    this.sendInfoToComponentService.setInfoOfProductPublishedSelectedView(this.productsSelected);
   }
 
   selectProduct(product: ProductMeliPublished): void {
@@ -235,7 +237,7 @@ export class PublishedProductComponent implements OnInit {
 
   }
 
-  deselectCheckedProducts(){
+  deselectCheckedProducts() {
     this.pagePublised.content.forEach(element => {
       if (element.selected) {
         element.selected = false;
@@ -244,11 +246,11 @@ export class PublishedProductComponent implements OnInit {
     this.productsSelected = [];
     this.disable = true;
   }
-/*
-  navegateToEdit(product: ProductMeliPublished) {
-    let prod = JSON.stringify(product);
-    this.router.navigate(['edit-products-published', prod]);
-  }*/
+  /*
+    navegateToEdit(product: ProductMeliPublished) {
+      let prod = JSON.stringify(product);
+      this.router.navigate(['edit-products-published', prod]);
+    }*/
 
   navegateToEdit(product: ProductMeliPublished) {
     this.router.navigate(['/home/edit-products-published', product.id]);
@@ -302,58 +304,58 @@ export class PublishedProductComponent implements OnInit {
   changeStatusMultiplePublications(status: number): void {
     /* Validacion de estados*/
     let isCorrect = true;
-    switch(status){
-       case 3: {
+    switch (status) {
+      case 3: {
         this.productsSelected.forEach(prod => {
-          if(prod.status !== 'active'){
+          if (prod.status !== 'active') {
             Swal.fire({
               title: 'Parámetros no válidos?',
               text: 'Para pausar las publicaciones seleccionadas estas deben estar en estado "activo"',
               icon: 'error',
               confirmButtonColor: '#3085d6',
               confirmButtonText: 'Entendido'
-            }) ;
+            });
             isCorrect = false;
             return;
           }
         });
-          break;
+        break;
       }
-       case 4: {
+      case 4: {
         this.productsSelected.forEach(prod => {
-          if(prod.status !== 'paused'){
+          if (prod.status !== 'paused') {
             Swal.fire({
               title: 'Parámetros no válidos?',
               text: 'Para reactivar las publicaciones seleccionadas estas deben estar en estado "pausado"',
               icon: 'error',
               confirmButtonColor: '#3085d6',
               confirmButtonText: 'Entendido'
-            }) ;
+            });
             isCorrect = false;
             return;
           }
         });
-         break;
-       }
-       case 5: {
+        break;
+      }
+      case 5: {
         this.productsSelected.forEach(prod => {
-          if(prod.status === 'closed' || prod.status === 'fail'){
+          if (prod.status === 'closed' || prod.status === 'fail') {
             Swal.fire({
               title: 'Parámetros no válidos?',
               text: 'Para finalizar las publicaciones seleccionadas estas no deben estar en los estados "fallado" y "cerrado"',
               icon: 'error',
               confirmButtonColor: '#3085d6',
               confirmButtonText: 'Entendido'
-            }) ;
+            });
             isCorrect = false;
             return;
           }
         });
-          break;
-       }
+        break;
+      }
     }
 
-    if(isCorrect){
+    if (isCorrect) {
       Swal.fire({
         title: 'Está seguro?',
         text: 'Confirme la operación!',
@@ -376,13 +378,13 @@ export class PublishedProductComponent implements OnInit {
                 withError = true;
               }
 
-            if(withError){
-              this.notificationErrorChangeMultipleStatus(resp);
-            }
-            else{
-              this.notificationSuccessChangeStatus(resp.response);
-              this.deselectCheckedProducts();
-            }
+              if (withError) {
+                this.notificationErrorChangeMultipleStatus(resp);
+              }
+              else {
+                this.notificationSuccessChangeStatus(resp.response);
+                this.deselectCheckedProducts();
+              }
 
             }, (error: any) => {
               console.log(error);
@@ -402,31 +404,31 @@ export class PublishedProductComponent implements OnInit {
     let imageCount = true;
 
     this.productsSelected.forEach(prod => {
-      if(prod.status !== 'closed'){
+      if (prod.status !== 'closed') {
         allClosed = false;
         isCorrect = false;
       }
-      else if(prod.title.length > 60){
-          isCorrect = false;
-          allTitle = false;
-        }
-        else if(prod.images.length > 12) {
-          isCorrect = false;
-          imageCount = false;
-        }
+      else if (prod.title.length > 60) {
+        isCorrect = false;
+        allTitle = false;
+      }
+      else if (prod.images.length > 12) {
+        isCorrect = false;
+        imageCount = false;
+      }
     });
 
-    if(!allClosed){
+    if (!allClosed) {
       Swal.fire({
         title: 'Parámetros no válidos?',
         text: 'Para republicar las publicaciones seleccionadas todas deben estar en estado "cerrado"',
         icon: 'error',
         confirmButtonColor: '#3085d6',
         confirmButtonText: 'Entendido'
-      }) ;
+      });
     }
 
-    if(!allTitle){
+    if (!allTitle) {
       Swal.fire({
         position: 'top-end',
         title: 'Título o Nombre del producto no válido',
@@ -437,7 +439,7 @@ export class PublishedProductComponent implements OnInit {
       })
     }
 
-    if(!imageCount){
+    if (!imageCount) {
       Swal.fire({
         position: 'top-end',
         icon: 'error',
@@ -448,7 +450,7 @@ export class PublishedProductComponent implements OnInit {
       })
     }
 
-    if(isCorrect){
+    if (isCorrect) {
       Swal.fire({
         title: 'Está seguro?',
         text: 'Confirme la operación!',
@@ -470,13 +472,13 @@ export class PublishedProductComponent implements OnInit {
                 withError = true;
               }
 
-            if(withError){
-              this.notificationErrorChangeMultipleStatus(resp);
-            }
-            else{
-              this.notificationSuccessChangeStatus(resp.response);
-              this.deselectCheckedProducts();
-            }
+              if (withError) {
+                this.notificationErrorChangeMultipleStatus(resp);
+              }
+              else {
+                this.notificationSuccessChangeStatus(resp.response);
+                this.deselectCheckedProducts();
+              }
 
             }, (error: any) => {
               console.log(error);
@@ -488,7 +490,7 @@ export class PublishedProductComponent implements OnInit {
     }
   }
 
-  deletePublication(product: ProductMeliPublished): void{
+  deletePublication(product: ProductMeliPublished): void {
     Swal.fire({
       title: 'Está seguro?',
       text: 'Confirme la operación de eliminar!',
@@ -503,51 +505,51 @@ export class PublishedProductComponent implements OnInit {
       if (result.isConfirmed) {
 
         this.setMsgLoading('Eliminando publicación...', true);
-        if(product.status === StatesOfMeli.FAIL || product.status === StatesOfMeli.UNDER_REVIEW){
+        if (product.status === StatesOfMeli.FAIL || product.status === StatesOfMeli.UNDER_REVIEW) {
           this.productsMeliPublishedService.deletePublicationFailed(product.id)
-          .subscribe((resp: any) => {
+            .subscribe((resp: any) => {
 
-            this.loadProductsPaginator(true);
-            if (resp.response) {
-              for( var i = 0; i < this.productsSelected.length; i++) {
-                if ( this.productsSelected[i].id === product.id) {
-                  this.productsSelected.splice(i, 1);
-                  i--;
+              this.loadProductsPaginator(true);
+              if (resp.response) {
+                for (var i = 0; i < this.productsSelected.length; i++) {
+                  if (this.productsSelected[i].id === product.id) {
+                    this.productsSelected.splice(i, 1);
+                    i--;
+                  }
                 }
+                this.notificationSuccessChangeStatus(resp.response);
+              } else {
+                this.notificationErrorChangeStatus(resp);
               }
-              this.notificationSuccessChangeStatus(resp.response);
-            } else {
-              this.notificationErrorChangeStatus(resp);
-            }
 
 
-          }, (error: any) => {
-            console.log(error);
-            this.notificationErrorChangeStatus(error);
-          })
+            }, (error: any) => {
+              console.log(error);
+              this.notificationErrorChangeStatus(error);
+            })
         }
-        else{
+        else {
           this.productsMeliPublishedService.deletePublication(product.accountMeli, product.status, product.idPublicationMeli)
-          .subscribe((resp: any) => {
+            .subscribe((resp: any) => {
 
-            this.loadProductsPaginator(true);
-            if (resp.response) {
-              for( var i = 0; i < this.productsSelected.length; i++) {
-                if ( this.productsSelected[i].id === product.id) {
-                  this.productsSelected.splice(i, 1);
-                  i--;
+              this.loadProductsPaginator(true);
+              if (resp.response) {
+                for (var i = 0; i < this.productsSelected.length; i++) {
+                  if (this.productsSelected[i].id === product.id) {
+                    this.productsSelected.splice(i, 1);
+                    i--;
+                  }
                 }
+                this.notificationSuccessChangeStatus(resp.response);
+              } else {
+                this.notificationErrorChangeStatus(resp);
               }
-              this.notificationSuccessChangeStatus(resp.response);
-            } else {
-              this.notificationErrorChangeStatus(resp);
-            }
 
 
-          }, (error: any) => {
-            console.log(error);
-            this.notificationErrorChangeStatus(error);
-          })
+            }, (error: any) => {
+              console.log(error);
+              this.notificationErrorChangeStatus(error);
+            })
         }
 
       }
@@ -557,7 +559,7 @@ export class PublishedProductComponent implements OnInit {
   //Pendiente -- no terminado
   deleteSetPublication(deleteAll: boolean): void {
     let confirmText = "";
-    if(!deleteAll)
+    if (!deleteAll)
       confirmText = "¿Estás seguro de eliminar los productos seleccionados?";
     else
       confirmText = "¿Estás seguro de eliminar todos los productos de la cuenta actual?";
@@ -576,48 +578,48 @@ export class PublishedProductComponent implements OnInit {
       if (result.isConfirmed) {
         this.setMsgLoading('Eliminando publicaciones...', true);
         let idProductList: number[] = [];
-        if(!deleteAll) {
+        if (!deleteAll) {
           this.productsSelected.forEach(f => idProductList.push(f.id));
         }
         this.productsMeliPublishedService.deleteSetPublication(this.meliAccountsList[0].id, idProductList).then((resp: any) => {
-            if(resp.DONE) {
-              Swal.fire({
-                position: 'top-end',
-                title: 'Publicaciones eliminadas!!!',
-                text: resp.DONE,
-                icon: 'success',
-                showConfirmButton: false,
-                timer: 5000
-              });
-              this.productsSelected = [];
-              this.loadProductsPaginator(true);
-            }
-            else if(resp.PARTIAL) {
-              Swal.fire({
-                position: 'top-end',
-                title: 'Parcialmente eliminadas!!!',
-                text: resp.PARTIAL,
-                icon: 'warning',
-                showConfirmButton: false,
-                timer: 5000
-              });
-              this.productsSelected = [];
-              this.loadProductsPaginator(true);
-            }
-            else {
-              Swal.fire({
-                position: 'top-end',
-                title: 'Publicaciones no eliminadas!!!',
-                text: resp.BAD,
-                icon: 'error',
-                showConfirmButton: false,
-                timer: 5000
-              });
-              this.setMsgLoading('Cargando publicaciones...', false);
-            }
+          if (resp.DONE) {
+            Swal.fire({
+              position: 'top-end',
+              title: 'Publicaciones eliminadas!!!',
+              text: resp.DONE,
+              icon: 'success',
+              showConfirmButton: false,
+              timer: 5000
+            });
+            this.productsSelected = [];
+            this.loadProductsPaginator(true);
+          }
+          else if (resp.PARTIAL) {
+            Swal.fire({
+              position: 'top-end',
+              title: 'Parcialmente eliminadas!!!',
+              text: resp.PARTIAL,
+              icon: 'warning',
+              showConfirmButton: false,
+              timer: 5000
+            });
+            this.productsSelected = [];
+            this.loadProductsPaginator(true);
+          }
+          else {
+            Swal.fire({
+              position: 'top-end',
+              title: 'Publicaciones no eliminadas!!!',
+              text: resp.BAD,
+              icon: 'error',
+              showConfirmButton: false,
+              timer: 5000
+            });
+            this.setMsgLoading('Cargando publicaciones...', false);
+          }
         }, (error: any) => {
           console.log(error);
-          if(error.status === 504) {
+          if (error.status === 504) {
             Swal.fire({
               position: 'top-end',
               title: 'Información!!!',
@@ -630,8 +632,8 @@ export class PublishedProductComponent implements OnInit {
             this.loadProductsPaginator(false)
             setTimeout(() => {
               this.loadProductsPaginator(false)
-             }, 40000);
-          }else{
+            }, 40000);
+          } else {
             Swal.fire({
               position: 'top-end',
               title: 'Publicaciones no eliminadas!!!',
@@ -663,7 +665,7 @@ export class PublishedProductComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
 
-        if(product.title.length > 60){
+        if (product.title.length > 60) {
           Swal.fire({
             position: 'top-end',
             title: 'Título o Nombre del producto no válido',
@@ -672,7 +674,7 @@ export class PublishedProductComponent implements OnInit {
             showConfirmButton: false,
             timer: 5000
           })
-        }else{
+        } else {
           this.setMsgLoading('Republicando publicación...', true);
           this.productsMeliPublishedService.republishPublication(product.accountMeli, product.idPublicationMeli)
             .subscribe((resp: any) => {
@@ -693,7 +695,7 @@ export class PublishedProductComponent implements OnInit {
     })
   }
 
-  synchronizePublication(){
+  synchronizePublication() {
     this.setMsgLoading('Sincronizando publicaciones...', true);
     let publicationList: number[] = [];
     this.productsSelected.forEach(p => {
@@ -701,7 +703,7 @@ export class PublishedProductComponent implements OnInit {
     })
 
     this.productsMeliPublishedService.synchronizePublication(publicationList).subscribe(resp => {
-      if(resp.response){
+      if (resp.response) {
         Swal.fire({
           position: 'top-end',
           title: 'Productos sincronizados',
@@ -711,7 +713,7 @@ export class PublishedProductComponent implements OnInit {
           timer: 5000
         })
       }
-      else{
+      else {
         Swal.fire({
           position: 'top-end',
           title: 'Productos no sincronizados',
@@ -787,7 +789,7 @@ export class PublishedProductComponent implements OnInit {
   notificationErrorChangeMultipleStatus(error?: any): void {
     let title = 'No todas las publicaciones pudieron ser realizadas, intente sincronizar su cuenta o consulte al administrador';
 
-    if (error.error_meli !== undefined ) {
+    if (error.error_meli !== undefined) {
       title = `${title}, mercadolibre no procesó el cambio`;
     }
     this.setMsgLoading('Cargando publicaciones...', false);
