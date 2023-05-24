@@ -25,40 +25,40 @@ export class ProductsStorageService {
     this.getFamiles();
   }
 
- /* getPageProducts(
-    page: number,
-    size: number,
-    sku: string,
-    nameProduct: string,
-    categoryId: number,
-    familyId: number,
-    minPrice: number,
-    maxPrice: number
-  ): Observable<PageProductStorage> {
-    const uri = `${this.URI}${
-      this.URI_SERVICE_PRODUCTS
-    }/items-by-filters/${page}/${size}
-    ?sku=${sku}&nameProduct=${nameProduct}&categoryId=${categoryId}&familyId=${familyId}
-    &minPrice=${minPrice}&maxPrice=${maxPrice}&profileId=${
-      this.authService.authenticationDataExtrac()?.profileId
-    }`;
-
-    console.log(uri);
-    return this.http.get<PageProductStorage>(uri).pipe(
-      map((resp: any) => {
-        this.pageProducts.itemsGrid = resp.itemsGrid;
-        this.pageProducts.totalElements = resp.totalElements;
-        this.pageProducts.currentStock = resp.currentStock;
-        this.pageProducts.size = resp.size;
-        this.pageProducts.totalPages = resp.totalPages;
-        this.pageProducts.last = resp.last;
-        this.pageProducts.first = resp.first;
-        this.pageProducts.sort = resp.sort;
-        this.pageProducts.totalProducts = resp.totalProducts;
-        return this.pageProducts;
-      })
-    );
-  }*/
+  /* getPageProducts(
+     page: number,
+     size: number,
+     sku: string,
+     nameProduct: string,
+     categoryId: number,
+     familyId: number,
+     minPrice: number,
+     maxPrice: number
+   ): Observable<PageProductStorage> {
+     const uri = `${this.URI}${
+       this.URI_SERVICE_PRODUCTS
+     }/items-by-filters/${page}/${size}
+     ?sku=${sku}&nameProduct=${nameProduct}&categoryId=${categoryId}&familyId=${familyId}
+     &minPrice=${minPrice}&maxPrice=${maxPrice}&profileId=${
+       this.authService.authenticationDataExtrac()?.profileId
+     }`;
+ 
+     console.log(uri);
+     return this.http.get<PageProductStorage>(uri).pipe(
+       map((resp: any) => {
+         this.pageProducts.itemsGrid = resp.itemsGrid;
+         this.pageProducts.totalElements = resp.totalElements;
+         this.pageProducts.currentStock = resp.currentStock;
+         this.pageProducts.size = resp.size;
+         this.pageProducts.totalPages = resp.totalPages;
+         this.pageProducts.last = resp.last;
+         this.pageProducts.first = resp.first;
+         this.pageProducts.sort = resp.sort;
+         this.pageProducts.totalProducts = resp.totalProducts;
+         return this.pageProducts;
+       })
+     );
+   }*/
 
   getPageProducts(
     page: number,
@@ -69,6 +69,7 @@ export class ProductsStorageService {
     familyId: number,
     minPrice: number,
     maxPrice: number,
+    inStock: boolean,
     existToPublish?: number
   ): Observable<PageProductStorage> {
     const uri = `${this.URI}${this.URI_SERVICE_PRODUCTS}/v2/items-by-filters/${page}/${size}`;
@@ -80,7 +81,8 @@ export class ProductsStorageService {
       minPrice,
       maxPrice,
       profileId: this.authService.authenticationDataExtrac()?.profileId,
-      existToPublish
+      existToPublish,
+      stock: inStock
     };
     return this.http.post<PageProductStorage>(uri, searchItem).pipe(
       map((resp: any) => {
@@ -117,8 +119,7 @@ export class ProductsStorageService {
   existInStorage(sku: string): boolean {
     this.http
       .get<Boolean>(
-        `${this.URI}${this.URI_SERVICE_PRODUCTS}/exist-in-storage/${
-          this.authService.authenticationDataExtrac()?.profileId
+        `${this.URI}${this.URI_SERVICE_PRODUCTS}/exist-in-storage/${this.authService.authenticationDataExtrac()?.profileId
         }?sku=${sku}`
       )
       .subscribe((resp) => console.log('RESP:', resp));

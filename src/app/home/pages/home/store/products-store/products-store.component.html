@@ -83,7 +83,8 @@
       </div>
       <div class="col-md-2">
         <div class="dropdown text-start" id="meliUbicationId">
-          <button class="btn dropdown-toggle btn-outline-primary w-100 text-start" type="button" data-toggle="dropdown" aria-expanded="false">
+          <button class="btn dropdown-toggle btn-outline-primary w-100 text-start" type="button" data-toggle="dropdown"
+            aria-expanded="false">
             Ubicación
           </button>
           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -137,9 +138,9 @@
           <div class="input-group-prepend">
             <label class="input-group-text" for="inputFamily">Stock</label>
           </div>
-          <select name="meliAccountSearch" id="inputFamily" class="custom-select" disabled>
-            <option [value]="">En stock</option>
-            <option [value]="">Sin stock</option>
+          <select name="meliAccountSearch" id="inputFamily" class="custom-select" disabled="true">
+            <option [value]="true">En stock</option>
+            <option [value]="false">Sin stock</option>
           </select>
         </div>
       </div>

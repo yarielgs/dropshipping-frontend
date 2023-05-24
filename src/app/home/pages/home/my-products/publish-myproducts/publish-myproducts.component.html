@@ -64,20 +64,18 @@
         </div>
       </div>
       <!-- TO DO: filtro stock -->
-       <!--<div class="col-md-3">
+      <div class="col-md-3">
         <div class="input-group mb-3">
           <div class="input-group-prepend">
             <label class="input-group-text" for="inputFamily">Stock</label>
           </div>
-          <select name="meliAccountSearch" id="inputFamily" class="custom-select">
-            <option [value]="">En stock</option>
-            <option [value]="">Sin stock</option>
+          <select name="meliAccountSearch" id="inputFamily" class="custom-select" [(ngModel)]="inStock">
+            <option [value]="true">En stock</option>
+            <option [value]="false">Sin stock</option>
           </select>
         </div>
-      </div> -->
-      <div class="col-md-3">
-
       </div>
+
       <div class="col-md-3">
         <div class="d-flex justify-content-center align-items-center">
           <button class="btn btn-primary h-75 w-75 mx-2 " (click)="searchProducts()">
@@ -147,28 +145,28 @@
         <tbody *ngIf="!loading">
           <tr *ngFor="let product of pageProductsMeli.itemsMeliGrid"
             [ngClass]="{'special-paused': product.specialPaused === 1}">
-            <td *ngIf="product.currentStock">
+            <td>
               <div class="custom-control custom-checkbox small">
                 <input type="checkbox" [ngModel]="product.selected" #checkP (change)="selectProduct(product)"
-                  class="custom-control-input" [id]="'check' + product.sku" [disabled]="product.specialPaused === 1">
+                  class="custom-control-input" [id]="'check' + product.sku">
                 <label class="custom-control-label" [for]="'check' + product.sku"></label>
               </div>
             </td>
-            <td *ngIf="product.currentStock"><!--OJO nuevas implementaciones-->
+            <td><!--OJO nuevas implementaciones-->
               <img class="img-fluid rounded" width="50px" height="50px" [src]="product.images |uploadImage"
                 alt="Imagen">
             </td>
-            <td *ngIf="product.currentStock">
+            <td>
               <p [ngbTooltip]="product.name">
                 {{ product.name |slice:0:45}}
               </p>
             </td>
-            <td *ngIf="product.currentStock">{{ product.sku}}</td>
-            <td *ngIf="product.family && product.currentStock">{{ product.family.description }}</td>
+            <td>{{ product.sku}}</td>
+            <td *ngIf="product.family">{{ product.family.description }}</td>
             <td *ngIf="!product.family">Sin categoría</td>
-            <td *ngIf="product.currentStock">UYU {{ product.priceUYU}} </td>
-            <td *ngIf="product.currentStock">{{ product.currentStock}} </td>
-            <td *ngIf="product.currentStock">
+            <td>UYU {{ product.priceUYU}} </td>
+            <td>{{ product.currentStock}} </td>
+            <td>
               <div *ngIf="product.state === 'Publicado'" style="padding: 0.25rem 1.25rem;"
                 class="alert alert-danger mb-0" role="alert">
                 <i class="far fa-check-circle"></i> Publicado
@@ -178,8 +176,7 @@
                 <i class="far fa-times-circle"></i> {{ product.state}}
               </div>
             </td>
-            <td *ngIf="product.currentStock" class="text-right"> <i
-                *ngIf="loadingDeleteProduct && productToDelete === product;"
+            <td class="text-right"> <i *ngIf="loadingDeleteProduct && productToDelete === product;"
                 class="fas fa-spin fa-spinner fa-2x ml-2"></i>
               <div class="dropdown no-arrow" *ngIf="productToDelete !== product">
                 <a class="dropdown-toggle btn btn-primary actionbox" href="#" role="button" id="dropdownMenuLink"
@@ -303,7 +300,7 @@
 
             <div class="col-md-6 izq-aling">
 
-             <!-- <div class="form-group row mb-2">
+              <!-- <div class="form-group row mb-2">
                 <div class="col-md-4 izq-aling">
                   <div class="row mb-2 label-wrapper">
                     <div class="col-md-9"><label class="control-label" for="Warranty" title="">Garantía</label></div>

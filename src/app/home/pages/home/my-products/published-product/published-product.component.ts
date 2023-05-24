@@ -182,24 +182,24 @@ export class PublishedProductComponent implements OnInit {
     this.checkAll = !this.checkAll;
 
     this.pagePublised.content.forEach(element => {
-      if (element.specialPaused !== 1) {
-        element.selected = this.checkAll;
-        if (element.selected === true) {
-          let position1 = -1;
-          this.productsSelected.forEach(pro => { if (pro.id === element.id) { position1 = this.productsSelected.indexOf(pro); } });
-          if (position1 === -1) {
-            this.productsSelected.push(element);
-          }
+      // if (element.specialPaused !== 1) {
+      element.selected = this.checkAll;
+      if (element.selected === true) {
+        let position1 = -1;
+        this.productsSelected.forEach(pro => { if (pro.id === element.id) { position1 = this.productsSelected.indexOf(pro); } });
+        if (position1 === -1) {
+          this.productsSelected.push(element);
         }
-        else {
-          for (var i = 0; i < this.productsSelected.length; i++) {
-            if (this.productsSelected[i].id === element.id) {
-              this.productsSelected.splice(i, 1);
-              i--;
-            }
+      }
+      else {
+        for (var i = 0; i < this.productsSelected.length; i++) {
+          if (this.productsSelected[i].id === element.id) {
+            this.productsSelected.splice(i, 1);
+            i--;
           }
         }
       }
+      // }
     });
     if (this.productsSelected.length === 0) {
       this.disable = true;

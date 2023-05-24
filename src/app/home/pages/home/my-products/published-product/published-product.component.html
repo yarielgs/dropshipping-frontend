@@ -11,19 +11,18 @@
     <!--<div class="card-body container-fluid"> -->
 
     <div class="row mt-3 pt-0 justify-content-center">
-      <div class="col-md-4">
+      <div class="col-md-3">
         <div class="form-group">
           <input type="text" class="form-control" name="titleSearch" [(ngModel)]="titleSearch" id="idTitle"
             placeholder="Buscar por nombre...">
         </div>
       </div>
-      <div class="col-md-4 ">
+      <div class="col-md-3 ">
         <div class="form-group">
           <input type="text" class="form-control" name="skuSearch" id="idSku" [(ngModel)]="skuSearch"
             placeholder="Buscar por SKU...">
         </div>
       </div>
-      <!-- TO DO: ATENCIÓN: USAR LA CLASE COL-MD-3 -->
       <div class="col-md-3">
         <div class="input-group mb-3">
           <div class="input-group-prepend">
@@ -36,7 +35,7 @@
           </select>
         </div>
       </div>
-      <div class="col-md-3 ">
+      <div class="col-md-2 ">
         <div class="d-flex justify-content-center align-items-center">
           <button class="btn btn-outline-secondary h-75 w-75 mx-2 " (click)="clearSearch(f)"> <i *ngIf="loadingClear"
               class="fas fa-spin fa-spinner m-1"></i><i *ngIf="!loadingClear" class="fas fa-broom m-1"></i>
@@ -45,27 +44,25 @@
       </div>
     </div>
     <div class="row  pt-0 justify-content-center">
-      <div class="col-md-4 ">
+      <div class="col-md-3 ">
         <div class="form-group">
           <input type="text" class="form-control" name="idMeliSearch" id="idMeliSearch" [(ngModel)]="idMeliSearch"
             placeholder="Id Mercado Libre...">
         </div>
       </div>
-      <!-- TO DO: -->
-      <!-- <div class="col-md-3">
-            <div class="input-group mb-3">
-              <div class="input-group-prepend">
-                <label class="input-group-text" for="inputGroupOrderStatus">Cuenta</label>
-              </div>
-              <select name="meliAccountSearch" id="meliAccountSearch" class="custom-select"
-                [(ngModel)]="meliAccountSearch">
-                <option [value]="meliAccountSearchClear">Todas</option>
-                <option *ngFor="let meli of meliAccountsList" [value]="meli.id">
-                  {{meli.businessName}} </option>
-              </select>
-            </div>
-          </div> -->
-      <div class="col-md-4">
+      <div class="col-md-3">
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <label class="input-group-text" for="inputGroupOrderStatus">Cuenta</label>
+          </div>
+          <select name="meliAccountSearch" id="meliAccountSearch" class="custom-select" [(ngModel)]="meliAccountSearch">
+            <option [value]="meliAccountSearchClear">Todas</option>
+            <option *ngFor="let meli of meliAccountsList" [value]="meli.id">
+              {{meli.businessName}} </option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-3">
         <div class="input-group mb-3">
           <div class="input-group-prepend">
             <label class="input-group-text" for="inputGroupOrderStatus">Estado</label>
@@ -83,7 +80,7 @@
           </select>
         </div>
       </div>
-      <div class="col-md-3">
+      <div class="col-md-2">
         <div class="d-flex justify-content-center align-items-center">
           <button class="btn btn-primary h-75 w-75 mx-2" (click)="searchProductsPublished()">
             <i *ngIf="!loadPaginator" class="fas fa-search m-1"></i> <i *ngIf="loadPaginator"
@@ -183,7 +180,7 @@
             <td>
               <div class="custom-control custom-checkbox small">
                 <input type="checkbox" [ngModel]="product.selected" (change)="selectProduct(product)"
-                  class="custom-control-input" [id]="'check' + product.id" [disabled]="product.specialPaused === 1">
+                  class="custom-control-input" [id]="'check' + product.id">
                 <label class="custom-control-label" [for]="'check' + product.id"></label>
               </div>
             </td>

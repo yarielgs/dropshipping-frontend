@@ -41,6 +41,8 @@ export class ProductsStoreComponent implements OnInit {
   public minValue = 0;
   public maxValue = 20000;
 
+  public inStock: boolean = true;
+
   productsStorage: ProductStore[];
   pageProducts = new PageProductStorage();
   marketplaces: Marketplace[] = [];
@@ -137,10 +139,11 @@ export class ProductsStoreComponent implements OnInit {
         this.typeFamilySearch === '' ? -1 : +this.typeFamilySearch,
         this.minValue === null ? 0 : this.minValue,
         this.maxValue === null ? 0 : this.maxValue,
+        this.inStock,
         this.buildUbicationMeliFilter()
       )
       .subscribe(
-        (pageItemGrid) => {          
+        (pageItemGrid) => {
           this.pageProducts = this.productStoreService.pageProducts;
           let countSelected = 0;
           this.loading = false;
@@ -183,6 +186,7 @@ export class ProductsStoreComponent implements OnInit {
         this.typeFamilySearch === '' ? -1 : +this.typeFamilySearch,
         this.minValue === null ? 0 : this.minValue,
         this.maxValue === null ? 0 : this.maxValue,
+        this.inStock,
         this.buildUbicationMeliFilter()
       )
       .subscribe(
@@ -259,6 +263,7 @@ export class ProductsStoreComponent implements OnInit {
         this.typeFamilySearch === '' ? -1 : +this.typeFamilySearch,
         this.minValue === null ? 0 : this.minValue,
         this.maxValue === null ? 0 : this.maxValue,
+        this.inStock,
         this.buildUbicationMeliFilter()
       )
       .subscribe(
@@ -294,6 +299,7 @@ export class ProductsStoreComponent implements OnInit {
         this.typeFamilySearch === '' ? -1 : +this.typeFamilySearch,
         this.minValue === null ? 0 : this.minValue,
         this.maxValue === null ? 0 : this.maxValue,
+        this.inStock,
         this.buildUbicationMeliFilter()
       )
       .subscribe(
@@ -327,6 +333,7 @@ export class ProductsStoreComponent implements OnInit {
     this.maxValue = 20000;
     this.existInMeli = false;
     this.notExistInMeli = false;
+    this.inStock = null;
     this.productStoreService
       .getPageProducts(
         (this.selectedPage = 0),
@@ -337,6 +344,7 @@ export class ProductsStoreComponent implements OnInit {
         this.typeFamilySearch === '' ? -1 : +this.typeFamilySearch,
         this.minValue === null ? 0 : this.minValue,
         this.maxValue === null ? 0 : this.maxValue,
+        this.inStock,
         this.buildUbicationMeliFilter()
       )
       .subscribe(
@@ -458,8 +466,6 @@ export class ProductsStoreComponent implements OnInit {
   }
 
   buildUbicationMeliFilter(): number {
-    console.log('pasando por el nuevo filter');
-    
     if (
       (this.notExistInMeli && this.existInMeli) ||
       (!this.notExistInMeli && !this.existInMeli)
