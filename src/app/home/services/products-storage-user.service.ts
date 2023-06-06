@@ -34,7 +34,7 @@ export class ProductsStorageUserService {
     this.profileId = this.authService.authenticationDataExtrac().profileId;
   }
 
-  storeMyProducts(idProfile: number, marketplace: Number, products: any[]): Observable<SelectedProducResponse>{
+  storeMyProducts(idProfile: number, marketplace: Number, products: any[]): Observable<SelectedProducResponse> {
     let string_profile = idProfile.toString();
     let encodeProfile = btoa(string_profile);
 
@@ -44,7 +44,7 @@ export class ProductsStorageUserService {
     return this.http.get<SelectedProducResponse>(params);
   }
 
-  getDetailsMarketplaces(idProfile: number): Observable<MarketplaceDetails[]>{
+  getDetailsMarketplaces(idProfile: number): Observable<MarketplaceDetails[]> {
     let string_profile = idProfile.toString();
     let encodeProfile = btoa(string_profile);
 
@@ -53,14 +53,28 @@ export class ProductsStorageUserService {
   }
 
   getPageMyCustomProducts(idProfile: number, page: number, size: number, sku: string, nameProduct: string,
-    state: number, familyId: number, minPrice: number, maxPrice: number): Observable<PageProductMeliStorage> {
+    state: number, familyId: number, minPrice: number, maxPrice: number, inStock: boolean): Observable<PageProductMeliStorage> {
 
-      let string_profile = idProfile.toString();
-      let encodeProfile = btoa(string_profile);
+    let string_profile = idProfile.toString();
+    let encodeProfile = btoa(string_profile);
+
+    let params: string = '';
+    nameProduct.length > 0 && (params += `&nameProduct=${nameProduct.trim()}`);
+    sku.length > 0 && (params += `&sku=${sku.trim()}`);
+    // this.typeProductSearch.length > 0 && (params.concat(``))
+    state > 0 && (params += `&state=${state}`);
+    familyId > 0 && (params += `&familyId=${familyId}`);
+    minPrice && (params += `&minPrice=${minPrice}`);
+    maxPrice && (params += `&maxPrice=${maxPrice}`);
+
+    if (inStock !== null && inStock !== undefined) {
+      params += `&stock=${inStock}`
+    }
+    params = params.slice(1);
+    console.log(`Params: ${params}`)
 
     const uri = `${this.URI}${this.URI_PRODUCTS_ACTIONS}/items-meli-filters/${page}/${size}/${encodeProfile}
-    ?sku=${sku}&nameProduct=${nameProduct}&state=${state}&familyId=${familyId}
-    &minPrice=${minPrice}&maxPrice=${maxPrice}`;
+    ?${params}`;
 
     return this.http.get<PageProductMeliStorage>(uri).pipe(map((resp: any) => {
       this.pageProductsMeli.itemsMeliGrid = resp.itemsMeliGridList.filter((elem: any) => !filtersSKU.includes(elem.sku));;
@@ -75,57 +89,57 @@ export class ProductsStorageUserService {
     }));
   }
 
-  getCustomProduct(id: number): Observable<EditableProductModel>{
+  getCustomProduct(id: number): Observable<EditableProductModel> {
     const params = `${this.URI}${this.URI_PRODUCTS_ACTIONS}/product-info/${id}`;
     return this.http.get<EditableProductModel>(params);
   }
 
-  updateCustomProduct(product: EditableProductModel, imageToDelete: number[]): Observable<EditableProductModel>{
+  updateCustomProduct(product: EditableProductModel, imageToDelete: number[]): Observable<EditableProductModel> {
     const params = `${this.URI}${this.URI_PRODUCTS_ACTIONS}/edit-product-info/?imagesToDelete=${imageToDelete}`;
     return this.http.put<EditableProductModel>(params, product);
   }
 
   /**Metodo de Posible sustitucion por el metodo del servicio upload-images.services **/
-  uploadImage(formData: FormData): Observable<any>{
+  uploadImage(formData: FormData): Observable<any> {
     const params = `${this.URI}${this.URI_UPLOAD_ACTIONS}/file/upload-file?uri=${this.URI}`;
     return this.http.post<any>(params, formData);
   }
 
-/**Metodo de Posible sustitucion por el metodo del servicio upload-images.services **/
-  async uploadImageSyn(fileList: any[], productsList: ProductCustom[]): Promise<any>{
+  /**Metodo de Posible sustitucion por el metodo del servicio upload-images.services **/
+  async uploadImageSyn(fileList: any[], productsList: ProductCustom[]): Promise<any> {
     const params = `${this.URI}${this.URI_UPLOAD_ACTIONS}/file/upload-file?uri=${this.URI}`;
     let resultList: any[] = [];
 
-    for(let i=0; i<fileList.length; i++){
-     for(let j=0; j<productsList.length; j++){
+    for (let i = 0; i < fileList.length; i++) {
+      for (let j = 0; j < productsList.length; j++) {
         let formData: FormData = new FormData();
         let filename = productsList[j].sku + '_';
-        filename = filename + this.getRandomInt(1,1000000) + "_" + fileList[i].name.replace(/ /g, "");
+        filename = filename + this.getRandomInt(1, 1000000) + "_" + fileList[i].name.replace(/ /g, "");
         formData.append('image', fileList[i], filename.trim());
         let result = await this.http.post<any>(params, formData).toPromise();
         resultList.push(result);
-     }
+      }
     }
     return resultList;
   }
 
-  deleteImages(imageToDelete: string[]): Observable<any>{
+  deleteImages(imageToDelete: string[]): Observable<any> {
     let finalImageList = [];
     imageToDelete.forEach(element => {
       var position = element.lastIndexOf("/");
-      finalImageList.push(element.substring(position+1));
- });
+      finalImageList.push(element.substring(position + 1));
+    });
     const params = `${this.URI}${this.URI_UPLOAD_ACTIONS}/file-delete/${finalImageList}`;
     return this.http.delete<any>(params);
   }
 
-  updateCommonInfo(idProfile: number, description: string, productList: ProductCustom[], imageToAddList: string[]): Observable<any>{
+  updateCommonInfo(idProfile: number, description: string, productList: ProductCustom[], imageToAddList: string[]): Observable<any> {
     let string_profile = idProfile.toString();
     let encodeProfile = btoa(string_profile);
     let imageListToSend = [];
 
-    imageToAddList.forEach(element =>{
-      if(element.length !== 0){
+    imageToAddList.forEach(element => {
+      if (element.length !== 0) {
         let ima = new Image();
         ima.photos = element;
         imageListToSend.push(ima);
@@ -143,7 +157,7 @@ export class ProductsStorageUserService {
   }
 
   //nuevo metodo
-  updateCommonInfo2(idProfile: number, description: string, commonInfoList: CommonInfoRequest[]): Observable<any>{
+  updateCommonInfo2(idProfile: number, description: string, commonInfoList: CommonInfoRequest[]): Observable<any> {
     let string_profile = idProfile.toString();
     let encodeProfile = btoa(string_profile);
 
@@ -151,12 +165,12 @@ export class ProductsStorageUserService {
     return this.http.put<any>(params, commonInfoList);
   }
 
-  getFullProductsById(idProductsList: number[]): Observable<any>{
+  getFullProductsById(idProductsList: number[]): Observable<any> {
     const params = `${this.URI}${this.URI_PRODUCTS_ACTIONS}/full-product-id/?ids=${idProductsList}`;
     return this.http.get<any>(params);
   }
 
-  deleteProductsFromStore(productsList: ProductCustom[]): Observable<boolean>{
+  deleteProductsFromStore(productsList: ProductCustom[]): Observable<boolean> {
     let idList: number[] = [];
     productsList.forEach(elem => {
       idList.push(elem.id)
@@ -166,7 +180,7 @@ export class ProductsStorageUserService {
     return this.http.delete<boolean>(params);
   }
 
-  deleteProductFromStore(product: ProductCustom): Observable<boolean>{
+  deleteProductFromStore(product: ProductCustom): Observable<boolean> {
     const params = `${this.URI}${this.URI_PRODUCTS_ACTIONS}/delete-product/${product.id}`;
     return this.http.delete<boolean>(params);
   }

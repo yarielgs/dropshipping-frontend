@@ -1,54 +1,62 @@
 <!-- Collapsable Card Example -->
 <div class="card shadow mb-4">
   <!-- Card Header - Accordion -->
- <!-- <a href="#collapseCardFilterProductStorage" class="d-block card-header py-3" data-toggle="collapse" role="button"
-    aria-expanded="true" aria-controls="collapseCardFilterProductStorage">
+  <!-- <a href="#collapseCardFilterProductStorage" class="d-block card-header py-3" data-toggle="collapse" role="button"
+    aria-expanded="false" aria-controls="collapseCardFilterProductStorage">
     <h6 class="m-0 font-weight-bold text-primary">Buscar por...</h6>
   </a> 
   <!-- Card Content - Collapse -->
+
+  <div class="card-header-black py-3">
+
+    <div
+      class="d-flex flex-md-row flex-sm-column align-items-md-center justify-content-md-between align-items-sm-center justify-content-sm-center">
+      <h6 class="m-0 font-weight-bold text-white">Buscar por...</h6>
+    </div>
+  </div>
   <div class="" id="collapseCardFilterProductStorage">
-    <h6 class="m-0 font-weight-bold text-primary">Buscar por...</h6>
     <form #f="ngForm">
       <div class="card-body container">
 
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-md-2">
             <div class="form-group">
               <input type="text" class="form-control" name="clientNameSearch" [(ngModel)]="clientNameSearch"
                 id="idClientName" placeholder="Nombre del cliente...">
             </div>
           </div>
-          <div class="col-md-6">
-
+          <!-- TO DO: Hay que cambiar el filtro a "Nombre o SKU"
+          <div class="row">
+            <div class="col-md-2">
+              <div class="form-group">
+                <input type="text" class="form-control" name="clientNameSearch" [(ngModel)]="clientNameSearch"
+                  id="idClientName" placeholder="Nombre o SKU">
+              </div>
+            </div> -->
+          <div class="col-md-3">
             <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <label class="input-group-text" for="inputGroupOrderStatus">Estado de la órden</label>
+              </div>
               <select class="custom-select" name="orderStatusSearch" [(ngModel)]="orderStatusSearch"
                 id="inputGroupOrderStatus">
                 <option [value]="orderStatusClear">Todos</option>
                 <option value="paid">Pagada</option>
                 <option value="cancelled">Cancelada</option>
               </select>
-              <div class="input-group-append">
-                <label class="input-group-text" for="inputGroupOrderStatus">Estado de la orden</label>
-              </div>
             </div>
-
-
           </div>
-        </div>
-
-        <div class="row">
-          <div class="col-md-6">
+          <div class="col-md-2">
 
             <div class="form-group">
               <div class="input-group">
-                <input class="form-control"
-                [formControl]="dateFromControl" [class.is-invalid]="dateFromControl.invalid"
-                placeholder="Fecha desde: yyyy-mm-dd" readonly  name="dp"
-                (dateSelect)="onDateFromSelection($event)"
-                ngbDatepicker #dateFrom="ngbDatepicker" [maxDate]="dateToControl.value" >
+                <input class="form-control" [formControl]="dateFromControl" [class.is-invalid]="dateFromControl.invalid"
+                  placeholder="Fecha desde: yyyy-mm-dd" readonly name="dp" (dateSelect)="onDateFromSelection($event)"
+                  ngbDatepicker #dateFrom="ngbDatepicker" [maxDate]="dateToControl.value">
                 <div class="input-group-append">
                   <button class="btn btn-outline-secondary calendar" (click)="dateFrom.toggle()" type="button"><i
                       class="fas fa-calendar-alt"></i></button>
+
                 </div>
               </div>
             </div>
@@ -62,12 +70,75 @@
             </div>
           </div>
 
-          <div class="col-md-6">
+          <div class="col-md-2">
             <div class="form-group">
               <div class="input-group">
                 <input class="form-control" [formControl]="dateToControl" [class.is-invalid]="dateToControl.invalid"
-                  placeholder="Fecha hasta: yyyy-mm-dd" readonly [minDate]="dateFromControl.value" name="dateTo" ngbDatepicker
-                  (dateSelect)="onDateToSelection($event)"#dateTo="ngbDatepicker">
+                  placeholder="Fecha hasta: yyyy-mm-dd" readonly [minDate]="dateFromControl.value" name="dateTo"
+                  ngbDatepicker (dateSelect)="onDateToSelection($event)" #dateTo="ngbDatepicker">
+                <div class="input-group-append">
+                  <button class="btn btn-outline-secondary calendar" (click)="dateTo.toggle()" type="button"><i
+                      class="fas fa-calendar-alt"></i></button>
+                </div>
+
+              </div>
+            </div>
+
+            <div *ngIf="dateToControl.invalid" style="padding: 0.25rem 1.25rem;"
+              class="alert alert-danger alert-dismissible fade show" role="alert">
+              <strong>Fecha</strong> no válida
+              <button style="padding: 0.25rem 1.25rem;" type="button" class="close" data-dismiss="alert"
+                aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          </div>
+          <div class="col d-flex justify-content-center">
+            <button (click)="clearOrders()" class="btn btn-outline-secondary h-75 w-75 mx-2">
+              <i *ngIf="loadingClear" class="fas fa-spin fa-spinner m-1"></i>
+              <i *ngIf="!loadingClear" class="fas fa-broom m-1"></i>
+              Limpiar
+            </button>
+            <button [disabled]="dateFromControl.invalid || dateToControl.invalid " class="btn btn-primary mr-1 h-75 w-75 mx-2"
+              (click)="searchOrders()">
+              <i *ngIf="!loadingSearch" class="fas fa-search m-1"></i>
+              <i *ngIf="loadingSearch" class="fas fa-spin fa-spinner m-1"></i>
+              Buscar
+            </button>
+          </div>
+        </div>
+
+       <!-- <div class="row">
+          <div class="col-md-4">
+
+            <div class="form-group">
+              <div class="input-group">
+                <input class="form-control" [formControl]="dateFromControl" [class.is-invalid]="dateFromControl.invalid"
+                  placeholder="Fecha desde: yyyy-mm-dd" readonly name="dp" (dateSelect)="onDateFromSelection($event)"
+                  ngbDatepicker #dateFrom="ngbDatepicker" [maxDate]="dateToControl.value">
+                <div class="input-group-append">
+                  <button class="btn btn-outline-secondary calendar" (click)="dateFrom.toggle()" type="button"><i
+                      class="fas fa-calendar-alt"></i></button>
+
+                </div>
+              </div>
+            </div>
+            <div *ngIf="dateFromControl.invalid" style="padding: 0.25rem 1.25rem;"
+              class="alert alert-danger alert-dismissible fade show" role="alert">
+              <strong>Fecha</strong> no válida
+              <button style="padding: 0.25rem 1.25rem;" type="button" class="close" data-dismiss="alert"
+                aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="col-md-5">
+            <div class="form-group">
+              <div class="input-group">
+                <input class="form-control" [formControl]="dateToControl" [class.is-invalid]="dateToControl.invalid"
+                  placeholder="Fecha hasta: yyyy-mm-dd" readonly [minDate]="dateFromControl.value" name="dateTo"
+                  ngbDatepicker (dateSelect)="onDateToSelection($event)" #dateTo="ngbDatepicker">
                 <div class="input-group-append">
                   <button class="btn btn-outline-secondary calendar" (click)="dateTo.toggle()" type="button"><i
                       class="fas fa-calendar-alt    "></i></button>
@@ -77,41 +148,30 @@
             </div>
 
             <div *ngIf="dateToControl.invalid" style="padding: 0.25rem 1.25rem;"
-            class="alert alert-danger alert-dismissible fade show" role="alert">
-            <strong>Fecha</strong> no válida
-            <button style="padding: 0.25rem 1.25rem;" type="button" class="close" data-dismiss="alert"
-              aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
+              class="alert alert-danger alert-dismissible fade show" role="alert">
+              <strong>Fecha</strong> no válida
+              <button style="padding: 0.25rem 1.25rem;" type="button" class="close" data-dismiss="alert"
+                aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
           </div>
-          </div>
-        </div>
-
-
-        <div class="row">
           <div class="col d-flex justify-content-center">
-            <button [disabled]="dateFromControl.invalid || dateToControl.invalid " class="btn btn-primary mr-1" (click)="searchOrders()">
-              <i *ngIf="!loadingSearch" class="fas fa-search m-1"></i>
-              <i *ngIf="loadingSearch" class="fas fa-spin fa-spinner m-1"></i>
-              Buscar
-            </button>
-            <button (click)="clearOrders()" class="btn btn-outline-secondary ml-1">
+            <button (click)="clearOrders()" class="btn btn-outline-secondary h-75 w-75">
               <i *ngIf="loadingClear" class="fas fa-spin fa-spinner m-1"></i>
               <i *ngIf="!loadingClear" class="fas fa-broom m-1"></i>
               Limpiar
             </button>
           </div>
-        </div>
-      </div>
+        </div> -->
+      </div> 
     </form>
-
-
   </div>
 </div>
 
 
 <div class="card shadow mb-4">
-  <div class="card-header py-3">
+  <div class="card-header-pink py-3">
 
     <div
       class="d-flex flex-md-row flex-sm-column align-items-md-center justify-content-md-between align-items-sm-center justify-content-sm-center">
@@ -126,10 +186,12 @@
         <thead>
           <tr>
             <th class="text-right">ID</th>
-            <th>Estado</th>
-            <th>Cliente</th>
             <th>Fecha creación</th>
-            <th>Monto</th>
+            <!--<th>SKU</th> TO DO: debe reflejar el sku (del producto)-->
+            <th>Cliente</th><!-- TO DO: debe ser "Nombre" (del producto)-->
+            <!--<th>Cantidad</th> TO DO: debe reflejar la cantidad de unidades (del producto)-->
+            <th>Monto</th><!--debe reflejar el monto total por la cantidad de unidad(es)-->
+            <th>Estado</th>
             <th>Factura</th>
             <th>Salida del almacén</th>
             <th *ngIf="isAdmin()">Enviado a ERP</th>
@@ -190,9 +252,9 @@
 
             <td>
 
-              <div *ngIf="item.operatorBusinessStatus === 0"
-                style="padding: 0.25rem 1.25rem;" class="d-flex flex-nowrap flex-row alert alert-sm alert-info  mb-0"
-                role="alert" ngbTooltip="El producto está en proceso de empaque">
+              <div *ngIf="item.operatorBusinessStatus === 0" style="padding: 0.25rem 1.25rem;"
+                class="d-flex flex-nowrap flex-row alert alert-sm alert-info  mb-0" role="alert"
+                ngbTooltip="El producto está en proceso de empaque">
                 <i class="far fa-check-circle  mt-1 mr-1"></i><span>En proceso</span>
               </div>
 
@@ -214,8 +276,7 @@
             <!-- Estado del envío al ERP-->
             <td *ngIf="isAdmin()">
 
-              <div *ngIf="itemProcess === item.id"
-                class="d-order d-flex alert alert-sm alert-dismissible  mb-0"
+              <div *ngIf="itemProcess === item.id" class="d-order d-flex alert alert-sm alert-dismissible  mb-0"
                 role="alert" ngbTooltip="La orden está siendo enviada.">
                 <i class="far fa-clock mt-1 mr-1"></i><span>En proceso</span>
               </div>
@@ -230,14 +291,15 @@
                 class="d-order d-flex alert alert-sm alert-danger  mb-0" role="alert"
                 ngbTooltip="Falló al enviar la orden. La orden no fue recibida por el ERP correctamente. Agotados los 3 intentos automáticos del sistema">
                 <i class="fas fa-exclamation-circle mt-1 mr-1"></i>
-                <span class="dropdown-toggle" href="#" role="button"
-                id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Agotado</span>
+                <span class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
+                  aria-haspopup="true" aria-expanded="false">Agotado</span>
 
                 <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
                   aria-labelledby="dropdownMenuLink">
                   <ul class="list-group list-group-flush">
                     <li class="list-group-item dropdown-item d-flex justify-content-between align-items-center">
-                     <button class="btn btn-outline-primary" (click)="processPurchases(item)"> <i class="fas fa-redo-alt m-1"></i> Reintentar </button>
+                      <button class="btn btn-outline-primary" (click)="processPurchases(item)"> <i
+                          class="fas fa-redo-alt m-1"></i> Reintentar </button>
                     </li>
                   </ul>
                 </div>
@@ -276,7 +338,7 @@
           </ngb-pagination>
 
 
-           <div class="form-group">
+          <div class="form-group">
             <select (change)="selectChangeHandler($event.target.value)" class="form-control">
               <option value="15">15</option>
               <option value="30">30</option>
@@ -287,7 +349,7 @@
           </div>
 
           <!--Table Paginator Info-->
-          <app-table-paginator-info [total] = "orderPage?.totalElements" ></app-table-paginator-info>
+          <app-table-paginator-info [total]="orderPage?.totalElements"></app-table-paginator-info>
 
         </div>
 

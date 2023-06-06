@@ -28,7 +28,7 @@ import { error } from 'protractor';
 import { UploadImagesService } from 'src/app/home/services/upload-images.service';
 import { environment } from 'src/environments/environment';
 import { CommonInfoRequest } from 'src/app/models/upload-images/common-info-request.model';
-import filtersSKU from 'src/app/config/filtersSKU';
+import { log } from 'console';
 
 
 @Component({
@@ -68,6 +68,7 @@ export class PublishMyproductsComponent implements OnInit {
   public typeFamilySearch = '';
   public minValue = 0;
   public maxValue = 20000;
+  public inStock: boolean = true;
 
   pageProductsMeli = new PageProductMeliStorage();
   stateEnum = States;
@@ -115,7 +116,6 @@ export class PublishMyproductsComponent implements OnInit {
   warrantyTime: number = 0;
   warranty: boolean = false;
 
-
   constructor(public productStoreService: ProductsStorageService, public productStoreUserService: ProductsStorageUserService, public dialog: MatDialog,
     private authService: AuthService, public meliAccountService: MeliAccountService, public marginService: MarginService,
     public meliPublicationsService: MeliPublicationsService, private router: Router, public uploadImageService: UploadImagesService) {
@@ -134,7 +134,12 @@ export class PublishMyproductsComponent implements OnInit {
     this.loadPaginator = true;
     this.productStoreUserService.
       getPageMyCustomProducts(this.profileId, this.currentPage = +page - 1, this.size, this.skuSearch,
-        this.nameSeach, this.typeStateSearch === '' ? -1 : +this.typeStateSearch, this.typeFamilySearch === '' ? -1 : +this.typeFamilySearch, this.minValue === null ? 0 : this.minValue, this.maxValue === null ? 0 : this.maxValue)
+        this.nameSeach, this.typeStateSearch === '' ? -1 : +this.typeStateSearch,
+        this.typeFamilySearch === '' ? -1 : +this.typeFamilySearch,
+        this.minValue === null ? 0 : this.minValue,
+        this.maxValue === null ? 0 : this.maxValue,
+        this.inStock
+      )
       .subscribe(pageItemCustomGrid => {
         this.pageProductsMeli = this.productStoreUserService.pageProductsMeli;
         let countSelected = 0;
@@ -183,7 +188,14 @@ export class PublishMyproductsComponent implements OnInit {
       this.profileId = this.authService.authenticationDataExtrac().profileId;
       this.loading = true;
       this.errorProducts = false;
-      this.productStoreUserService.getPageMyCustomProducts(this.profileId, 0, this.size, this.skuSearch, this.nameSeach, this.typeStateSearch === '' ? -1 : +this.typeStateSearch, this.typeFamilySearch === '' ? -1 : +this.typeFamilySearch, this.minValue === null ? 0 : this.minValue, this.maxValue === null ? 0 : this.maxValue)
+      this.productStoreUserService.getPageMyCustomProducts(this.profileId, 0, this.size, this.skuSearch,
+        this.nameSeach,
+        this.typeStateSearch === '' ? -1 : +this.typeStateSearch,
+        this.typeFamilySearch === '' ? -1 : +this.typeFamilySearch,
+        this.minValue === null ? 0 : this.minValue,
+        this.maxValue === null ? 0 : this.maxValue,
+        this.inStock
+      )
         .subscribe(pageItemCustomGrid => {
           this.pageProductsMeli = this.productStoreUserService.pageProductsMeli;
           this.totalPages = +this.pageProductsMeli.totalPages;
@@ -212,21 +224,19 @@ export class PublishMyproductsComponent implements OnInit {
     this.checkAll = !this.checkAll;
 
     this.pageProductsMeli.itemsMeliGrid.forEach(element => {
-      if (element.specialPaused !== 1) {
-        element.selected = this.checkAll;
-        if (element.selected === true) {
-          let position1 = -1;
-          this.productsSelected.forEach(pro => { if (pro.id === element.id) { position1 = this.productsSelected.indexOf(pro); } });
-          if (position1 === -1) {
-            this.productsSelected.push(element);
-          }
+      element.selected = this.checkAll;
+      if (element.selected === true) {
+        let position1 = -1;
+        this.productsSelected.forEach(pro => { if (pro.id === element.id) { position1 = this.productsSelected.indexOf(pro); } });
+        if (position1 === -1) {
+          this.productsSelected.push(element);
         }
-        else {
-          let position = -1;
-          this.productsSelected.forEach(pro => { if (pro.id === element.id) { position = this.productsSelected.indexOf(pro); } });
-          if (position !== -1) {
-            this.productsSelected.splice(position, 1);
-          }
+      }
+      else {
+        let position = -1;
+        this.productsSelected.forEach(pro => { if (pro.id === element.id) { position = this.productsSelected.indexOf(pro); } });
+        if (position !== -1) {
+          this.productsSelected.splice(position, 1);
         }
       }
     });
@@ -272,7 +282,10 @@ export class PublishMyproductsComponent implements OnInit {
       this.productsSelected = [];
       this.productStoreUserService.
         getPageMyCustomProducts(this.profileId, this.selectedPage = 0, this.size, this.skuSearch,
-          this.nameSeach, this.typeStateSearch === '' ? -1 : +this.typeStateSearch, this.typeFamilySearch === '' ? -1 : +this.typeFamilySearch, this.minValue === null ? 0 : this.minValue, this.maxValue === null ? 0 : this.maxValue)
+          this.nameSeach, this.typeStateSearch === '' ? -1 : +this.typeStateSearch,
+          this.typeFamilySearch === '' ? -1 : +this.typeFamilySearch,
+          this.minValue === null ? 0 : this.minValue,
+          this.maxValue === null ? 0 : this.maxValue, this.inStock)
         .subscribe(pageItemCustomGrid => {
           this.pageProductsMeli = this.productStoreUserService.pageProductsMeli;
           this.totalPages = +this.pageProductsMeli.totalPages;
@@ -305,9 +318,16 @@ export class PublishMyproductsComponent implements OnInit {
     this.productsSelected = [];
     this.minValue = 0;
     this.maxValue = 20000;
+    this.inStock = true;
     this.productStoreUserService.
-      getPageMyCustomProducts(this.profileId, this.selectedPage = 0, this.size, this.skuSearch,
-        this.nameSeach, this.typeStateSearch === '' ? -1 : +this.typeStateSearch, this.typeFamilySearch === '' ? -1 : +this.typeFamilySearch, this.minValue === null ? 0 : this.minValue, this.maxValue === null ? 0 : this.maxValue)
+      getPageMyCustomProducts(this.profileId, this.selectedPage = 0, this.size,
+        this.skuSearch, this.nameSeach,
+        this.typeStateSearch === '' ? -1 : +this.typeStateSearch,
+        this.typeFamilySearch === '' ? -1 : +this.typeFamilySearch,
+        this.minValue === null ? 0 : this.minValue,
+        this.maxValue === null ? 0 : this.maxValue,
+        this.inStock
+      )
       .subscribe(pageItemGrid => {
         this.pageProductsMeli = this.productStoreUserService.pageProductsMeli;
         this.totalPages = +this.pageProductsMeli.totalPages;
@@ -655,9 +675,6 @@ export class PublishMyproductsComponent implements OnInit {
 
       }
     })
-
-
-
   }
 
   deleteOneProduct(product: ProductCustom) {
@@ -987,15 +1004,15 @@ export class PublishMyproductsComponent implements OnInit {
     let imageCount = true
 
     this.productsSelected.forEach(prod => {
-       if(prod.name.length > 60){
-          allTitle = false;
-        }
-       if(prod.images.length > 12){
-          imageCount = false;
-       }
+      if (prod.name.length > 60) {
+        allTitle = false;
+      }
+      if (prod.images.length > 12) {
+        imageCount = false;
+      }
     });
 
-    if(!imageCount){
+    if (!imageCount) {
       Swal.fire({
         position: 'top-end',
         icon: 'error',
@@ -1004,8 +1021,8 @@ export class PublishMyproductsComponent implements OnInit {
         showConfirmButton: false,
         timer: 5000
       });
-    } else{
-      if(!allTitle){
+    } else {
+      if (!allTitle) {
         Swal.fire({
           position: 'top-end',
           title: 'Título o Nombre del producto demasiado extenso',
@@ -1022,11 +1039,11 @@ export class PublishMyproductsComponent implements OnInit {
             this.callPublishProductsService();
           }
         })
-      }else{
+      } else {
         this.callPublishProductsService();
       }
     }
- 
+
   }
 
   callPublishProductsService() {
