@@ -32,25 +32,26 @@ import { MeliCategoryME2 } from '../pages/home/meli-configuration/models/meli-ca
 export class MeliPublicationsService {
 
   URI_MELI_BUSINESS = `${environment.URI_ROOT}/meli/api/accounts`;
+  // URI_MELI_BUSINESS = `http://localhost:8085/api/accounts`;
   URI = environment.URI_MELI_PUBLIC;
 
   responsePublicationList: any[];
   attributesList: AttributesRequiredModel[];
 
   constructor(private http: HttpClient, public productsUserService: ProductsStorageUserService, private authService: AuthService, private configService: SystemConfigService) {
-     this.responsePublicationList = [];
-     this.attributesList = [];
+    this.responsePublicationList = [];
+    this.attributesList = [];
   }
 
-   /* Obtiene las Categorias de Mercado Libre
-  */
-  getMeliCategories(): Observable<MeliCategory[]>{
+  /* Obtiene las Categorias de Mercado Libre
+ */
+  getMeliCategories(): Observable<MeliCategory[]> {
     let meliCategoryList: MeliCategory[] = [];
     const params = `${this.URI}/sites/MLU/categories`;
 
     return this.http.get<any[]>(params).pipe(map((resp: any[]) => {
       resp.forEach(element => {
-          if(element.id !== "MLU1953") { // MLU1953 = "Otras categorias"
+        if (element.id !== "MLU1953") { // MLU1953 = "Otras categorias"
           let meliCategory = new MeliCategory();
           meliCategory.id = element.id;
           meliCategory.name = element.name;
@@ -64,7 +65,7 @@ export class MeliPublicationsService {
   /* Obtiene las subcategorias de una categoria
   *  pasada por parametro.
   */
-  getMeliSubCategories(idCategory: string): Observable<MeliCategory>{
+  getMeliSubCategories(idCategory: string): Observable<MeliCategory> {
     const params = `${this.URI}/categories/${idCategory}`;
 
     return this.http.get<MeliCategory>(params).pipe(map((resp: any) => {
@@ -89,44 +90,44 @@ export class MeliPublicationsService {
    * Este metodo es para consumir directo a Meli.
    * No es utilizado por ningun metodo por ahora.
    */
- async getShippingModeOfCategories(idCategory: string): Promise<any[]> {
-  const params = `${this.URI}/categories/${idCategory}/shipping_preferences`;
+  async getShippingModeOfCategories(idCategory: string): Promise<any[]> {
+    const params = `${this.URI}/categories/${idCategory}/shipping_preferences`;
 
-  return this.http.get<any[]>(params).pipe(map((resp: any) => {
-    let shippingModeList : any[] = [];
-    resp.logistics.forEach(element => {
-      shippingModeList.push(element.mode);
-    });
-    return shippingModeList;
-  })).toPromise();
-}
+    return this.http.get<any[]>(params).pipe(map((resp: any) => {
+      let shippingModeList: any[] = [];
+      resp.logistics.forEach(element => {
+        shippingModeList.push(element.mode);
+      });
+      return shippingModeList;
+    })).toPromise();
+  }
 
-/*
-   * Obtiene el Shipping Mode de una categorias. Metodo asincrono
-   *
-   * Descripcion:
-   * Este metodo es para consumir directo a Meli.
-   * No es utilizado por ningun metodo por ahora.
-   */
-getShippingModeOfCategories2(idCategory: string): Observable<string[]> {
-  const params = `${this.URI}/categories/${idCategory}/shipping_preferences`;
+  /*
+     * Obtiene el Shipping Mode de una categorias. Metodo asincrono
+     *
+     * Descripcion:
+     * Este metodo es para consumir directo a Meli.
+     * No es utilizado por ningun metodo por ahora.
+     */
+  getShippingModeOfCategories2(idCategory: string): Observable<string[]> {
+    const params = `${this.URI}/categories/${idCategory}/shipping_preferences`;
 
-  return this.http.get<string[]>(params).pipe(map((resp: any) => {
-    let shippingModeList : string[] = [];
-    resp.logistics.forEach(element => {
-      shippingModeList.push(element.mode);
-    });
-    return shippingModeList;
-  }));
-}
+    return this.http.get<string[]>(params).pipe(map((resp: any) => {
+      let shippingModeList: string[] = [];
+      resp.logistics.forEach(element => {
+        shippingModeList.push(element.mode);
+      });
+      return shippingModeList;
+    }));
+  }
 
-/*
-   * Obtiene el Shipping Mode de una categorias.
-   *
-   * Descripcion:
-   * Este metodo es para consumir desde la API de Drop.
-   */
-  getShippingMode(idCategory: string): Observable<string[]>{
+  /*
+     * Obtiene el Shipping Mode de una categorias.
+     *
+     * Descripcion:
+     * Este metodo es para consumir desde la API de Drop.
+     */
+  getShippingMode(idCategory: string): Observable<string[]> {
     const params = `${this.URI_MELI_BUSINESS}/shipping-mode/${idCategory}`;
     return this.http.get<string[]>(params);
   }
@@ -164,130 +165,130 @@ getShippingModeOfCategories2(idCategory: string): Observable<string[]> {
     return this.http.post<boolean>(params, category);
   }
 
-  getCategoryByPredictorNO(titleProduct: string): Observable<MeliPredictorCategory[]>{
+  getCategoryByPredictorNO(titleProduct: string): Observable<MeliPredictorCategory[]> {
     const params = `${this.URI}/sites/MLU/domain_discovery/search?limit=${3}&q=${titleProduct}`;
     let meliPredictorList: MeliPredictorCategory[] = [];
 
-   return this.http.get<any[]>(params).pipe(map((resp: any[]) => {
-          if(resp.length > 0){
-              resp.forEach(element => {
-                let meliPredictorCategory = new MeliPredictorCategory(element.domain_id, element.domain_name, element.category_id,
-                                    element.category_name, element.attributes);
-                meliPredictorList.push(meliPredictorCategory);
-              });
-            }
-            return meliPredictorList;
-       }));
-   }
+    return this.http.get<any[]>(params).pipe(map((resp: any[]) => {
+      if (resp.length > 0) {
+        resp.forEach(element => {
+          let meliPredictorCategory = new MeliPredictorCategory(element.domain_id, element.domain_name, element.category_id,
+            element.category_name, element.attributes);
+          meliPredictorList.push(meliPredictorCategory);
+        });
+      }
+      return meliPredictorList;
+    }));
+  }
 
-   getCategoryByPredictor(titleProduct: string): Observable<any[]>{
+  getCategoryByPredictor(titleProduct: string): Observable<any[]> {
     const params = `${this.URI}/sites/MLU/domain_discovery/search?limit=${3}&q=${titleProduct}`;
     let meliPredictorList: MeliPredictorCategory[] = [];
 
-   return this.http.get<any>(params);
-   }
+    return this.http.get<any>(params);
+  }
 
-   /*
-   * Obtiene los detalles de una categoria
-   */
-  getMeliInfoCategory(idCategory: string): Observable<any>{
+  /*
+  * Obtiene los detalles de una categoria
+  */
+  getMeliInfoCategory(idCategory: string): Observable<any> {
     const params = `${this.URI}/sites/MLU/search?category=${idCategory}`;
     return this.http.get<any>(params);
 
   }
 
-  createPublicationList(relationshipList: AccountMarginModel[], idCategory: string, warrantyType: number, warrantyTime: number, warranty: boolean, productsSelected: ProductCustom[]): void{
+  createPublicationList(relationshipList: AccountMarginModel[], idCategory: string, warrantyType: number, warrantyTime: number, warranty: boolean, productsSelected: ProductCustom[]): void {
 
     let itemCustomList: ItemCustomModel[] = [];
 
     this.getAttributesRequired(idCategory).subscribe(async attr => {
-    let attributesRequired = attr;
+      let attributesRequired = attr;
 
-    /*Obtiene estos valores de la configuracion del sistema*/
-    let scData = this.getSystemConfig();
-    let listingType = (await scData).publication_config.publication_type;
+      /*Obtiene estos valores de la configuracion del sistema*/
+      let scData = this.getSystemConfig();
+      let listingType = (await scData).publication_config.publication_type;
 
-    relationshipList.forEach(relation => {
-      itemCustomList = [];
-      productsSelected.forEach(element => {
-        let priceFinal = 0;
-        if(relation.idMargin === -1){
-          priceFinal = Math.round(element.priceUYU);
-        }
-        else if(relation.typeMargin === 1/*fijo*/){
-          priceFinal = Math.round(element.priceUYU + relation.valueMargin);
-        }
-        else{
-          /*Por Ciento*/
-          priceFinal = Math.round((element.priceUYU * (relation.valueMargin/100)) + element.priceUYU);
-        }
+      relationshipList.forEach(relation => {
+        itemCustomList = [];
+        productsSelected.forEach(element => {
+          let priceFinal = 0;
+          if (relation.idMargin === -1) {
+            priceFinal = Math.round(element.priceUYU);
+          }
+          else if (relation.typeMargin === 1/*fijo*/) {
+            priceFinal = Math.round(element.priceUYU + relation.valueMargin);
+          }
+          else {
+            /*Por Ciento*/
+            priceFinal = Math.round((element.priceUYU * (relation.valueMargin / 100)) + element.priceUYU);
+          }
 
-        let imagesList: ItemPictures[] = [];
-        element.images.forEach(image => {
-          imagesList.push(new ItemPictures(image.photos));
-        });
+          let imagesList: ItemPictures[] = [];
+          element.images.forEach(image => {
+            imagesList.push(new ItemPictures(image.photos));
+          });
 
-        let flex = relation.flex ? "self_service_in" : "self_service_out";
-        let shipping: Shipping = new Shipping("me2", false, false, [], [flex]);
+          let flex = relation.flex ? "self_service_in" : "self_service_out";
+          let shipping: Shipping = new Shipping("me2", false, false, [], [flex]);
 
-        let saleTerms: SaleTerms[] = [];
-        warrantyType = +warrantyType;
-        if(warranty === true)
-        {
-          if(warrantyType === 2230279){
+          let saleTerms: SaleTerms[] = [];
+          warrantyType = +warrantyType;
+          if (warranty === true) {
+            if (warrantyType === 2230279) {
               saleTerms.push(new SaleTerms("WARRANTY_TYPE", "Garantía de fábrica"));
             }
-          else if(warrantyType === 2230280){
+            else if (warrantyType === 2230280) {
               saleTerms.push(new SaleTerms("WARRANTY_TYPE", "Garantía del vendedor"));
             }
-          let days_warranty = warrantyTime.toString() + " días";
-          saleTerms.push(new SaleTerms("WARRANTY_TIME", days_warranty));
-        }
+            let days_warranty = warrantyTime.toString() + " días";
+            saleTerms.push(new SaleTerms("WARRANTY_TIME", days_warranty));
+          }
 
 
-        let attributes: Attributes[] = [];
-        attributes.push(new Attributes("SELLER_SKU", "SKU", element.sku));
-        if(attributesRequired.length !== 0){
-          attributesRequired.forEach( f => { attributes.push(this.getAttribute(f));});
-        }
-        let tittle = element.name.length > 60 ? element.name.substring(0,60) : element.name;
-        let item = new ItemMeliRequest(tittle, idCategory, priceFinal, "UYU", element.currentStock.toString(), "buy_it_now", "new",
-        listingType, element.description, imagesList, attributes, null, shipping, warranty ? saleTerms : null, ["immediate_payment"]);
-        itemCustomList.push(new ItemCustomModel(item, element.id, element.sku, element.images, element.price_costUYU,
-          element.price_costUSD, element.priceUYU));
+          let attributes: Attributes[] = [];
+          attributes.push(new Attributes("SELLER_SKU", "SKU", element.sku));
+          attributes.push(new Attributes("BRAND", "Marca", "N/A"));
+          if (attributesRequired.length !== 0) {
+            attributesRequired.forEach(f => { attributes.push(this.getAttribute(f)); });
+          }
+          let tittle = element.name.length > 60 ? element.name.substring(0, 60) : element.name;
+          let item = new ItemMeliRequest(tittle, idCategory, priceFinal, "UYU", element.currentStock.toString(), "buy_it_now", "new",
+            listingType, element.description, imagesList, attributes, null, shipping, warranty ? saleTerms : null, ["immediate_payment"]);
+          itemCustomList.push(new ItemCustomModel(item, element.id, element.sku, element.images, element.price_costUYU,
+            element.price_costUSD, element.priceUYU));
 
-      })
+        })
 
-      const params = `${this.URI_MELI_BUSINESS}/publications-flow/${relation.idAccount}?idMargin=${relation.idMargin}`;
-      this.http.post<any>(params, itemCustomList).subscribe(result =>{});
-    });
-  }, error => {});
+        const params = `${this.URI_MELI_BUSINESS}/publications-flow/${relation.idAccount}?idMargin=${relation.idMargin}`;
+        this.http.post<any>(params, itemCustomList).subscribe(result => { });
+      });
+    }, error => { });
   }
 
-  createPublicationByEditableProduct(relationshipList: AccountMarginModel[], idCategory: string, warrantyType: number, warrantyTime: number, warranty: boolean, productSelected: EditableProductModel): void{
+  createPublicationByEditableProduct(relationshipList: AccountMarginModel[], idCategory: string, warrantyType: number, warrantyTime: number, warranty: boolean, productSelected: EditableProductModel): void {
 
     let itemCustomList: ItemCustomModel[] = [];
 
     this.getAttributesRequired(idCategory).subscribe(async attr => {
-        let attributesRequired = attr;
+      let attributesRequired = attr;
 
-        /*Obtiene estos valores de la configuracion del sistema*/
-        let scData = this.getSystemConfig();
-        let listingType = (await scData).publication_config.publication_type;
+      /*Obtiene estos valores de la configuracion del sistema*/
+      let scData = this.getSystemConfig();
+      let listingType = (await scData).publication_config.publication_type;
 
-        relationshipList.forEach(relation => {
-          itemCustomList = [];
-          let priceFinal = 0;
+      relationshipList.forEach(relation => {
+        itemCustomList = [];
+        let priceFinal = 0;
 
-        if(relation.idMargin === -1 ){
+        if (relation.idMargin === -1) {
           priceFinal = Math.round(productSelected.price_costUYU);
         }
-        else if(relation.typeMargin === 1/*fijo*/){
+        else if (relation.typeMargin === 1/*fijo*/) {
           priceFinal = Math.round(productSelected.price_costUYU + relation.valueMargin);
         }
-        else{
+        else {
           /*Por Ciento*/
-          priceFinal = Math.round((productSelected.price_costUYU * (relation.valueMargin/100)) + productSelected.price_costUYU);
+          priceFinal = Math.round((productSelected.price_costUYU * (relation.valueMargin / 100)) + productSelected.price_costUYU);
         }
 
         let imagesList: ItemPictures[] = [];
@@ -300,79 +301,78 @@ getShippingModeOfCategories2(idCategory: string): Observable<string[]> {
 
         let saleTerms: SaleTerms[] = [];
         warrantyType = +warrantyType;
-        if(warranty === true)
-        {
-          if(warrantyType === 2230279){
-              saleTerms.push(new SaleTerms("WARRANTY_TYPE", "Garantía de fábrica"));
-            }
-          else if(warrantyType === 2230280){
-              saleTerms.push(new SaleTerms("WARRANTY_TYPE", "Garantía del vendedor"));
-            }
+        if (warranty === true) {
+          if (warrantyType === 2230279) {
+            saleTerms.push(new SaleTerms("WARRANTY_TYPE", "Garantía de fábrica"));
+          }
+          else if (warrantyType === 2230280) {
+            saleTerms.push(new SaleTerms("WARRANTY_TYPE", "Garantía del vendedor"));
+          }
           let days_warranty = warrantyTime.toString() + " días";
           saleTerms.push(new SaleTerms("WARRANTY_TIME", days_warranty));
         }
 
         let attributes: Attributes[] = [];
         attributes.push(new Attributes("SELLER_SKU", "SKU", productSelected.sku));
-        if(attributesRequired.length !== 0){
-            attributesRequired.forEach( f => { attributes.push(this.getAttribute(f));});
+        if (attributesRequired.length !== 0) {
+          attributesRequired.forEach(f => { attributes.push(this.getAttribute(f)); });
         }
 
-        let tittle = productSelected.productName.length > 60 ? productSelected.productName.substring(0,60) : productSelected.productName;
+        let tittle = productSelected.productName.length > 60 ? productSelected.productName.substring(0, 60) : productSelected.productName;
         let item = new ItemMeliRequest(tittle, idCategory, priceFinal, "UYU", productSelected.currentStock.toString(), "buy_it_now", "new",
-        listingType, productSelected.description, imagesList, attributes, null, shipping, warranty ? saleTerms : null, ["immediate_payment"]);
+          listingType, productSelected.description, imagesList, attributes, null, shipping, warranty ? saleTerms : null, ["immediate_payment"]);
         itemCustomList.push(new ItemCustomModel(item, productSelected.id, productSelected.sku, productSelected.images, productSelected.price_costUYU,
           productSelected.price_costUSD, productSelected.price));
 
 
         const params = `${this.URI_MELI_BUSINESS}/publications-flow/${relation.idAccount}?idMargin=${relation.idMargin}`;
-        this.http.post<any>(params, itemCustomList).subscribe(result =>{});
+        this.http.post<any>(params, itemCustomList).subscribe(result => { });
       });
-    }, error => {});
+    }, error => { });
 
 
   }
 
   updateProductPublish(productPublished: ProductMeliPublished, relationshipList: AccountMarginModel[], reloadConfig: boolean): Observable<ProductMeliPublished> {
-      const params = `${this.URI_MELI_BUSINESS}/update-publication`;
-      let priceFinal = 0;
-      relationshipList.forEach(relation => {
+    const params = `${this.URI_MELI_BUSINESS}/update-publication`;
+    let priceFinal = 0;
+    relationshipList.forEach(relation => {
 
-            if(!reloadConfig){ // no fue reconfigurado
-              priceFinal = Math.round(+productPublished.pricePublication);
-            }
-            else{
-              if(relation.idMargin === -1){
-                priceFinal = Math.round(+productPublished.priceCostUYU);
-              }
-              else if(relation.typeMargin === 1/*fijo*/){
-                priceFinal = Math.round((+productPublished.priceCostUYU) + relation.valueMargin);
-              }
-              else{
-                /*Por Ciento*/
-                priceFinal = Math.round((+productPublished.priceCostUYU * (relation.valueMargin/100)) + (+productPublished.priceCostUYU));
-              }
-              productPublished.margin = relation.idMargin;
-            }
-            productPublished.pricePublication = priceFinal.toString();
+      if (!reloadConfig) { // no fue reconfigurado
+        priceFinal = Math.round(+productPublished.pricePublication);
+      }
+      else {
+        if (relation.idMargin === -1) {
+          priceFinal = Math.round(+productPublished.priceCostUYU);
+        }
+        else if (relation.typeMargin === 1/*fijo*/) {
+          priceFinal = Math.round((+productPublished.priceCostUYU) + relation.valueMargin);
+        }
+        else {
+          /*Por Ciento*/
+          priceFinal = Math.round((+productPublished.priceCostUYU * (relation.valueMargin / 100)) + (+productPublished.priceCostUYU));
+        }
+        productPublished.margin = relation.idMargin;
+      }
+      productPublished.pricePublication = priceFinal.toString();
 
-            let tittle = productPublished.title.length > 60 ? productPublished.title.substring(0,60) : productPublished.title;
-            productPublished.title = tittle;
-      });
+      let tittle = productPublished.title.length > 60 ? productPublished.title.substring(0, 60) : productPublished.title;
+      productPublished.title = tittle;
+    });
 
-      return this.http.put<any>(params, productPublished);
+    return this.http.put<any>(params, productPublished);
   }
 
   /* Obtiene los atributos requeridos para publicar
   *  un Item dada su categoria
   */
-  getAttributesRequired(categoryId: string): Observable<AttributesRequiredModel[]>{
+  getAttributesRequired(categoryId: string): Observable<AttributesRequiredModel[]> {
     this.attributesList = [];
     const params = `${this.URI}/categories/${categoryId}/attributes`;
 
     return this.http.get<AttributesRequiredModel[]>(params).pipe(map((resp: any[]) => {
       resp.forEach(element => {
-        if(element.tags.required || element.tags.conditional_required || element.tags.new_required){
+        if (element.tags.required || element.tags.conditional_required || element.tags.new_required) {
           let attributeRequired = new AttributesRequiredModel(element.id, element.name, element.tags, element.value_type, element.value_max_length,
             element.values, element.allowed_units, element.attribute_group_id, element.attribute_group_name);
           this.attributesList.push(attributeRequired);
@@ -391,30 +391,30 @@ getShippingModeOfCategories2(idCategory: string): Observable<string[]> {
 
   getAttribute(f: AttributesRequiredModel): Attributes {
 
-    switch(f.value_type) { 
+    switch (f.value_type) {
       case 'string': {
-         var value = f.id.toUpperCase() == "GTIN" ? "012345600005" :"N/A";
-          
-         return new Attributes(f.id, f.name, value, null, null, [], "OTHERS", "Otros");
-      } 
-      case 'number': { 
-        return new Attributes(f.id, f.name,"1", null, null, [], "OTHERS", "Otros");
-      } 
-      case 'number_unit': { 
+        var value = f.id.toUpperCase() == "GTIN" ? "012345600005" : "N/A";
+
+        return new Attributes(f.id, f.name, value, null, null, [], "OTHERS", "Otros");
+      }
+      case 'number': {
+        return new Attributes(f.id, f.name, "1", null, null, [], "OTHERS", "Otros");
+      }
+      case 'number_unit': {
         var unit = f.allowed_units[0].name;
-        return new Attributes(f.id, f.name,"10 " + unit, null, null, [], "OTHERS", "Otros");
-      } 
-      case 'boolean': { 
-        return new Attributes(f.id, f.name,"false", null, null, [], "OTHERS", "Otros");
-      } 
-      case 'list': { 
+        return new Attributes(f.id, f.name, "10 " + unit, null, null, [], "OTHERS", "Otros");
+      }
+      case 'boolean': {
+        return new Attributes(f.id, f.name, "false", null, null, [], "OTHERS", "Otros");
+      }
+      case 'list': {
         var val = f.value[0];
         return new Attributes(f.id, f.name, val.name, val.id, null, [], "OTHERS", "Otros");
-      } 
-      default: { 
-        return new Attributes(f.id, f.name,"", null, null, [], "OTHERS", "Otros");
-      } 
-   }
+      }
+      default: {
+        return new Attributes(f.id, f.name, "", null, null, [], "OTHERS", "Otros");
+      }
+    }
 
   }
 
