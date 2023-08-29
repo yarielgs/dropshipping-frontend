@@ -8,7 +8,7 @@ export class AttributesRequiredModel {
         public tags?: Tag,
         public value_type?: string,  
         public value_max_length?: number,
-        public value?: Value[],
+        public values?: Value[],
         public allowed_units?: Value[],
         public attribute_group_id?: string,
         public attribute_group_name?: string

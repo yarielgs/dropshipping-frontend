@@ -223,11 +223,6 @@ export class MeliPublicationsService {
             priceFinal = Math.round((element.priceUYU * (relation.valueMargin / 100)) + element.priceUYU);
           }
 
-          let imagesList: ItemPictures[] = [];
-          element.images.forEach(image => {
-            imagesList.push(new ItemPictures(image.photos));
-          });
-
           let flex = relation.flex ? "self_service_in" : "self_service_out";
           let shipping: Shipping = new Shipping("me2", false, false, [], [flex]);
 
@@ -247,13 +242,12 @@ export class MeliPublicationsService {
 
           let attributes: Attributes[] = [];
           attributes.push(new Attributes("SELLER_SKU", "SKU", element.sku));
-          attributes.push(new Attributes("BRAND", "Marca", "N/A"));
           if (attributesRequired.length !== 0) {
             attributesRequired.forEach(f => { attributes.push(this.getAttribute(f)); });
           }
           let tittle = element.name.length > 60 ? element.name.substring(0, 60) : element.name;
           let item = new ItemMeliRequest(tittle, idCategory, priceFinal, "UYU", element.currentStock.toString(), "buy_it_now", "new",
-            listingType, element.description, imagesList, attributes, null, shipping, warranty ? saleTerms : null, ["immediate_payment"]);
+            listingType, element.description, null, attributes, null, shipping, warranty ? saleTerms : null, ["immediate_payment"]);
           itemCustomList.push(new ItemCustomModel(item, element.id, element.sku, element.images, element.price_costUYU,
             element.price_costUSD, element.priceUYU));
 
@@ -291,11 +285,6 @@ export class MeliPublicationsService {
           priceFinal = Math.round((productSelected.price_costUYU * (relation.valueMargin / 100)) + productSelected.price_costUYU);
         }
 
-        let imagesList: ItemPictures[] = [];
-        productSelected.images.forEach(image => {
-          imagesList.push(new ItemPictures(image.photos));
-        });
-
         let flex = relation.flex ? "self_service_in" : "self_service_out";
         let shipping: Shipping = new Shipping("me2", false, false, [], [flex]);
 
@@ -320,7 +309,7 @@ export class MeliPublicationsService {
 
         let tittle = productSelected.productName.length > 60 ? productSelected.productName.substring(0, 60) : productSelected.productName;
         let item = new ItemMeliRequest(tittle, idCategory, priceFinal, "UYU", productSelected.currentStock.toString(), "buy_it_now", "new",
-          listingType, productSelected.description, imagesList, attributes, null, shipping, warranty ? saleTerms : null, ["immediate_payment"]);
+          listingType, productSelected.description, null, attributes, null, shipping, warranty ? saleTerms : null, ["immediate_payment"]);
         itemCustomList.push(new ItemCustomModel(item, productSelected.id, productSelected.sku, productSelected.images, productSelected.price_costUYU,
           productSelected.price_costUSD, productSelected.price));
 
@@ -393,9 +382,9 @@ export class MeliPublicationsService {
 
     switch (f.value_type) {
       case 'string': {
-        var value = f.id.toUpperCase() == "GTIN" ? "012345600005" : "N/A";
-
-        return new Attributes(f.id, f.name, value, null, null, [], "OTHERS", "Otros");
+        var value_id = f.id.toUpperCase() == "GTIN" ? "012345600005" : "BRAND" ? null : "-1";
+        var value_name = f.id.toUpperCase() == "GTIN" ? "012345600005" : "BRAND" ? "Genérica" : null;
+        return new Attributes(f.id, f.name, value_name, value_id, null, [], "OTHERS", "Otros");
       }
       case 'number': {
         return new Attributes(f.id, f.name, "1", null, null, [], "OTHERS", "Otros");
@@ -405,14 +394,15 @@ export class MeliPublicationsService {
         return new Attributes(f.id, f.name, "10 " + unit, null, null, [], "OTHERS", "Otros");
       }
       case 'boolean': {
-        return new Attributes(f.id, f.name, "false", null, null, [], "OTHERS", "Otros");
+        var vlue = f.values.find(v => v.metadata.value==false);
+        return new Attributes(f.id, f.name, null, vlue.id, null, [], "OTHERS", "Otros");
       }
       case 'list': {
-        var val = f.value[0];
+        var val = f.values[0];
         return new Attributes(f.id, f.name, val.name, val.id, null, [], "OTHERS", "Otros");
       }
       default: {
-        return new Attributes(f.id, f.name, "", null, null, [], "OTHERS", "Otros");
+        return new Attributes(f.id, f.name, null, "-1", null, [], "OTHERS", "Otros");
       }
     }
 
