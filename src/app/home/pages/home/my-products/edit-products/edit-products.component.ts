@@ -602,21 +602,34 @@ export class EditProductsComponent implements OnInit {
   }
 
   callPublishProductsService(){
-    // llamada al servicio Publicar
-    this.meliPublicationsService.createPublicationByEditableProduct(this.accountMarginsList, this.lastCategorySelected.idLastCategory, this.warrantyType, this.warrantyTime, this.warranty, this.editableProduct);
-    this.clearAll();
+    //Validacion
+    if(!this.meliPublicationsService.isAvailablePostType(this.lastCategorySelected.idLastCategory, this.accountMarginsList[0].idAccount))   
+    {
+      Swal.fire({
+        title: 'IMPORTANTE!!!',
+        text: 'No se encuentra habilitado en Mercado Libre para publicar en la categoría seleccionada.',
+        icon: 'warning',
+        showCancelButton: false,
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: 'Entendido!'
+      })
+    } else {
+        // llamada al servicio Publicar
+        this.meliPublicationsService.createPublicationByEditableProduct(this.accountMarginsList, this.lastCategorySelected.idLastCategory, this.warrantyType, this.warrantyTime, this.warranty, this.editableProduct);
+        this.clearAll();
 
-    Swal.fire({
-      position: 'top-end',
-      icon: 'info',
-      title: `Producto en publicación`,
-      text: `El producto está siendo publicado`,
-      showConfirmButton: false,
-      timer: 5000
-    })
-    .then((result) => {
-      this.router.navigate(['/home/publish-myproducts']);
-    });
+        Swal.fire({
+          position: 'top-end',
+          icon: 'info',
+          title: `Producto en publicación`,
+          text: `El producto está siendo publicado`,
+          showConfirmButton: false,
+          timer: 5000
+        })
+        .then((result) => {
+          this.router.navigate(['/home/publish-myproducts']);
+        });
+    }
   }
 
   getPath(pathList: string[]){

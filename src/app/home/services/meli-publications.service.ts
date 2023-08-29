@@ -197,6 +197,15 @@ export class MeliPublicationsService {
 
   }
 
+  /*
+  * Valida si el usuario puede publicar en la categoria seleccionada
+  */
+
+  isAvailablePostType(idCategory: string, accountId: number): boolean {
+    const params = `${this.URI_MELI_BUSINESS}/available-post-type/account/${accountId}/category/${idCategory}`;
+    return this.http.get<boolean>(params);
+  }
+
   createPublicationList(relationshipList: AccountMarginModel[], idCategory: string, warrantyType: number, warrantyTime: number, warranty: boolean, productsSelected: ProductCustom[]): void {
 
     let itemCustomList: ItemCustomModel[] = [];

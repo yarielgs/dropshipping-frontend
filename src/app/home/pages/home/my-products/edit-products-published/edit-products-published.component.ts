@@ -718,33 +718,46 @@ export class EditProductsPublishedComponent implements OnInit {
   }
 
   callPublishProductsService(){
-    Swal.fire({
-      position: 'top-end',
-      icon: 'info',
-      title: `Producto en publicación`,
-      text: `El producto está siendo publicado`,
-      showConfirmButton: false,
-      timer: 5000
-    })
-    .then((result) => {
-      this.router.navigate(['/home/published-products']);
-    });
-
-      let editableProduct =  new EditableProductModel();
-      editableProduct.id = this.productMeliPublished.mlPublicationId;
-      editableProduct.currentStock = this.productMeliPublished.currentStock;
-      editableProduct.description = this.productMeliPublished.description;
-      editableProduct.images = this.productMeliPublished.images;
-      editableProduct.price = +this.productMeliPublished.pricePublication;
-      editableProduct.price_costUYU = this.productMeliPublished.priceCostUYU;
-      editableProduct.price_costUSD = this.productMeliPublished.priceCostUSD;
-      editableProduct.productName = this.productMeliPublished.title;
-      editableProduct.sku = this.productMeliPublished.sku;
-      editableProduct.states = 1;
-
-  // llamada al servicio Publicar
-   this.meliPublicationsService.createPublicationByEditableProduct(this.accountMarginsList, this.lastCategorySelected.idLastCategory, this.warrantyType, this.warrantyTime, this.warranty, editableProduct);
-   this.clearAll();
+    //Validacion
+    if(!this.meliPublicationsService.isAvailablePostType(this.lastCategorySelected.idLastCategory, this.accountMarginsList[0].idAccount))   
+    {
+      Swal.fire({
+        title: 'IMPORTANTE!!!',
+        text: 'No se encuentra habilitado en Mercado Libre para publicar en la categoría seleccionada.',
+        icon: 'warning',
+        showCancelButton: false,
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: 'Entendido!'
+      })
+    } else {
+        Swal.fire({
+          position: 'top-end',
+          icon: 'info',
+          title: `Producto en publicación`,
+          text: `El producto está siendo publicado`,
+          showConfirmButton: false,
+          timer: 5000
+        })
+        .then((result) => {
+          this.router.navigate(['/home/published-products']);
+        });
+    
+          let editableProduct =  new EditableProductModel();
+          editableProduct.id = this.productMeliPublished.mlPublicationId;
+          editableProduct.currentStock = this.productMeliPublished.currentStock;
+          editableProduct.description = this.productMeliPublished.description;
+          editableProduct.images = this.productMeliPublished.images;
+          editableProduct.price = +this.productMeliPublished.pricePublication;
+          editableProduct.price_costUYU = this.productMeliPublished.priceCostUYU;
+          editableProduct.price_costUSD = this.productMeliPublished.priceCostUSD;
+          editableProduct.productName = this.productMeliPublished.title;
+          editableProduct.sku = this.productMeliPublished.sku;
+          editableProduct.states = 1;
+    
+      // llamada al servicio Publicar
+      this.meliPublicationsService.createPublicationByEditableProduct(this.accountMarginsList, this.lastCategorySelected.idLastCategory, this.warrantyType, this.warrantyTime, this.warranty, editableProduct);
+      this.clearAll();
+    }
   }
 
   updateProductPublish(){

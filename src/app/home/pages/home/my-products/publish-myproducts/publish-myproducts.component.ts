@@ -1047,29 +1047,42 @@ export class PublishMyproductsComponent implements OnInit {
   }
 
   callPublishProductsService() {
-    // llamada al servicio Publicar
-    this.meliPublicationsService.createPublicationList(this.accountMarginsList, this.lastCategorySelected.idLastCategory, this.warrantyType, this.warrantyTime, this.warranty, this.productsSelected);
-    for (var i = 0; i < this.pageProductsMeli.itemsMeliGrid.length; i++) {
-      if (this.pageProductsMeli.itemsMeliGrid[i].selected === true) {
-        this.pageProductsMeli.itemsMeliGrid.splice(i, 1);
-        i--;
-      }
+    //Validacion
+    if(!this.meliPublicationsService.isAvailablePostType(this.lastCategorySelected.idLastCategory, this.accountMarginsList[0].idAccount))   
+    {
+      Swal.fire({
+        title: 'IMPORTANTE!!!',
+        text: 'No se encuentra habilitado en Mercado Libre para publicar en la categoría seleccionada.',
+        icon: 'warning',
+        showCancelButton: false,
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: 'Entendido!'
+      })
+    } else {
+        // llamada al servicio Publicar
+        this.meliPublicationsService.createPublicationList(this.accountMarginsList, this.lastCategorySelected.idLastCategory, this.warrantyType, this.warrantyTime, this.warranty, this.productsSelected);
+        for (var i = 0; i < this.pageProductsMeli.itemsMeliGrid.length; i++) {
+          if (this.pageProductsMeli.itemsMeliGrid[i].selected === true) {
+            this.pageProductsMeli.itemsMeliGrid.splice(i, 1);
+            i--;
+          }
+        }
+        this.productsSelected = [];
+        this.closeModalPublish();
+        Swal.fire({
+          position: 'top-end',
+          icon: 'info',
+          title: `Productos en publicación`,
+          text: `Los productos están siendo publicados`,
+          showConfirmButton: false,
+          timer: 5000
+        }).then(() => {
+          //this.checkP.nativeElement.checked = 0;
+          if (this.pageProductsMeli.itemsMeliGrid.length === 0) {
+            this.loadProductsPaginator(1);
+          }
+        });
     }
-    this.productsSelected = [];
-    this.closeModalPublish();
-    Swal.fire({
-      position: 'top-end',
-      icon: 'info',
-      title: `Productos en publicación`,
-      text: `Los productos están siendo publicados`,
-      showConfirmButton: false,
-      timer: 5000
-    }).then(() => {
-      //this.checkP.nativeElement.checked = 0;
-      if (this.pageProductsMeli.itemsMeliGrid.length === 0) {
-        this.loadProductsPaginator(1);
-      }
-    });
   }
 
   updateElementOfProduct(originP: ProductCustom, copyP: ProductCustom) {
