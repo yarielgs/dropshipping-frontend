@@ -718,30 +718,29 @@ export class EditProductsPublishedComponent implements OnInit {
   }
 
   callPublishProductsService(){
-    //Validacion
-    if(!this.meliPublicationsService.isAvailablePostType(this.lastCategorySelected.idLastCategory, this.accountMarginsList[0].idAccount))   
-    {
-      Swal.fire({
-        title: 'IMPORTANTE!!!',
-        text: 'No se encuentra habilitado en Mercado Libre para publicar en la categoría seleccionada.',
-        icon: 'warning',
-        showCancelButton: false,
-        confirmButtonColor: '#3085d6',
-        confirmButtonText: 'Entendido!'
-      })
-    } else {
-        Swal.fire({
-          position: 'top-end',
-          icon: 'info',
-          title: `Producto en publicación`,
-          text: `El producto está siendo publicado`,
-          showConfirmButton: false,
-          timer: 5000
-        })
-        .then((result) => {
-          this.router.navigate(['/home/published-products']);
-        });
-    
+    this.meliPublicationsService.isAvailablePostType(this.lastCategorySelected.idLastCategory, this.accountMarginsList[0].idAccount).subscribe(result => {
+        if(result) {
+          Swal.fire({
+            title: 'IMPORTANTE!!!',
+            text: 'No se encuentra habilitado en Mercado Libre para publicar en la categoría seleccionada.',
+            icon: 'warning',
+            showCancelButton: false,
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'Entendido!'
+          })
+        } else {
+          Swal.fire({
+            position: 'top-end',
+            icon: 'info',
+            title: `Producto en publicación`,
+            text: `El producto está siendo publicado`,
+            showConfirmButton: false,
+            timer: 5000
+          })
+          .then((result) => {
+            this.router.navigate(['/home/published-products']);
+          });
+      
           let editableProduct =  new EditableProductModel();
           editableProduct.id = this.productMeliPublished.mlPublicationId;
           editableProduct.currentStock = this.productMeliPublished.currentStock;
@@ -754,10 +753,11 @@ export class EditProductsPublishedComponent implements OnInit {
           editableProduct.sku = this.productMeliPublished.sku;
           editableProduct.states = 1;
     
-      // llamada al servicio Publicar
-      this.meliPublicationsService.createPublicationByEditableProduct(this.accountMarginsList, this.lastCategorySelected.idLastCategory, this.warrantyType, this.warrantyTime, this.warranty, editableProduct);
-      this.clearAll();
-    }
+          // llamada al servicio Publicar
+          this.meliPublicationsService.createPublicationByEditableProduct(this.accountMarginsList, this.lastCategorySelected.idLastCategory, this.warrantyType, this.warrantyTime, this.warranty, editableProduct);
+          this.clearAll();
+        }
+    })
   }
 
   updateProductPublish(){

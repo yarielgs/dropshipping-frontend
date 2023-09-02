@@ -201,7 +201,7 @@ export class MeliPublicationsService {
   * Valida si el usuario puede publicar en la categoria seleccionada
   */
 
-  isAvailablePostType(idCategory: string, accountId: number): boolean {
+  isAvailablePostType(idCategory: string, accountId: number): Observable<boolean> {
     const params = `${this.URI_MELI_BUSINESS}/available-post-type/account/${accountId}/category/${idCategory}`;
     return this.http.get<boolean>(params);
   }
