@@ -719,7 +719,7 @@ export class EditProductsPublishedComponent implements OnInit {
 
   callPublishProductsService(){
     this.meliPublicationsService.isAvailablePostType(this.lastCategorySelected.idLastCategory, this.accountMarginsList[0].idAccount).subscribe(result => {
-        if(result) {
+        if(!result) {
           Swal.fire({
             title: 'IMPORTANTE!!!',
             text: 'No se encuentra habilitado en Mercado Libre para publicar en la categoría seleccionada.',
@@ -740,7 +740,7 @@ export class EditProductsPublishedComponent implements OnInit {
           .then((result) => {
             this.router.navigate(['/home/published-products']);
           });
-      
+
           let editableProduct =  new EditableProductModel();
           editableProduct.id = this.productMeliPublished.mlPublicationId;
           editableProduct.currentStock = this.productMeliPublished.currentStock;
@@ -752,7 +752,7 @@ export class EditProductsPublishedComponent implements OnInit {
           editableProduct.productName = this.productMeliPublished.title;
           editableProduct.sku = this.productMeliPublished.sku;
           editableProduct.states = 1;
-    
+
           // llamada al servicio Publicar
           this.meliPublicationsService.createPublicationByEditableProduct(this.accountMarginsList, this.lastCategorySelected.idLastCategory, this.warrantyType, this.warrantyTime, this.warranty, editableProduct);
           this.clearAll();

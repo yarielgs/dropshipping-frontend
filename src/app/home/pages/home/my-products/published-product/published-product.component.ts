@@ -505,7 +505,7 @@ export class PublishedProductComponent implements OnInit {
       if (result.isConfirmed) {
 
         this.setMsgLoading('Eliminando publicación...', true);
-        if (product.status === StatesOfMeli.FAIL || product.status === StatesOfMeli.UNDER_REVIEW) {
+        if (product.status === StatesOfMeli.FAIL || product.status === StatesOfMeli.UNDER_REVIEW || product.status === StatesOfMeli.IN_PROCESS) {
           this.productsMeliPublishedService.deletePublicationFailed(product.id)
             .subscribe((resp: any) => {
 
