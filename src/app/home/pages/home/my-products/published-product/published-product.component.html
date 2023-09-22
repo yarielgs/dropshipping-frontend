@@ -35,11 +35,11 @@
           </select>
         </div>
       </div>
-      <div class="col-md-2 ">
+      <div class="col-md-2">
         <div class="d-flex justify-content-center align-items-center">
-          <button class="btn btn-outline-secondary h-75 w-75 mx-2 " (click)="clearSearch(f)"> <i *ngIf="loadingClear"
-              class="fas fa-spin fa-spinner m-1"></i><i *ngIf="!loadingClear" class="fas fa-broom m-1"></i>
-            Limpiar</button>
+          <button class="btn btn-primary h-75 w-75 mx-2" (click)="searchProductsPublished()">
+            <i *ngIf="!loadPaginator" class="fas fa-search m-1"></i> <i *ngIf="loadPaginator"
+              class="fas fa-spin fa-spinner m-1"></i> Buscar</button>
         </div>
       </div>
     </div>
@@ -80,11 +80,11 @@
           </select>
         </div>
       </div>
-      <div class="col-md-2">
+      <div class="col-md-2 ">
         <div class="d-flex justify-content-center align-items-center">
-          <button class="btn btn-primary h-75 w-75 mx-2" (click)="searchProductsPublished()">
-            <i *ngIf="!loadPaginator" class="fas fa-search m-1"></i> <i *ngIf="loadPaginator"
-              class="fas fa-spin fa-spinner m-1"></i> Buscar</button>
+          <button class="btn btn-outline-secondary h-75 w-75 mx-2 " (click)="clearSearch(f)"> <i *ngIf="loadingClear"
+              class="fas fa-spin fa-spinner m-1"></i><i *ngIf="!loadingClear" class="fas fa-broom m-1"></i>
+            Limpiar</button>
         </div>
       </div>
     </div>

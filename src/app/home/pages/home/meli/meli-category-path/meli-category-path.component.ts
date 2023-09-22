@@ -63,28 +63,33 @@ export class MeliCategoryPathComponent implements OnInit {
         //Entra al if si la categoria es Hoja
         if(this.meliCategory.children_categories.length === 0) {
             aCategory.idLastCategory = this.meliCategory.id;
+            
+            // las siguientes 2 lineas de codigo remplaza el codigo comentado
+            // No se valida si es me2 una categoria
+            aCategory.isME2 = true;
+            this.categorySelected.emit(aCategory);
 
             //Validar si categoria es mercado enviable segun me2 .
-            this.meliPublicationsService.getShippingMode(this.meliCategory.id).subscribe(modes => {
-              if(modes.includes("me2")) {
-                aCategory.isME2 = true;
-              } else {
-                //si la categoria es igual a alguna categoria de la lista permitida como Mercado Enviable
-                if(this.categoriesME2AllowedList.some(f => f.id === this.meliCategory.id))
-                   aCategory.isME2 = true;
-                 else
-                   aCategory.isME2 = false;
-              }
-              this.categorySelected.emit(aCategory);
-            }, (error: any) => {
-              if(this.categoriesME2AllowedList.some(f => f.id === this.meliCategory.id))
-                aCategory.isME2 = true;
-              else
-                aCategory.isME2 = false;
+            // this.meliPublicationsService.getShippingMode(this.meliCategory.id).subscribe(modes => {
+            //   if(modes.includes("me2")) {
+            //     aCategory.isME2 = true;
+            //   } else {
+            //     //si la categoria es igual a alguna categoria de la lista permitida como Mercado Enviable
+            //     if(this.categoriesME2AllowedList.some(f => f.id === this.meliCategory.id))
+            //        aCategory.isME2 = true;
+            //      else
+            //        aCategory.isME2 = false;
+            //   }
+            //   this.categorySelected.emit(aCategory);
+            // }, (error: any) => {
+            //   if(this.categoriesME2AllowedList.some(f => f.id === this.meliCategory.id))
+            //     aCategory.isME2 = true;
+            //   else
+            //     aCategory.isME2 = false;
 
-              this.categorySelected.emit(aCategory);
-               }
-            );
+            //   this.categorySelected.emit(aCategory);
+            //    }
+            // );
         }
       }
       this.pathOut.emit(this.pathList);
